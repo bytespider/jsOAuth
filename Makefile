@@ -3,15 +3,15 @@ SRC_DIR = src
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
 
-BASE_FILES = ${SRC_DIR}/jsOAuth.js
+FILES = ${SRC_DIR}/jsOAuth.js
 
 JOA = ${DIST_DIR}/jsOAuth.js
 VERSION = `cat Version`
 
 VER = sed s/@VERSION/${VERSION}/
 
-DATE=`git log -1 . | grep Date: | sed 's/.*: //g'`
-REV=`git rev-list --max-count=1 --all`
+DATE = `git log -1 . | grep Date: | sed 's/.*: //g'`
+REV = `git rev-list --max-count=1 --all`
 
 all: joauth
 
@@ -20,17 +20,18 @@ ${DIST_DIR}:
 
 joauth: ${DIST_DIR} ${JOA}
 
-${JOA}: ${BASE_FILES}
+${JOA}: ${FILES}
 	@@echo "Building" ${JOA}
-	@@echo "Date:" ${DATE} "| Revision:" ${REV}
+	@@echo "Date:" ${DATE}
+	@@echo "Revision:" ${REV}
 	
 	@@mkdir -p ${DIST_DIR}
-	@@cat ${BASE_FILES} | \
+	@@cat ${FILES} | \
 		sed 's/Date:./&'"${DATE}"'/' | \
 		sed 's/Revision:./&'${REV}'/' | \
 		${VER} > ${JOA};
 	
-	@@echo ${JOA} "Built"
+	@@echo ${JOA} "Build complete"
 	@@echo
 
 clean:
