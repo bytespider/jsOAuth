@@ -1,2 +1,5 @@
+.*
+!.gitignore
 *~
+*.[oa]
 dist/
