@@ -25,7 +25,7 @@
             }
 
             if (!(this instanceof arguments.callee)) {
-                return new jsOAuth.Consumer(key, secret, callback_url);
+                return new jsOAuth(key, secret, callback_url);
             } else {
                 /** @type {string|undefined} */
                 this.key = key;
@@ -37,4 +37,6 @@
                 this.callback_url = (callback_url === undefined ? null : callback_url);
             }
         };
+    
+    window.jsOAuth = jsOAuth;
 })();
