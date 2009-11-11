@@ -3,6 +3,6 @@ if (!fireunit) {
 }
 
 fireunit.ok(jsOAuth('key', 'secret'), 'create consumer without new keyword');
-fireunit.ok(new jsOAuth('key', 'secret'), 'create consumer without new keyword');
+fireunit.ok(new jsOAuth('key', 'secret'), 'create consumer with new keyword');
 
-fireunit.testsdone();
+fireunit.testDone();
