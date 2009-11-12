@@ -7,9 +7,64 @@
  * Revision: 
  */
 
-(function(){
-    var window = this,
-        undefined,
+(function(window, undefined){
+    var console = window.console,
+		
+		/**
+		 * Url
+		 * 
+		 * @constructor
+		 * @param {String} url
+		 */
+		Url = function(url) {
+			var parsed_url, scheme, host, port, path
+                parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#[^\x00-\x1F\x7F]*)*/;
+				
+			if (!(this instanceof arguments.callee)) {
+                return this.toString();
+            }
+			
+			parsed_url = url.match(parser);
+			
+			scheme = parsed_url[1];
+		    host = parsed_url[2];
+			port = parsed_url[3];
+		    path = parsed_url[4];
+		    query = parsed_url[5];
+		    anchor = parsed_url[6];
+			
+			scheme = scheme ? scheme.replace('://', '').toLowerCase() : '';
+		    port = port ? port.replace(':', '') : (scheme == 'https' ? '443' : '80');
+			// correct the scheme based on port number
+			scheme = (scheme == '' && port == '443') ? 'https' : scheme;
+			
+		    query = query ? query.replace('?', '') : '';
+		    anchor = anchor ? anchor.replace('#', '') : '';
+			
+		    
+			// Fix the host name to include port if non-standard ports were given
+		    if ((scheme == 'https' && port != '443') || (scheme == 'http' && port != '80')) {
+		        host = host + ':' + port;
+				
+		    }
+			
+			this.scheme = scheme;
+			this.host = host;
+			this.port = port;
+			this.path = path ? path : '/';
+			this.query = query ? query : '';
+			this.anchor = anchor ? anchor : '';
+			
+			/**
+			 * Returns the url string
+			 * 
+			 * @memberOf Url
+			 * @return {String}
+			 */
+			this.toString = function() {
+				return scheme + '://' + host + path + (query ? '?' + query : '')  + (anchor ? '#' + anchor : '');
+			};
+		},
         
         /**
          * Main OAuth consumer
@@ -21,7 +76,7 @@
          */
         jsOAuth = function (key, secret, callback_url) {
             if (!(this instanceof arguments.callee)) {
-                return new arguments.callee(key, secret);
+                return new arguments.callee(key, secret, callback_url);
             }
             
             if (arguments.length < 2) {
@@ -35,7 +90,8 @@
             this.secret = secret;
             
             /** @type {string|undefined} */
-            this.callback_url = callback_url ? callback_url : nul;
+            this.callback_url = callback_url ? new Url(callback_url) : null;
+			console.log(this.callback_url.toString())
         };
 
         jsOAuth.prototype.OAUTH_REQUEST_TOKEN_URL = '';  /** @const */
@@ -47,4 +103,7 @@
         jsOAuth.prototype.getAccessToken = function () {};
     
     window.jsOAuth = jsOAuth;
-})();
+	
+	// Only give to the world if they want it
+	if (!window.Url) {window.Url = Url;}
+})(window);
