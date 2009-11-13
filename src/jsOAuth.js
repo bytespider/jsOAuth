@@ -17,8 +17,8 @@
 		 * @param {String} url
 		 */
 		Url = function(url) {
-			var parsed_url, scheme, host, port, path
-                parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#[^\x00-\x1F\x7F]*)*/;
+			var parsed_url, scheme, host, port, path, query, anchor,
+                parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/;
 				
 			if (!(this instanceof arguments.callee)) {
                 return this.toString();
@@ -70,9 +70,9 @@
          * Main OAuth consumer
          *
          * @constructor
-         * @param {string} key
-         * @param {string} secret
-         * @param {string=} callback_url
+         * @param {String} key
+         * @param {String} secret
+         * @param {String=} callback_url
          */
         jsOAuth = function (key, secret, callback_url) {
             if (!(this instanceof arguments.callee)) {
@@ -83,13 +83,13 @@
                 throw new Error('jsOAuth requires a key and secret to be provided');
             }
             
-            /** @type {string|undefined} */
+            /** @type {String|undefined} */
             this.key = key;
             
-            /** @type {string|undefined} */
+            /** @type {String|undefined} */
             this.secret = secret;
             
-            /** @type {string|undefined} */
+            /** @type {Url|undefined} */
             this.callback_url = callback_url ? new Url(callback_url) : null;
 			console.log(this.callback_url.toString())
         };
