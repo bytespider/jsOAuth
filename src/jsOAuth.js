@@ -7,18 +7,20 @@
  * Revision: 
  */
 
-(function(window, undefined){
-    var console = window.console,
-		
+(function () {
+    var 
+		window = this,
+        undefined,
+        
 		/**
 		 * Url
 		 * 
 		 * @constructor
 		 * @param {String} url
 		 */
-		Url = function(url) {
-			var parsed_url, scheme, host, port, path, query, anchor,
-                parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/;
+		Url = function (url) {
+			var parsed_url, scheme, host, port, path, query, anchor, 
+            parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/;
 				
 			if (!(this instanceof arguments.callee)) {
                 return this.toString();
@@ -34,16 +36,16 @@
 		    anchor = parsed_url[6];
 			
 			scheme = scheme ? scheme.replace('://', '').toLowerCase() : '';
-		    port = port ? port.replace(':', '') : (scheme == 'https' ? '443' : '80');
+		    port = port ? port.replace(':', '') : (scheme === 'https' ? '443' : '80');
 			// correct the scheme based on port number
-			scheme = (scheme == '' && port == '443') ? 'https' : scheme;
+			scheme = (scheme === '' && port === '443') ? 'https' : scheme;
 			
 		    query = query ? query.replace('?', '') : '';
 		    anchor = anchor ? anchor.replace('#', '') : '';
 			
 		    
 			// Fix the host name to include port if non-standard ports were given
-		    if ((scheme == 'https' && port != '443') || (scheme == 'http' && port != '80')) {
+		    if ((scheme === 'https' && port !== '443') || (scheme === 'http' && port !== '80')) {
 		        host = host + ':' + port;
 				
 		    }
@@ -61,7 +63,7 @@
 			 * @memberOf Url
 			 * @return {String}
 			 */
-			this.toString = function() {
+			this.toString = function () {
 				return scheme + '://' + host + path + (query ? '?' + query : '')  + (anchor ? '#' + anchor : '');
 			};
 		},
@@ -91,19 +93,20 @@
             
             /** @type {Url|undefined} */
             this.callback_url = callback_url ? new Url(callback_url) : null;
-			console.log(this.callback_url.toString())
         };
 
-        jsOAuth.prototype.OAUTH_REQUEST_TOKEN_URL = '';  /** @const */
-        jsOAuth.prototype.OAUTH_REQUEST_AUTH_URL  = '';  /** @const */
-        jsOAuth.prototype.OAUTH_GET_TOKEN_URL     = '';  /** @const */
-        
-        jsOAuth.prototype.getRequestToken = function () {};
-        jsOAuth.prototype.requestAuthorization = function () {};
-        jsOAuth.prototype.getAccessToken = function () {};
+    jsOAuth.prototype.OAUTH_REQUEST_TOKEN_URL = '';  /** @const */
+    jsOAuth.prototype.OAUTH_REQUEST_AUTH_URL  = '';  /** @const */
+    jsOAuth.prototype.OAUTH_GET_TOKEN_URL     = '';  /** @const */
+    
+    jsOAuth.prototype.getRequestToken = function () {};
+    jsOAuth.prototype.requestAuthorization = function () {};
+    jsOAuth.prototype.getAccessToken = function () {};
     
     window.jsOAuth = jsOAuth;
 	
 	// Only give to the world if they want it
-	if (!window.Url) {window.Url = Url;}
-})(window);
+	if (!window.Url) {
+        window.Url = Url;
+    }
+}());
