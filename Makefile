@@ -37,7 +37,9 @@ ${JOA}: ${FILES}
 	@@echo
 
 compile:
-	java -jar ${BUILD_DIR}/closure-compiler/compiler.jar --js ${JOA} --js_output_file ${JOA_COMPILED}
+	@@echo "Compiling to " ${JOA_COMPILED}
+	@@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar --js ${JOA} --js_output_file ${JOA_COMPILED}
+	@@echo ${JOA_COMPILED} ": Compiled!"
 
 
 clean:
