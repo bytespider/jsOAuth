@@ -4,44 +4,48 @@ PREFIX = .
 DIST_DIR = ${PREFIX}/dist
 BUILD_DIR = ${PREFIX}/build
 
-FILES = ${SRC_DIR}/jsOAuth.js \
-    ${SRC_DIR}/helpers/Url.js
+DEST_DIR = ${DIST_DIR}
 
-JOA = ${DIST_DIR}/jsOAuth.js
-JOA_COMPILED = ${DIST_DIR}/jsOAuth-compiled.js
-VERSION = `cat Version`
+SRC_FILES = ${SRC_DIR}/jsOAuth.js \
+	${SRC_DIR}/helpers/Url.js
 
-VER = sed s/@VERSION/${VERSION}/
+VERSION = ${shell cat Version}
+TIMESTAMP = ${shell git log -1 . | grep Date: | sed 's/.*: //g'}
+REVISION = ${shell git rev-list --max-count=1 --all}
 
-DATE = `git log -1 . | grep Date: | sed 's/.*: //g'`
-REV = `git rev-list --max-count=1 --all`
+VER = sed 's/@VERSION/${VERSION}/'
+DATE = sed 's/@DATE/${TIMESTAMP}/'
+REV = sed 's/@REV/${REVISION}/'
+
+JOA = ${DIST_DIR}/jsOAuth-${VERSION}.js
+JOA_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
 
 all: joauth
+	
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-joauth: ${DIST_DIR} ${JOA} compile
-
-${JOA}:
-	@@echo "Building" ${JOA}
-	@@echo "Date:" ${DATE}
-	@@echo "Revision:" ${REV}
+joauth: ${DIST_DIR} ${JOA} ${JOA_COMPILED}
 	
-	@@mkdir -p ${DIST_DIR}
-	@@cat ${FILES} | \
-		sed 's/Date:./&'"${DATE}"'/' | \
-		sed 's/Revision:./&'${REV}'/' | \
+${JOA}: ${SRC_FILES}
+	@@echo "Building" ${JOA}
+	@@echo "    Date:" ${TIMESTAMP}
+	@@echo "    Revision:" ${REVISION}
+	
+	@@cat ${SRC_FILES} | \
+		${REV} | \
+		${DATE} | \
 		${VER} > ${JOA}
-    
-	@@echo "${JOA} Build complete"
-	@@echo
+	
+	@@echo "Build complete."
+	@@echo ""
 
-compile:
-	@@echo "Compiling to ${JOA_COMPILED}"
+${JOA_COMPILED}: ${JOA}
+	@@echo "Compiling ${JOA} > ${JOA_COMPILED}"
 	@@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar --js ${JOA} --js_output_file ${JOA_COMPILED}
-	@@echo "${JOA_COMPILED} : Compiled!"
-	@@echo
+	@@echo "Compile complete."
+	@@echo ""
 
 clean:
 	@@echo "Removing Distribution directory: ${DIST_DIR}"

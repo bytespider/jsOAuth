@@ -3,8 +3,8 @@
  *
  * @preserve Copyright (c) 2009 Rob Griffiths
  *
- * Date: 
- * Revision: 
+ * Date: @DATE
+ * Revision: @REV
  */
 
 (function () {
