@@ -66,6 +66,24 @@
 			this.toString = function () {
 				return scheme + '://' + host + path + (query ? '?' + query : '')  + (anchor ? '#' + anchor : '');
 			};
+
+            
+            this.setQueryParams = function (query) {
+                var al = arguments.length, i;
+                if (al <= 1) {
+                    if (typeof query === 'object') {
+                        // iterate
+                    } else if (typeof query === 'string') {
+                        // split string on '&'
+                        // iterate over each of the array items
+                        // split on '=' to get key, value
+                    }
+                } else {
+                    for (i = 0; i < al; i = i + 2) {
+                        // treat each arg as key, then value
+                    }
+                }
+            };
 		},
         
         /**
