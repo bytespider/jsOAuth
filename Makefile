@@ -2,10 +2,12 @@ SRC_DIR = src
 
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
+BUILD_DIR = ${PREFIX}/build
 
 FILES = ${SRC_DIR}/jsOAuth.js
 
 JOA = ${DIST_DIR}/jsOAuth.js
+JOA_COMPILED = ${DIST_DIR}/jsOAuth-compiled.js
 VERSION = `cat Version`
 
 VER = sed s/@VERSION/${VERSION}/
@@ -18,7 +20,7 @@ all: joauth
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-joauth: ${DIST_DIR} ${JOA}
+joauth: ${DIST_DIR} ${JOA} compile
 
 ${JOA}: ${FILES}
 	@@echo "Building" ${JOA}
@@ -33,6 +35,10 @@ ${JOA}: ${FILES}
 	
 	@@echo ${JOA} "Build complete"
 	@@echo
+
+compile:
+	java -jar ${BUILD_DIR}/closure-compiler/compiler.jar --js ${JOA} --js_output_file ${JOA_COMPILED}
+
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
