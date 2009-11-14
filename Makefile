@@ -20,6 +20,7 @@ DATE = sed 's/@DATE/${TIMESTAMP}/'
 REV = sed 's/@REV/${REVISION}/'
 
 JOA = ${DIST_DIR}/jsOAuth-${VERSION}.js
+JOA_MIN = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
 JOA_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
 
 all: joauth
@@ -28,7 +29,7 @@ all: joauth
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-joauth: ${DIST_DIR} ${JOA} ${JOA_COMPILED}
+joauth: ${DIST_DIR} ${JOA} ${JOA_COMPILED} ${JOA_MIN}
 	
 ${JOA}: ${SRC_FILES}
 	@@echo "Building" ${JOA}
@@ -48,9 +49,18 @@ ${JOA_COMPILED}: ${JOA}
 	@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar \
 	   --js ${JOA} \
 	   --js_output_file ${JOA_COMPILED} \
-	   --compilation_level ADVANCED_OPTIMIZATIONS \
 	   --output_js_string_usage
 	@@echo "Compile complete."
+	@@echo ""
+
+${JOA_MIN}: ${JOA}
+	@@echo "Shrinking ${JOA} > ${JOA_MIN}"
+	@java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar \
+	   --charset UTF-8 \
+	   -o ${JOA_MIN} \
+	   -v \
+	   ${JOA}
+	@@echo "Shrink complete."
 	@@echo ""
 
 clean:
