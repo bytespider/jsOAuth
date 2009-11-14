@@ -9,5 +9,10 @@
  */
 
 (function () {
-    var window = this, undefined, jsOAuth, Url, QueryString;
+    var window = this, undefined, jsOAuth, Url, QueryString,
+	TYPEOF_OBJECT = 'object', TYPEOF_STRING = 'string', 
+	TYPEOF_FUNCTION = 'function', TYPEOF_UNDEFINED = 'undefined',
+	TYPEOF_NULL = 'null', EMPTY_STRING = '',
+	OBJECT = Object, STRING = String, FUNCTION = Function, UNDEFINED = undefined,
+	NULL = null;
 	

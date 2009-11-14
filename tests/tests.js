@@ -2,31 +2,30 @@ if (!fireunit) {
     throw new Error('FireUnit is required for unit testing.See http://fireunit.org/'); //http://fireunit.org/
 }
 
-fireunit.ok(Url, 'Url is a class');
+fireunit.ok(typeof Url == 'function', 'Url is a constructor');
 
 // Only testing absolute Urls
+fireunit.compare('http://www.google.com', new Url('www.google.com'), 'www.google.com');
+fireunit.compare('http://www.google.com/', new Url('www.google.com/'), 'www.google.com/');
+fireunit.compare('http://www.google.com/', new Url('www.google.com/?'), 'www.google.com/?');
+fireunit.compare('http://www.google.com/search', new Url('www.google.com/search'), 'www.google.com/search');
+fireunit.compare('http://www.google.com/search?q=test', new Url('www.google.com/search?q=test'), 'http://www.google.com/search?q=test');
+fireunit.compare('http://www.google.com/search?q=test#anchor', new Url('www.google.com/search?q=test#anchor'), 'http://www.google.com/search?q=test#anchor');
+fireunit.compare('http://www.google.com/search#anchor', new Url('www.google.com/search?#anchor'), 'http://www.google.com/search?#anchor');
+fireunit.compare('http://www.google.com/search#anchor', new Url('www.google.com/search#anchor'), 'http://www.google.com/search#anchor');
+fireunit.compare('http://www.google.com/#anchor', new Url('www.google.com/#anchor'), 'http://www.google.com/#anchor');
+fireunit.compare('http://www.google.com#anchor', new Url('www.google.com#anchor'), 'http://www.google.com#anchor');
 
-fireunit.ok(new Url('www.google.com'), 'www.google.com');
-fireunit.ok(new Url('www.google.com/'), 'www.google.com/');
-fireunit.ok(new Url('www.google.com/?'), 'www.google.com/?');
-fireunit.ok(new Url('www.google.com/search'), 'www.google.com/search');
-fireunit.ok(new Url('www.google.com/search?q=test'), 'http://www.google.com/search?q=test');
-fireunit.ok(new Url('www.google.com/search?q=test#anchor'), 'http://www.google.com/search?q=test#anchor');
-fireunit.ok(new Url('www.google.com/search?#anchor'), 'http://www.google.com/search?#anchor');
-fireunit.ok(new Url('www.google.com/search#anchor'), 'http://www.google.com/search#anchor');
-fireunit.ok(new Url('www.google.com/#anchor'), 'http://www.google.com/#anchor');
-fireunit.ok(new Url('www.google.com#anchor'), 'http://www.google.com#anchor');
-
-fireunit.ok(new Url('http://www.google.com'), 'http://www.google.com');
-fireunit.ok(new Url('http://www.google.com/'), 'http://www.google.com/');
-fireunit.ok(new Url('http://www.google.com/?'), 'http://www.google.com/?');
-fireunit.ok(new Url('http://www.google.com/search'), 'http://www.google.com/search');
-fireunit.ok(new Url('http://www.google.com/search?q=test'), 'http://www.google.com/search?q=test');
-fireunit.ok(new Url('http://www.google.com/search?q=test#anchor'), 'http://www.google.com/search?q=test#anchor');
-fireunit.ok(new Url('http://www.google.com/search?#anchor'), 'http://www.google.com/search?#anchor');
-fireunit.ok(new Url('http://www.google.com/search#anchor'), 'http://www.google.com/search#anchor');
-fireunit.ok(new Url('http://www.google.com/#anchor'), 'http://www.google.com/#anchor');
-fireunit.ok(new Url('http://www.google.com#anchor'), 'http://www.google.com#anchor');
+fireunit.compare('http://www.google.com', new Url('http://www.google.com'), 'http://www.google.com');
+fireunit.compare('http://www.google.com/', new Url('http://www.google.com/'), 'http://www.google.com/');
+fireunit.compare('http://www.google.com/', new Url('http://www.google.com/?'), 'http://www.google.com/?');
+fireunit.compare('http://www.google.com/search', new Url('http://www.google.com/search'), 'http://www.google.com/search');
+fireunit.compare('http://www.google.com/search?q=test', new Url('http://www.google.com/search?q=test'), 'http://www.google.com/search?q=test');
+fireunit.compare('http://www.google.com/search?q=test#anchor', new Url('http://www.google.com/search?q=test#anchor'), 'http://www.google.com/search?q=test#anchor');
+fireunit.compare('http://www.google.com/search#anchor', new Url('http://www.google.com/search?#anchor'), 'http://www.google.com/search?#anchor');
+fireunit.compare('http://www.google.com/search#anchor', new Url('http://www.google.com/search#anchor'), 'http://www.google.com/search#anchor');
+fireunit.compare('http://www.google.com/#anchor', new Url('http://www.google.com/#anchor'), 'http://www.google.com/#anchor');
+fireunit.compare('http://www.google.com#anchor', new Url('http://www.google.com#anchor'), 'http://www.google.com#anchor');
 
 var url = new Url('www.google.com:443');
 fireunit.compare('https', url.scheme, 'Url: Correctly detected scheme is https from port (www.google.com:443)');
@@ -45,5 +44,7 @@ fireunit.ok(jsOAuthYahoo, 'construct of jsOAuth.Service.Yahoo');
 fireunit.ok(jsOAuthYahoo.getRequestToken, 'jsOAuth.Service.Yahoo has getRequestToken method');
 fireunit.ok(jsOAuthYahoo.requestAuthorization, 'jsOAuth.Service.Yahoo has requestAuthorization method');
 fireunit.ok(jsOAuthYahoo.getAccessToken, 'jsOAuth.Service.Yahoo has getAccessToken method');
+
+//fireunit.ok(jsOAuthYahoo.getAccessToken(), 'jsOAuth.Service.Yahoo.getAccessToken() creates Request');
 
 fireunit.testDone();

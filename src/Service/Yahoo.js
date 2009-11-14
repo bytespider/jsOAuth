@@ -1,15 +1,20 @@
 (function(){
-    var window = this, undefined, jsOAuth;
-	jsOAuth = window.jsOAuth;
+    var window = this, undefined, jsOAuth = window.jsOAuth,
+	TYPEOF_OBJECT = 'object', TYPEOF_STRING = 'string', 
+	TYPEOF_FUNCTION = 'function', TYPEOF_UNDEFINED = 'undefined',
+	TYPEOF_NULL = 'null',
+	OBJECT = Object, STRING = String, FUNCTION = Function, UNDEFINED = undefined,
+	NULL = null;
     
     // if no other services has been initialized, initialize the Service namespace
-    jsOAuth.Service = !jsOAuth.Service ? {} : jsOAuth.Service;
+	if (jsOAuth === UNDEFINED) { throw new Error('Missing required jsOAuth') }
+	if (jsOAuth.Service == UNDEFINED) { jsOAuth.Service = {}; }
 	
     jsOAuth.Service.Yahoo = function (key, secret, callback_url, app_id) {
         var args = arguments, args_callee = args.callee, 
 			args_length = args.length, jsOAuthServiceYahoo = this;
 			
-        if (!(this instanceof args_callee)) {
+        if (!(jsOAuthServiceYahoo instanceof args_callee)) {
             return new args_callee(key, secret, callback_url, app_id);
         }
         
@@ -36,5 +41,5 @@
      * Set prototype up with null as jsOAuth requires key and secret
      * but we don't know them until new YahooOAuth() is called
      */
-    window.jsOAuth.Service.Yahoo.prototype = new jsOAuth(null);
+    window.jsOAuth.Service.Yahoo.prototype = new jsOAuth(NULL);
 })();
