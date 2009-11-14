@@ -1,4 +1,3 @@
-var Url, QueryString;
 /**
  * Url
  * 
@@ -6,10 +5,11 @@ var Url, QueryString;
  * @param {String} url
  */
 Url = function (url) {
-    var parsed_url, scheme, host, port, path, query, anchor, params = {},
+    var args = arguments, args_callee = args.callee, 
+        parsed_url, scheme, host, port, path, query, anchor,
         parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/;
         
-    if (!(this instanceof arguments.callee)) {
+    if (!(this instanceof args_callee)) {
         return this.toString();
     }
     
@@ -22,10 +22,10 @@ Url = function (url) {
     query = parsed_url[5];
     anchor = parsed_url[6];
     
-    scheme = scheme ? scheme.replace('://', '').toLowerCase() : '';
-    port = port ? port.replace(':', '') : (scheme === 'https' ? '443' : '80');
+    scheme = (scheme ? scheme.replace('://', '').toLowerCase() : '');
+    port = (port ? port.replace(':', '') : (scheme === 'https' ? '443' : '80'));
     // correct the scheme based on port number
-    scheme = (scheme === '' && port === '443') ? 'https' : scheme;
+    scheme = (scheme === '' && port === '443' ? 'https' : scheme);
     
     query = query ? query.replace('?', '') : '';
     anchor = anchor ? anchor.replace('#', '') : '';
@@ -55,15 +55,16 @@ Url = function (url) {
     };
 };
 QueryString = function () {
-    if (!(this instanceof arguments.callee)) {
+	var args = arguments, args_callee = args.callee, args_length = args.length;
+    if (!(this instanceof args_callee)) {
         return this.toString();
     }
 	
 	this.queryParams = {};
 	this.setQueryParams = function (query) {
-        var arg_length = arguments.length, i, query_array, 
+        var args = arguments, args_length = args.length, i, query_array, 
             query_array_length, params = this.queryParams, key_value;
-        if (arg_length <= 1) {
+        if (args_length <= 1) {
             if (typeof query === 'object') {
                 // iterate
                 for (i in query) {
@@ -75,8 +76,7 @@ QueryString = function () {
                 // split string on '&'
                 query_array = query.spilt('&');
                 // iterate over each of the array items
-                query_array_length = query_array.length;
-                for (i = 0; i < query_array_length; i++) {
+                for (i = 0, query_array_length = query_array.length; i < query_array_length; i++) {
                     // split on '=' to get key, value
                     key_value = query_array[i].split('=');
                     params[key_value[0]] = key_value[1];
@@ -85,7 +85,7 @@ QueryString = function () {
         } else {
             for (i = 0; i < arg_length; i += 2) {
                 // treat each arg as key, then value
-                params[arguments[i]] = arguments[i+1];
+                params[args[i]] = args[i+1];
             }
         }
 		
@@ -108,8 +108,8 @@ QueryString = function () {
         return query.join('&');
     };
 	
-	if (arguments.length > 0) {
-		this.setQueryParams(arguments);
+	if (args_length > 0) {
+		this.setQueryParams(args);
 	}
 };
 

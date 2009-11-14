@@ -8,5 +8,5 @@
  */
 
 (function () {
-    var window = this, undefined;
+    var window = this, undefined, jsOAuth, Url, QueryString;
 	

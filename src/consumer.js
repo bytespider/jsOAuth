@@ -1,5 +1,3 @@
-var jsOAuth;
-        
 /**
  * Main OAuth consumer
  *
@@ -9,11 +7,12 @@ var jsOAuth;
  * @param {String=} callback_url
  */
 jsOAuth = function (key, secret, callback_url) {
-    if (!(this instanceof arguments.callee)) {
-        return new arguments.callee(key, secret, callback_url);
+	var args = arguments, args_callee = args.callee, args_length = args.length;
+    if (!(this instanceof args_callee)) {
+        return new args_callee(key, secret, callback_url);
     }
     
-    if (arguments.length < 2) {
+    if (args_length < 2) {
         throw new Error('jsOAuth requires a key and secret to be provided');
     }
     
