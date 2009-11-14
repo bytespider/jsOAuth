@@ -35,7 +35,6 @@ jsOAuth.prototype.getRequestToken = function () {};
 jsOAuth.prototype.requestAuthorization = function () {};
 jsOAuth.prototype.getAccessToken = function () {};
 
-/** @define {number} */
-jsOAuth.prototype.VERSION = 0;
+jsOAuth.prototype.OAUTH_VERSION = '1.0';
 
 window.jsOAuth = jsOAuth;
