@@ -6,8 +6,10 @@ BUILD_DIR = ${PREFIX}/build
 
 DEST_DIR = ${DIST_DIR}
 
-SRC_FILES = ${SRC_DIR}/jsOAuth.js \
-	${SRC_DIR}/helpers/Url.js
+SRC_FILES = ${SRC_DIR}/start.js \
+	${SRC_DIR}/consumer.js \
+	${SRC_DIR}/url.js \
+	${SRC_DIR}/end.js
 
 VERSION = ${shell cat Version}
 TIMESTAMP = ${shell git log -1 . | grep Date: | sed 's/.*: //g'}
@@ -43,7 +45,11 @@ ${JOA}: ${SRC_FILES}
 
 ${JOA_COMPILED}: ${JOA}
 	@@echo "Compiling ${JOA} > ${JOA_COMPILED}"
-	@@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar --js ${JOA} --js_output_file ${JOA_COMPILED}
+	@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar \
+	   --js ${JOA} \
+	   --js_output_file ${JOA_COMPILED} \
+	   --compilation_level ADVANCED_OPTIMIZATIONS \
+	   --output_js_string_usage
 	@@echo "Compile complete."
 	@@echo ""
 
