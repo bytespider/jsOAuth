@@ -31,4 +31,19 @@ fireunit.ok(new Url('http://www.google.com#anchor'), 'http://www.google.com#anch
 var url = new Url('www.google.com:443');
 fireunit.compare('https', url.scheme, 'Url: Correctly detected scheme is https from port (www.google.com:443)');
 
+
+var key = 'dj0yJmk9QUpHMUQyeWZabGNRJmQ9WVdrOVNHTnFRVk5WTm1jbWNHbzlOakEyT1RNNE5qSXgmcz1jb25zdW1lcnNlY3JldCZ4PThh';
+var secret = 'a845eb87bde903d230dfa1cf6e106e7891447bab';
+var app_id = 'HcjASU6g';
+
+fireunit.ok(jsOAuth.Service.Yahoo, 'jsOAuth.Service.Yahoo is a class');
+
+var jsOAuthYahoo = jsOAuth.Service.Yahoo(key, secret, null, app_id);
+console.debug(jsOAuthYahoo);
+fireunit.ok(jsOAuthYahoo, 'construct of jsOAuth.Service.Yahoo');
+
+fireunit.ok(jsOAuthYahoo.getRequestToken, 'jsOAuth.Service.Yahoo has getRequestToken method');
+fireunit.ok(jsOAuthYahoo.requestAuthorization, 'jsOAuth.Service.Yahoo has requestAuthorization method');
+fireunit.ok(jsOAuthYahoo.getAccessToken, 'jsOAuth.Service.Yahoo has getAccessToken method');
+
 fireunit.testDone();
