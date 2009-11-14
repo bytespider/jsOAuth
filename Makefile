@@ -49,6 +49,7 @@ ${JOA_COMPILED}: ${JOA}
 	@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar \
 	   --js ${JOA} \
 	   --js_output_file ${JOA_COMPILED} \
+	   --compilation_level ADVANCED_OPTIMIZATIONS \
 	   --output_js_string_usage
 	@@echo "Compile complete."
 	@@echo ""
