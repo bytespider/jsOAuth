@@ -29,6 +29,10 @@
         /** @type {Url|null} */
         jsOAuth.callback_url = (callback_url !== UNDEFINED) ? new window.Url(callback_url) : NULL;
 		
+        /** @type {String} */
+        jsOAuth.token = EMPTY_STRING;
+		jsOAuth.signature = sign(key, secrect);
+		
         return jsOAuth;
     };
     
@@ -58,7 +62,7 @@
 		var args = arguments, args_callee = args.callee, 
 			args_length = args.length, Request = this, 
 			xhr = new XMLHttpRequest(), // W3C compliant platforms only
-			async = true, setAuthorizationHeader;
+			async = true, setAuthorizationHeader, date = new Date();
 			
         if (!(Request instanceof args_callee)) {
             return new args_callee(oauth, url, method, parameters);
@@ -108,8 +112,25 @@
 		 * Set standard OAuth header
 		 */
 		setAuthorizationHeader = function () {
-			var auth_header = 'OAuth realm="' + oauth.OAUTH_REALM + '"';
-			alert(auth_header);
+			/*
+            Authorization: OAuth realm="http://sp.example.com/",
+            oauth_consumer_key="0685bd9184jfhq22",
+            oauth_token="ad180jjd733klru7",
+            oauth_signature_method="HMAC-SHA1",
+            oauth_signature="wOJIO9A2W5mFwDgiDvZbTSMK%2FPY%3D",
+            oauth_timestamp="137131200",
+            oauth_nonce="4572616e48616d6d65724c61686176",
+            oauth_version="1.0"
+			*/
+
+			var ts = date.getTime(), auth_header = 'OAuth realm="' + oauth.OAUTH_REALM + '"' + 
+				',oauth_consumer_key="' + oauth.key + '"'
+				',oauth_token="' + oauth.token + '"'
+				',oauth_signature_method="' + oauth.SIGNATURE_METHOD + '"'
+				',oauth_signature="' + oauth.signature + '"'
+				',oauth_timestamp="' + ts + '"'
+				',oauth_timestamp="' + Request.generateNonce(ts) + '"'
+				',oauth_version="' + oauth.OAUTH_VERSION + '"'
 			Request.setHeader('Authorization', auth_header);
 		}();
 		
@@ -118,7 +139,7 @@
     
 	jsOAuth.prototype.getRequestToken = function () {
 		var oauth = this;
-        var request = new this.Request(oauth, oauth.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
+        var request = new oauth.Request(oauth, oauth.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
     };
     jsOAuth.prototype.requestAuthorization = function () {};
     jsOAuth.prototype.getAccessToken = function () {};
