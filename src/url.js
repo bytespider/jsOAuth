@@ -59,7 +59,6 @@
          * @return {String}
          */
         Url.toString = function () {
-			console.log(this.query != EMPTY_STRING);
             return this.scheme + '://' + this.host + this.path + (this.query != EMPTY_STRING ? '?' + this.query : EMPTY_STRING)  + (this.anchor !== EMPTY_STRING ? '#' + this.anchor : EMPTY_STRING);
         };
     };
