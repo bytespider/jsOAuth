@@ -65,12 +65,15 @@
         }
         
         /** @type {Url|undefined} */
-        Request.method = (method !== UNDEFINED) ? method : jsOAuth.HTTP_METHOD_POST;
         Request.url = (url !== UNDEFINED) ? url : EMPTY_STRING;
+        Request.method = (method !== UNDEFINED) ? method : jsOAuth.HTTP_METHOD_POST;
         Request.parameters = (parameters !== UNDEFINED) ? parameters : {};
         
         // Open the connection
-        xhr.open(method, url, async);
+		console.log(Request.method);
+		console.log(Request.url);
+		console.log(async);
+        xhr.open(Request.method, Request.url, async);
 		
         /**
          * A wrapper for XMLHttpRequest.setRequestHeader
@@ -106,7 +109,7 @@
 		 * Set standard OAuth header
 		 */
 		setAuthorizationHeader = function () {
-			var auth_header = args_callee.OAUTH_REALM;
+			var auth_header = 'OAuth realm="' + args_callee.OAUTH_REALM + '"';
 			alert(auth_header);
 			Request.setHeader('Authorization', auth_header);
 		}();
@@ -115,8 +118,7 @@
     };
     
 	jsOAuth.prototype.getRequestToken = function () {
-        var request = new jsOAuth.Request(
-          Url.method, this.OAUTH_REQUEST_TOKEN_URL, {});
+        var request = new this	.Request(this.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
     };
     jsOAuth.prototype.requestAuthorization = function () {};
     jsOAuth.prototype.getAccessToken = function () {};
