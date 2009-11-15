@@ -54,14 +54,14 @@
      * @param {String=} method
      * @param {Object=} parameters
      */
-    jsOAuth.prototype.Request = function (url, method, parameters) {
+    jsOAuth.prototype.Request = function (oauth, url, method, parameters) {
 		var args = arguments, args_callee = args.callee, 
 			args_length = args.length, Request = this, 
 			xhr = new XMLHttpRequest(), // W3C compliant platforms only
 			async = true, setAuthorizationHeader;
 			
         if (!(Request instanceof args_callee)) {
-            return new args_callee(method, url, parameters);
+            return new args_callee(oauth, url, method, parameters);
         }
         
         /** @type {Url|undefined} */
@@ -107,18 +107,18 @@
 		/**
 		 * Set standard OAuth header
 		 */
-		(setAuthorizationHeader = function () {
-			//alert(this);
-			var auth_header = 'OAuth realm="' + this.OAUTH_REALM + '"';
+		setAuthorizationHeader = function () {
+			var auth_header = 'OAuth realm="' + oauth.OAUTH_REALM + '"';
 			alert(auth_header);
 			Request.setHeader('Authorization', auth_header);
-		}).call(Request);
+		}();
 		
         return Request;
     };
     
 	jsOAuth.prototype.getRequestToken = function () {
-        var request = new this.Request(this.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
+		var oauth = this;
+        var request = new this.Request(oauth, oauth.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
     };
     jsOAuth.prototype.requestAuthorization = function () {};
     jsOAuth.prototype.getAccessToken = function () {};
