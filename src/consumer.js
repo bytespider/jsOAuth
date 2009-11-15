@@ -90,7 +90,7 @@
          * @param {String} parameter
          */
         Request.getParameter = function (parameter) {
-            return that.hasOwnProperty(parameter) ? that.parameters[parameter] : undefined;
+            return Request.hasOwnProperty(parameter) ? that.parameters[parameter] : undefined;
         };
         
 		/**
@@ -101,23 +101,24 @@
 		 */
         Request.setParameter = function (parameter, value) {
 			value = (value !== UNDEFINED) ? value : EMPTY_STRING;
-            that.parameters[parameter] = value;
+            Request.parameters[parameter] = value;
         };
 		
 		/**
 		 * Set standard OAuth header
 		 */
-		setAuthorizationHeader = function () {
-			var auth_header = 'OAuth realm="' + args_callee.OAUTH_REALM + '"';
+		(setAuthorizationHeader = function () {
+			//alert(this);
+			var auth_header = 'OAuth realm="' + this.OAUTH_REALM + '"';
 			alert(auth_header);
 			Request.setHeader('Authorization', auth_header);
-		}();
+		}).call(Request);
 		
         return Request;
     };
     
 	jsOAuth.prototype.getRequestToken = function () {
-        var request = new this	.Request(this.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
+        var request = new this.Request(this.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
     };
     jsOAuth.prototype.requestAuthorization = function () {};
     jsOAuth.prototype.getAccessToken = function () {};
