@@ -67,10 +67,11 @@
         /** @type {Url|undefined} */
         Request.method = (method !== UNDEFINED) ? method : jsOAuth.HTTP_METHOD_POST;
         Request.url = (url !== UNDEFINED) ? url : EMPTY_STRING;
-        Request.parameters = parameters;
+        Request.parameters = (parameters !== UNDEFINED) ? parameters : {};
         
         // Open the connection
         xhr.open(method, url, async);
+		
         /**
          * A wrapper for XMLHttpRequest.setRequestHeader
          * 
@@ -114,8 +115,8 @@
     };
     
 	jsOAuth.prototype.getRequestToken = function () {
-        var request = new this.Request(
-          this.HTTP_METHOD_POST, this.OAUTH_REQUEST_TOKEN_URL, {});
+        var request = new jsOAuth.Request(
+          Url.method, this.OAUTH_REQUEST_TOKEN_URL, {});
     };
     jsOAuth.prototype.requestAuthorization = function () {};
     jsOAuth.prototype.getAccessToken = function () {};
