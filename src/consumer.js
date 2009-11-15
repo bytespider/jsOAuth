@@ -38,12 +38,12 @@
     jsOAuth.prototype.OAUTH_REQUEST_AUTH_URL   = EMPTY_STRING;       /** @const */
     jsOAuth.prototype.OAUTH_GET_TOKEN_URL      = EMPTY_STRING;       /** @const */
     
-    jsOAuth.prototype.HTTP_METHOD_GET          = 'GET';    /** @const */
-    jsOAuth.prototype.HTTP_METHOD_POST         = 'POST';   /** @const */
-    jsOAuth.prototype.HTTP_METHOD_PUT          = 'PUT';    /** @const */
-    jsOAuth.prototype.HTTP_METHOD_DELETE       = 'DELETE'; /** @const */
+    jsOAuth.HTTP_METHOD_GET          = 'GET';    /** @const */
+    jsOAuth.HTTP_METHOD_POST         = 'POST';   /** @const */
+    jsOAuth.HTTP_METHOD_PUT          = 'PUT';    /** @const */
+    jsOAuth.HTTP_METHOD_DELETE       = 'DELETE'; /** @const */
     
-    jsOAuth.prototype.OAUTH_VERSION            = '1.0';    /** @const */
+    jsOAuth.OAUTH_VERSION            = '1.0';    /** @const */
     
     /**
      * Make a call to the Service Provider
@@ -72,7 +72,6 @@
         // Open the connection
 		console.log(Request.method);
 		console.log(Request.url);
-		console.log(async);
         xhr.open(Request.method, Request.url, async);
 		
         /**
