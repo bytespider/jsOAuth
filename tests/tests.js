@@ -45,6 +45,7 @@ fireunit.ok(jsOAuthYahoo.getRequestToken, 'jsOAuth.Service.Yahoo has getRequestT
 fireunit.ok(jsOAuthYahoo.requestAuthorization, 'jsOAuth.Service.Yahoo has requestAuthorization method');
 fireunit.ok(jsOAuthYahoo.getAccessToken, 'jsOAuth.Service.Yahoo has getAccessToken method');
 
-//fireunit.ok(jsOAuthYahoo.getAccessToken(), 'jsOAuth.Service.Yahoo.getAccessToken() creates Request');
+console.debug(jsOAuthYahoo.getRequestToken());
+//fireunit.ok(jsOAuthYahoo.getRequestToken(), 'jsOAuth.Service.Yahoo.getRequestToken() creates Request');
 
 fireunit.testDone();
