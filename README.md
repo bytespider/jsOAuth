@@ -25,7 +25,7 @@ all built distribution files
 
 ## Issues
 
-Please report all issues on the GitHub [issue tracker for jsOauth] [2].
+Please report all issues on the GitHub [issue tracker for jsOauth](http://github.com/bytespider/jsOAuth/issues).
 Please do not post feature requests as issues.
 
 ## Authors
