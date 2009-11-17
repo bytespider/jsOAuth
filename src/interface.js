@@ -21,17 +21,17 @@
 	 * @param {String} key
 	 * @param {String} secret
 	 */
-	jsOAuth = function (key, secret) {
+	jsOAuth = function (key, secret, callback_url) {
 		var args = arguments, args_callee = args.callee, args_length = args.length,
 			token = EMPTY_STRING, jsoauth = this;
 			
 	    if (!(jsoauth instanceof args_callee)) {
-	        return new args_callee(key, secret);
+	        return new args_callee(key, secret, callback_url);
 	    }
 		
 		jsoauth.key = key; /** @type {String|undefined} */
 		jsoauth.secret = secret; /** @type {String|undefined} */
-		jsoauth.callback_url = EMPTY_STRING; 
+		jsoauth.callback_url = callback_url;  /** @type {String|undefined} */
 		jsoauth.signature = EMPTY_STRING;
 		jsoauth.signature_method = 'PLAINTEXT';
 		jsoauth.OAUTH_REALM = EMPTY_STRING;
