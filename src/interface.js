@@ -1,19 +1,3 @@
-(function(){
-    var window = this, undefined,
-        TYPEOF_OBJECT = 'object', 
-        TYPEOF_STRING = 'string', 
-        TYPEOF_FUNCTION = 'function', 
-        TYPEOF_UNDEFINED = 'undefined',
-        TYPEOF_NULL = 'null', 
-        EMPTY_STRING = '',
-        OBJECT = Object, 
-        STRING = String, 
-        FUNCTION = Function, 
-        UNDEFINED = undefined,
-        NULL = null,
-        
-        jsOAuth;
-    
     /**
      * OAuth Consumer
      * 
@@ -77,8 +61,16 @@
                 params.oauth_timestamp = this.timestamp;
                 params.oauth_nonce = this.nonce;
             };
-            request.timestamp = (new Date).getTime();
-            request.nonce = generateKey(64);
+            request.timestamp = (new Date).getTime(); // current timestamp
+            request.nonce = generateKey(64); // 64-bit rendom key
+            
+            /**
+             * Override standard toString function so that we can see the 
+             * request produced the correct URL
+             */
+            request.toString = function() {
+                
+            };
                 
             return request;
         };
@@ -147,4 +139,4 @@
     
     jsOAuth.OAUTH_VERSION            = '1.0';    /** @const */
     window.jsOAuth = jsOAuth;
-}());
+
