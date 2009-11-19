@@ -35,11 +35,19 @@ for (var i = 0; i < 500; i++) {
     nonce_list[nonce_b] = true;
 }
 fireunit.ok(nonce_b.length == 16, 'Nonce length is 16 (2chars per byte), 64bits of entropy');
-nonce_list = null, nonce = null;
+nonce_list = null, nonce_a = null, nonce_b = null;
 
 fireunit.ok(consumer.getRequestToken,'consumer.getRequestToken is method');
 
+// test url generation
+var request = new consumer.Request(null, null);
+fireunit.compare(
+    'This%20string%20has%20spaces%2Astars%2F%5Cslashes%22quotes%3Acolons.periods%3Dequals%26ampersands', 
+    request.urlEncode('This string has spaces*stars/\\slashes"quotes:colons.periods=equals&ampersands'),
+    'urlEncode encodes string correctly'
+);
 
+console.log(request.parameters);
 
 /*
 fireunit.ok(typeof Url == 'function', 'Url is a constructor');

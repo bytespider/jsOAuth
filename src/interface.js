@@ -17,7 +17,7 @@
         jsoauth.secret = secret; /** @type {String|undefined} */
         jsoauth.callback_url = callback_url;  /** @type {String|undefined} */
         jsoauth.signature = EMPTY_STRING;
-        jsoauth.signature_method = 'PLAINTEXT';
+        jsoauth.signature_method = jsOAuth.SIGNATURE_METHOD['PLAINTEXT'];
         jsoauth.OAUTH_REALM = EMPTY_STRING;
         jsoauth.OAUTH_REQUEST_TOKEN_URL = EMPTY_STRING;
         jsoauth.OAUTH_REQUEST_AUTH_URL = EMPTY_STRING;
@@ -50,20 +50,56 @@
             request.url = url;
             request.method = method;
             request.parameters = (parameters !== UNDEFINED) ? parameters : {};
+            /**
+             * Override toString to collect, sort and concatenate into a 
+             * normalized string
+             */
+            request.parameters.toString = function () {
+                var i, params = this.parameters, params_arr = [], 
+                enc = this.urlEncode;
+                
+                params.sort();
+                for(i in params){
+                    if (params.hasOwnProperty(i) && params[i] !== UNDEFINED) {
+                        params_arr.push(enc(i) + '=' + enc(params[i]));
+                    }
+                }
+                alert(params_arr.length);
+                return (params_arr.length > 0 ? params_arr.join('&') : UNDEFINED);
+            };
+            
             request.setParameter = function (parameter, value) {
                 parameters[parameter] = value;
             };
             request.getParameter = function (parameter) {
                 return parameters.hasOwnProperty(parameter) ? parameters[parameter] : UNDEFINED;
             };
-            request.sign = function (consumer, token, signature_method) {
-                var params = jsoauth.oauth_parameters;
+            request.sign = function (consumer, token) {
+                var params = consumer.oauth_parameters;
                 params.oauth_signature_method = signature_method;
                 params.oauth_timestamp = this.timestamp;
                 params.oauth_nonce = this.nonce;
             };
             request.timestamp = (new Date).getTime(); // current timestamp
             request.nonce = generateKey(64); // 64-bit rendom key
+            
+            /** 
+             * rfc3986 compatable encode of a string
+             * 
+             * @param {String} string
+             */
+            request.urlEncode = function (string){
+                var reserved_chars = /( |\!|\*|\"|\'|\(|\)|\;|\:|\@|\&|\=|\+|\$|\,|\/|\?|\%|\#|\[|\]|\<|\>|\{|\}|\||\\|`|\^)/, 
+                    str_len = string.length, i, string_arr = string.split('');
+                                      
+                for (i = 0; i < str_len; i++) {
+                    if (string_arr[i].match(reserved_chars)) {
+                        string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
+                    }
+                }
+                
+                return string_arr.join('');
+            };
             
             /**
              * Override standard toString function so that we can see the 
@@ -145,6 +181,26 @@
     
     jsOAuth.OAUTH_VERSION            = '1.0';    /** @const */
     
+    jsOAuth.SIGNATURE_METHOD = {
+        'HMAC-SHA1': {
+            /**
+             * Override default toString method to use as a constant key
+             */
+            toString: function () {
+                return 'HMAC-SHA1';
+            }
+        },
+        'PLAINTEXT': {
+            toString: function () {
+                return 'PLAINTEXT';
+            },
+            sign: function(){
+                var signature = '';
+                return signature;
+            }
+        }
+    };
+   
     /** closure compiler "export" method, use quoted syntax */
     window['jsOAuth'] = jsOAuth;
 
