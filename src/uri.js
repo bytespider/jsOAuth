@@ -10,7 +10,7 @@
             parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/
 			Uri = this;
 
-		if (!(Uri instanceof args_callee)) {
+		if (!(this instanceof args_callee)) {
             return new args_callee(args);
         }
 		
@@ -68,7 +68,7 @@
     QueryString = function () {
         var args = arguments, args_callee = args.callee, args_length = args.length, 
 			QueryString = this;
-        if (!(QueryString instanceof args_callee)) {
+        if (!(this instanceof args_callee)) {
             return this.toString();
         }
         

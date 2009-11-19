@@ -9,7 +9,7 @@
         var args = arguments, args_callee = args.callee, args_length = args.length,
             token = EMPTY_STRING, jsoauth = this;
             
-        if (!(jsoauth instanceof args_callee)) {
+        if (!(this instanceof args_callee)) {
             return new args_callee(key, secret, callback_url);
         }
         
@@ -45,7 +45,7 @@
             var args = arguments, args_callee = args.callee, args_length = args.length,
                 request = this;
                 
-            if (!(request instanceof args_callee)) {
+            if (!(this instanceof args_callee)) {
                 return new args_callee(url, method, parameters);
             }
             
@@ -62,9 +62,9 @@
              * Override toString to collect, sort and concatenate into a 
              * normalized string
              */
-            request.parameters.toString = function () {
-                var i, params = this.parameters, params_arr = [], 
-                enc = this.urlEncode;
+            request.parameters.taString = function () {
+                var i, params = this, params_arr = [], 
+                enc = this.urlEncode, ret = '';
                 
                 params.sort();
                 for(i in params){
@@ -72,8 +72,11 @@
                         params_arr.push(enc(i) + '=' + enc(params[i]));
                     }
                 }
-
-                return (params_arr.length > 0 ? params_arr.join('&') : UNDEFINED);
+                ret = params_arr.join('&');
+                if (ret == EMPTY_STRING || ret == UNDEFINED) {
+                    ret = '[' + OBJECT + ' ' + TYPEOF_OBJECT + ']';
+                }
+                return ret;
             };
             
             /**
@@ -136,12 +139,12 @@
              * Override standard toString function so that we can see the 
              * request produced the correct URL
              */
-            request.toString = function() {
+            /*request.toString = function() {
                 var params = jsoauth.oauth_parameters;
                 params.sort(); // lexicographical byte value ordering
                 
                 console.debug(params);
-            };
+            };*/
                 
             return request;
         };
@@ -162,7 +165,6 @@
         jsoauth.getRequestToken = function () {
             var request = new this.Request(this.OAUTH_REQUEST_AUTH_URL, 
                 jsOAuth.HTTP_METHOD_POST, {});
-            console.log(request);
         },
         
         /**
