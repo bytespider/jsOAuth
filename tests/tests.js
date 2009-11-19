@@ -47,7 +47,21 @@ fireunit.compare(
     'urlEncode encodes string correctly'
 );
 
-console.log(request.parameters);
+var request = new consumer.Request('www.example.com', jsOAuth.HTTP_METHOD_GET, {});
+
+
+// test Collection
+fireunit.ok(typeof Collection == 'function', 'Collection is a constructor');
+var collect = new Collection(
+    {'apple':'an apple', 'pear':'a pear', 'kiwi':'a kiwi', 'oange':'an orange'}
+);
+
+console.debug(collect);
+for(var fruit in collect) {
+    console.log(fruit);
+    console.log(collect[fruit]);
+}
+
 
 /*
 fireunit.ok(typeof Url == 'function', 'Url is a constructor');
