@@ -22,6 +22,7 @@
         UNDEFINED = undefined,
         NULL = null,
         
-        jsOAuth;
+        jsOAuth,
+        Uri;
     
 	
