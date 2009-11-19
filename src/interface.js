@@ -35,6 +35,7 @@
         };
         
         /**
+         * Create a new http request
          * 
          * @param {String} url
          * @param {String} method
@@ -47,9 +48,16 @@
             if (!(request instanceof args_callee)) {
                 return new args_callee(url, method, parameters);
             }
+            
+            /** @property */
             request.url = url;
+            
+            /** @property */
             request.method = method;
+            
+            /** @property */
             request.parameters = (parameters !== UNDEFINED) ? parameters : {};
+            
             /**
              * Override toString to collect, sort and concatenate into a 
              * normalized string
@@ -68,19 +76,42 @@
                 return (params_arr.length > 0 ? params_arr.join('&') : UNDEFINED);
             };
             
+            /**
+             * Set or create a value in the stack
+             * 
+             * @param {String} parameter
+             * @param {String} value
+             */
             request.setParameter = function (parameter, value) {
                 parameters[parameter] = value;
             };
+            
+            /**
+             * Get a parameter from the stack
+             * 
+             * @param {String} parameter
+             */
             request.getParameter = function (parameter) {
                 return parameters.hasOwnProperty(parameter) ? parameters[parameter] : UNDEFINED;
             };
+            
+            /**
+             * Sign a request using the signature_method
+             * 
+             * @param {Object} consumer
+             * @param {String} token
+             */
             request.sign = function (consumer, token) {
                 var params = consumer.oauth_parameters;
                 params.oauth_signature_method = signature_method;
                 params.oauth_timestamp = this.timestamp;
                 params.oauth_nonce = this.nonce;
             };
+            
+            /** @property */
             request.timestamp = (new Date).getTime(); // current timestamp
+            
+            /** @property */
             request.nonce = generateKey(64); // 64-bit rendom key
             
             /** 
