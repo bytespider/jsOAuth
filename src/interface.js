@@ -64,7 +64,7 @@
                         params_arr.push(enc(i) + '=' + enc(params[i]));
                     }
                 }
-                alert(params_arr.length);
+
                 return (params_arr.length > 0 ? params_arr.join('&') : UNDEFINED);
             };
             
