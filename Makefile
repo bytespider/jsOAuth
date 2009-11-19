@@ -7,7 +7,7 @@ BUILD_DIR = ${PREFIX}/build
 DEST_DIR = ${DIST_DIR}
 
 SRC_FILES = ${SRC_DIR}/start.js \
-	${SRC_DIR}/consumer.js \
+	${SRC_DIR}/interface.js \
 	${SRC_DIR}/url.js \
 	${SRC_DIR}/end.js
 
