@@ -132,4 +132,4 @@
     };
     
     // Only give to the world if they want it
-    if (window.Url === UNDEFINED) { window.Url = Url }
+    if (window.Uri === UNDEFINED) { window.Uri = Uri }
