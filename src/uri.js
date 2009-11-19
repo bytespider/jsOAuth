@@ -131,5 +131,8 @@
 		return QueryString;
     };
     
-    // Only give to the world if they want it
-    if (window.Uri === UNDEFINED) { window.Uri = Uri }
+    /** closure compiler "export" method, use quoted syntax */
+    if (window['Uri'] === UNDEFINED) {
+        // Only give to the world if they want it
+        window['Uri'] = Uri
+    }

@@ -30,7 +30,8 @@
             'oauth_signature': jsoauth.signature,
             'oauth_timestamp': EMPTY_STRING,
             'oauth_nonce': EMPTY_STRING,
-            'oauth_version': jsoauth.OAUTH_VERSION
+            'oauth_version': jsoauth.OAUTH_VERSION,
+            'oauth_verifier': EMPTY_STRING
         };
         
         /**
@@ -69,7 +70,10 @@
              * request produced the correct URL
              */
             request.toString = function() {
+                var params = jsoauth.oauth_parameters;
+                params.sort(); // lexicographical byte value ordering
                 
+                console.debug(params);
             };
                 
             return request;
@@ -140,5 +144,7 @@
     jsOAuth.HTTP_METHOD_DELETE       = 'DELETE'; /** @const */
     
     jsOAuth.OAUTH_VERSION            = '1.0';    /** @const */
-    window.jsOAuth = jsOAuth;
+    
+    /** closure compiler "export" method, use quoted syntax */
+    window['jsOAuth'] = jsOAuth;
 
