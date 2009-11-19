@@ -22,7 +22,7 @@
         UNDEFINED = undefined,
         NULL = null,
         
-        jsOAuth,
-        Uri;
-    
+        jsOAuth,                        /** @see interface.js */
+        Uri,                            /** @see uri.js */
+        Collection;                     /** @see collection.js */
 	
