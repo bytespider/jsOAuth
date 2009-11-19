@@ -34,7 +34,7 @@ for (var i = 0; i < 500; i++) {
     nonce_list[nonce_a] = true;
     nonce_list[nonce_b] = true;
 }
-fireunit.ok(nonce_b.length == 8, 'Nonce character length is 8, 64bits of entropy');
+fireunit.ok(nonce_b.length == 16, 'Nonce length is 16 (2chars per byte), 64bits of entropy');
 nonce_list = null, nonce = null;
 
 fireunit.ok(consumer.getRequestToken,'consumer.getRequestToken is method');
