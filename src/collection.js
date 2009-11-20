@@ -43,22 +43,10 @@
     Collection.prototype.ksort = function(){};
     Collection.prototype.sort = function(){};
     Collection.prototype.join = function(){};
-    Collection.prototype.reverse = function(){};
- 
-    Collection.prototype.__iterator__ = function(){
-        var obj = {1:1,2:2}, hasOwn = obj.hasOwnProperty;
-        return {
-            next: function() {
-                for (i = 0; i < obj.length; i++) {  
-                    if (hasOwn(key)) {
-                        yeild (key);  
-                    }
-                }
-                throw StopIteration
-            }
-        };
-    };
-    
+    Collection.prototype.reverse = function(){};    
    
     /** closure compiler "export" method, use quoted syntax */
-    window['Collection'] = Collection;
+    if (window['Collection'] === UNDEFINED) {
+        // Only give to the world if they want it
+        window['Collection'] = Collection;
+    }
