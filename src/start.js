@@ -15,14 +15,17 @@
         TYPEOF_FUNCTION = 'function', 
         TYPEOF_UNDEFINED = 'undefined',
         TYPEOF_NULL = 'null', 
-        EMPTY_STRING = '',
         OBJECT = Object, 
         STRING = String, 
         FUNCTION = Function, 
         UNDEFINED = undefined,
         NULL = null,
+        EMPTY_ARRAY = [],
+        EMPTY_OBJECT = {},
+        EMPTY_STRING = '',
         
         jsOAuth,                        /** @see interface.js */
+        Collection,                     /** @see collection.js */
         Uri,                            /** @see uri.js */
-        Collection;                     /** @see collection.js */
+        HttpRequest;                    /** @see http.js */
 	
