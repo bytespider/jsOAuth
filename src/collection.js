@@ -63,7 +63,7 @@
         hash.push = function(){};
         hash.pop = function(){};
         hash.ksort = function(func){
-            var self = this, keys = (_keys != [] ? _keys : self.keys()), i;
+            var self = this, keys = (_keys != [] ? _keys : self.keys()), i, value;
             
             if (func != UNDEFINED) {
                 keys.sort(func);
@@ -71,7 +71,9 @@
                  keys.sort();
             }
             for (i = 0; i  < keys.length; i++) {
-                self[keys[i]] = self[keys[i]];
+                value = self[keys[i]];
+                delete self[keys[i]]
+                self[keys[i]] = value;
             }
         };
         
