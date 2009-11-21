@@ -11,6 +11,8 @@
         httprequest.parameters = new Collection(parameters);
         httprequest.parameters.prototype.toString = function () {
             var i, self = this, hasOwn = self.hasOwnProperty, query = [], ret = '';
+            
+            self.ksort(); // lexicographical byte value ordering of the keys
             for (i in self) {
                 if (hasOwn(i)) {
                     query.push(HttpRequest.urlEncode(i) + '=' + 
@@ -66,7 +68,7 @@
                 data = query;
             } else {
                 // append the data to the url
-                url + '?' + query;
+                url += '?' + query;
             }
             xhr.open(method, url, async, user, password)
             httprequest.setRequestHeader('User-Agent', user_agent);
