@@ -8,9 +8,9 @@ DEST_DIR = ${DIST_DIR}
 
 SRC_FILES = ${SRC_DIR}/start.js \
 	${SRC_DIR}/interface.js \
+	${SRC_DIR}/collection.js \
 	${SRC_DIR}/uri.js \
 	${SRC_DIR}/http.js \
-	${SRC_DIR}/collection.js \
 	${SRC_DIR}/end.js
 
 VERSION = ${shell cat Version}
