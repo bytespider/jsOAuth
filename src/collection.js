@@ -68,8 +68,10 @@
             if (func != UNDEFINED) {
                 keys.sort(func);
             } else {
-                 keys.sort();
+                keys.sort();
             }
+            
+            console.debug(keys);
             for (i = 0; i  < keys.length; i++) {
                 value = self[keys[i]];
                 delete self[keys[i]]
