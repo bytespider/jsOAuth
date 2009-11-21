@@ -1,50 +1,84 @@
     
-    Collection = function (object) {
+    Collection = function (obj) {
         var args = arguments, args_callee = args.callee, args_length = args.length,
-            collection = this, i, hasOwn = object.hasOwnProperty;
-            
+            i, collection = this;
+          
         if (!(this instanceof args_callee)) {
-            return new args_callee(object);
+            return new args_callee(obj);
         }
         
-        for (i in object) {
-            if (hasOwn(i)) {
-                collection[i] = object[i];
+        for(i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                collection[i] = obj[i];
             }
         }
-        
+                
         return collection;
     };
     
-    Collection.prototype.keys = function(){
-        var i, arr = [], coll = this, hasOwn = coll.hasOwnProperty;
-        for (i in coll) {
-            if (hasOwn(i)) {
-                arr.push(i);
+    function Hash() {
+        var hash = this, _keys = [], _values = [];
+        
+        hash.ksort = function(func){
+            var self = this, keys = (_keys != [] ? _keys : self.keys()), i;
+            
+            if (func != UNDEFINED) {
+                keys.sort(func);
+            } else {
+                 keys.sort();
             }
-        }
-        return arr;
-    };
-    
-    Collection.prototype.values = function(){
-        var i, arr = [], coll = this, hasOwn = coll.hasOwnProperty;
-        for (i in coll) {
-            if (hasOwn(i)) {
-                arr.push(coll[i]);
+            
+            for (i = 0; i  < keys.length; i++) {
+                self[keys[i]] = self[keys[i]];
             }
-        }
-        return arr;
-    };
+        };
+        
+        hash.sort = function(){};
+        hash.join = function(){};
+        hash.reverse = function(){};
+        hash.keys = function(){
+            var i, arr = [], self = this;
+            for (i in coll) {
+                if (hash.hasOwnProperty(i)) {
+                    arr.push(i);
+                }
+            }
+            
+            _keys = arr;
+            return arr;
+        };
+        hash.values = function(){
+            var i, arr = [], self = this;
+            for (i in hash) {
+                if (self.hasOwnProperty(i)) {
+                    arr.push(coll[i]);
+                }
+            }
+            
+            _values = arr;
+            return arr;
+        };
+        hash.shift = function(){};
+        hash.unshift = function(){};
+        hash.push = function(){};
+        hash.pop = function(){};
+        hash.ksort = function(func){
+            var self = this, keys = (_keys != [] ? _keys : self.keys()), i;
+            
+            if (func != UNDEFINED) {
+                keys.sort(func);
+            } else {
+                 keys.sort();
+            }
+            for (i = 0; i  < keys.length; i++) {
+                self[keys[i]] = self[keys[i]];
+            }
+        };
+        
+        return hash;
+    }
+    Collection.prototype = new Hash;
     
-    Collection.prototype.shift = function(){};
-    Collection.prototype.unshift = function(){};
-    Collection.prototype.push = function(){};
-    Collection.prototype.pop = function(){};
-    Collection.prototype.ksort = function(){};
-    Collection.prototype.sort = function(){};
-    Collection.prototype.join = function(){};
-    Collection.prototype.reverse = function(){};    
-   
     /** closure compiler "export" method, use quoted syntax */
     if (window['Collection'] === UNDEFINED) {
         // Only give to the world if they want it
