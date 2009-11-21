@@ -58,6 +58,15 @@ var fruit = new Collection(
 fruit.passion = 'Passion fruit';
 fireunit.ok(fruit instanceof Collection, 'fruit instanceof Collection');
 
+
+// test Http
+fireunit.ok(typeof HttpRequest == 'function', 'HttpRequest is a constructor');
+var con = new HttpRequest('http://www.google.com/search', HttpRequest.METHOD_GET, {
+    q: 'jsOAuth'
+});
+console.debug(con);
+
+
 /*
 fireunit.ok(typeof Url == 'function', 'Url is a constructor');
 
