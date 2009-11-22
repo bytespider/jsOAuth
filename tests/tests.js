@@ -58,6 +58,15 @@ var fruit = new Collection(
 fruit.passion = 'Passion fruit';
 fireunit.ok(fruit instanceof Collection, 'fruit instanceof Collection');
 
+// test QueryString
+fireunit.ok(typeof QueryString == 'function', 'QueryString is a constructor');
+var query = new QueryString(
+    {'param_a':'an apple', 'param_c':'a pear', 'param_b':'a kiwi', 'orange':'an orange'}
+);
+query.test = 'Passion fruit';
+fireunit.ok(query instanceof QueryString, 'query instanceof QueryString');
+fireunit.compare('orange=an%20orange&param_a=an%20apple&param_b=a%20kiwi&param_c=a%20pear&test=Passion%20fruit', query.asString(), 'query is orange=an%20orange&param_a=an%20apple&param_b=a%20kiwi&param_c=a%20pear');
+
 
 // test Http
 fireunit.ok(typeof HttpRequest == 'function', 'HttpRequest is a constructor');

@@ -8,50 +8,50 @@
         var args = arguments, args_callee = args.callee, args_length = args.length,
             parsed_uri, scheme, host, port, path, query, anchor,
             parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/
-			Uri = this;
+            Uri = this;
 
-		if (!(this instanceof args_callee)) {
+        if (!(this instanceof args_callee)) {
             return new args_callee(args);
         }
-		
-		Uri.scheme = '';
-		Uri.host = '';
-		Uri.port = '';
-		Uri.path = '';
-		Uri.query = new QueryString();
-		Uri.anchor = '';
         
-		if (args_length > 0 && args[0] !== NULL) {
-			parsed_uri = args[0].match(parser);
-			
-			
-			scheme = parsed_uri[1];
-			host = parsed_uri[2];
-			port = parsed_uri[3];
-			path = parsed_uri[4];
-			query = parsed_uri[5];
-			anchor = parsed_uri[6];
-			
-			scheme = (scheme !== UNDEFINED) ? scheme.replace('://', '').toLowerCase() : 'http';
-			port = (port ? port.replace(':', '') : (scheme === 'https' ? '443' : '80'));
-			// correct the scheme based on port number
-			scheme = (scheme == 'http' && port === '443' ? 'https' : scheme);
-			query = query ? query.replace('?', '') : '';
-			anchor = anchor ? anchor.replace('#', '') : '';
-			
-			
-			// Fix the host name to include port if non-standard ports were given
-			if ((scheme === 'https' && port !== '443') || (scheme === 'http' && port !== '80')) {
-				host = host + ':' + port;
-			}
-			
-			Uri.scheme = scheme;
-			Uri.host = host;
-			Uri.port = port;
-			Uri.path = (path !== UNDEFINED) ? path : '/';
-			Uri.query.setQueryParams(query);
-			Uri.anchor = (anchor !== UNDEFINED) ? anchor : '';
-		}
+        Uri.scheme = '';
+        Uri.host = '';
+        Uri.port = '';
+        Uri.path = '';
+        Uri.query = new QueryString();
+        Uri.anchor = '';
+        
+        if (args_length > 0 && args[0] !== NULL) {
+            parsed_uri = args[0].match(parser);
+            
+            
+            scheme = parsed_uri[1];
+            host = parsed_uri[2];
+            port = parsed_uri[3];
+            path = parsed_uri[4];
+            query = parsed_uri[5];
+            anchor = parsed_uri[6];
+            
+            scheme = (scheme !== UNDEFINED) ? scheme.replace('://', '').toLowerCase() : 'http';
+            port = (port ? port.replace(':', '') : (scheme === 'https' ? '443' : '80'));
+            // correct the scheme based on port number
+            scheme = (scheme == 'http' && port === '443' ? 'https' : scheme);
+            query = query ? query.replace('?', '') : '';
+            anchor = anchor ? anchor.replace('#', '') : '';
+            
+            
+            // Fix the host name to include port if non-standard ports were given
+            if ((scheme === 'https' && port !== '443') || (scheme === 'http' && port !== '80')) {
+                host = host + ':' + port;
+            }
+            
+            Uri.scheme = scheme;
+            Uri.host = host;
+            Uri.port = port;
+            Uri.path = (path !== UNDEFINED) ? path : '/';
+            Uri.query.setQueryParams(query);
+            Uri.anchor = (anchor !== UNDEFINED) ? anchor : '';
+        }
         /**
          * Returns the url string
          * 
@@ -67,7 +67,7 @@
     
     QueryString = function () {
         var args = arguments, args_callee = args.callee, args_length = args.length, 
-			QueryString = this;
+            QueryString = this;
         
         if (!(this instanceof args_callee)) {
             return this.toString();
@@ -128,8 +128,8 @@
         if (args_length > 0) {
             QueryString.setQueryParams(args);
         }
-		
-		return QueryString;
+        
+        return QueryString;
     };
    
     QueryString = function(obj){
@@ -154,11 +154,8 @@
     QueryString.prototype.asString = function () {
         var i, self = this, q_arr = [], ret = '', 
         val = EMPTY_STRING, encode = QueryString.urlEncode;
-        console.debug(q_arr, 'before');
-        
         self.ksort(); // lexicographical byte value ordering of the keys
         
-        console.debug(q_arr, 'before');
         for (i in self) {
             if (self.hasOwnProperty(i)) {
                 val = (encode(i) + '=' + encode(self[i]));
