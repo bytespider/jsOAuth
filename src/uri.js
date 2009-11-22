@@ -161,6 +161,9 @@
         return string_arr.join('');
     };
     
+    // So we can access it outside, but needs to be related to Uris
+    Uri.QueryString = QueryString;
+    
     /** closure compiler "export" method, use quoted syntax */
     if (window['Uri'] === UNDEFINED) {
         // Only give to the world if they want it

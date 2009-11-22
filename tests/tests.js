@@ -40,10 +40,9 @@ nonce_list = null, nonce_a = null, nonce_b = null;
 fireunit.ok(consumer.getRequestToken,'consumer.getRequestToken is method');
 
 // test url generation
-var request = new consumer.Request(null, null);
 fireunit.compare(
     'This%20string%20has%20spaces%2Astars%2F%5Cslashes%22quotes%3Acolons.periods%3Dequals%26ampersands', 
-    request.urlEncode('This string has spaces*stars/\\slashes"quotes:colons.periods=equals&ampersands'),
+    Uri.QueryString.urlEncode('This string has spaces*stars/\\slashes"quotes:colons.periods=equals&ampersands'),
     'urlEncode encodes string correctly'
 );
 
@@ -79,7 +78,6 @@ connection.setUserAgent('test user agent');
 fireunit.compare('test user agent', connection.getUserAgent(), 'Set and get useragent string');
 
 connection.send();
-console.debug(connection);
 
 /*
 fireunit.ok(typeof Url == 'function', 'Url is a constructor');
