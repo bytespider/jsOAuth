@@ -56,47 +56,10 @@
             request.method = method;
             
             /** @property */
+            if (parameters != UNDEFINED) {
+                parameters = new QueryString(parameters);
+            }
             request.parameters = (parameters !== UNDEFINED) ? parameters : {};
-            
-            /**
-             * Override toString to collect, sort and concatenate into a 
-             * normalized string
-             */
-            request.parameters.taString = function () {
-                var i, params = this, params_arr = [], 
-                enc = this.urlEncode, ret = '';
-                
-                params.sort();
-                for(i in params){
-                    if (params.hasOwnProperty(i) && params[i] !== UNDEFINED) {
-                        params_arr.push(enc(i) + '=' + enc(params[i]));
-                    }
-                }
-                ret = params_arr.join('&');
-                if (ret == EMPTY_STRING || ret == UNDEFINED) {
-                    ret = '[' + OBJECT + ' ' + TYPEOF_OBJECT + ']';
-                }
-                return ret;
-            };
-            
-            /**
-             * Set or create a value in the stack
-             * 
-             * @param {String} parameter
-             * @param {String} value
-             */
-            request.setParameter = function (parameter, value) {
-                parameters[parameter] = value;
-            };
-            
-            /**
-             * Get a parameter from the stack
-             * 
-             * @param {String} parameter
-             */
-            request.getParameter = function (parameter) {
-                return parameters.hasOwnProperty(parameter) ? parameters[parameter] : UNDEFINED;
-            };
             
             /**
              * Sign a request using the signature_method
@@ -117,35 +80,6 @@
             /** @property */
             request.nonce = generateKey(64); // 64-bit rendom key
             
-            /** 
-             * rfc3986 compatable encode of a string
-             * 
-             * @param {String} string
-             */
-            request.urlEncode = function (string){
-                var reserved_chars = /( |\!|\*|\"|\'|\(|\)|\;|\:|\@|\&|\=|\+|\$|\,|\/|\?|\%|\#|\[|\]|\<|\>|\{|\}|\||\\|`|\^)/, 
-                    str_len = string.length, i, string_arr = string.split('');
-                                      
-                for (i = 0; i < str_len; i++) {
-                    if (string_arr[i].match(reserved_chars)) {
-                        string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
-                    }
-                }
-                
-                return string_arr.join('');
-            };
-            
-            /**
-             * Override standard toString function so that we can see the 
-             * request produced the correct URL
-             */
-            /*request.toString = function() {
-                var params = jsoauth.oauth_parameters;
-                params.sort(); // lexicographical byte value ordering
-                
-                console.debug(params);
-            };*/
-                
             return request;
         };
             
