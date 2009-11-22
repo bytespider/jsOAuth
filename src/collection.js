@@ -17,29 +17,15 @@
     };
     
     function Hash() {
-        var hash = this, _keys = [], _values = [];
-        
-        hash.ksort = function(func){
-            var self = this, keys = (_keys != [] ? _keys : self.keys()), i;
-            
-            if (func != UNDEFINED) {
-                keys.sort(func);
-            } else {
-                 keys.sort();
-            }
-            
-            for (i = 0; i  < keys.length; i++) {
-                self[keys[i]] = self[keys[i]];
-            }
-        };
+        var hash = this;
         
         hash.sort = function(){};
         hash.join = function(){};
         hash.reverse = function(){};
         hash.keys = function(){
             var i, arr = [], self = this;
-            for (i in coll) {
-                if (hash.hasOwnProperty(i)) {
+            for (i in self) {
+                if (self.hasOwnProperty(i)) {
                     arr.push(i);
                 }
             }
@@ -49,34 +35,36 @@
         };
         hash.values = function(){
             var i, arr = [], self = this;
-            for (i in hash) {
+            for (i in self) {
                 if (self.hasOwnProperty(i)) {
-                    arr.push(coll[i]);
+                    arr.push(self[i]);
                 }
             }
             
             _values = arr;
-            return arr;
+            return arr; 
         };
         hash.shift = function(){};
         hash.unshift = function(){};
         hash.push = function(){};
         hash.pop = function(){};
         hash.ksort = function(func){
-            var self = this, keys = (_keys != [] ? _keys : self.keys()), i, value;
+            var self = this, keys = self.keys(), i, value, key;
             
-            if (func != UNDEFINED) {
-                keys.sort(func);
-            } else {
-                keys.sort();
+            if (func == UNDEFINED) {
+                func = function (a, b) {return (a > b ? 1 : (a < b ? -1 : 0))};
             }
             
-            console.debug(keys);
+            keys.sort(func);
+            
             for (i = 0; i  < keys.length; i++) {
-                value = self[keys[i]];
-                delete self[keys[i]]
-                self[keys[i]] = value;
+                key = keys[i];
+                value = self[key];
+                delete self[key];
+                self[key] = value;
             }
+            
+            return self;
         };
         
         return hash;
