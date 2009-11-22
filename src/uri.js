@@ -222,8 +222,6 @@
         return string_arr.join('');
     };
     
-    
-    
     /** closure compiler "export" method, use quoted syntax */
     if (window['Uri'] === UNDEFINED) {
         // Only give to the world if they want it
