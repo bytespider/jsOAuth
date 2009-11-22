@@ -11,10 +11,6 @@ var secret = 'a845eb87bde903d230dfa1cf6e106e7891447bab';
 var app_id = 'HcjASU6g';
 
 // CONSTANTS
-fireunit.compare('GET',		jsOAuth.HTTP_METHOD_GET,	'jsOAuth.HTTP_METHOD_GET');
-fireunit.compare('POST',	jsOAuth.HTTP_METHOD_POST,	'jsOAuth.HTTP_METHOD_POST');
-fireunit.compare('PUT',		jsOAuth.HTTP_METHOD_PUT,	'jsOAuth.HTTP_METHOD_PUT');
-fireunit.compare('DELETE',	jsOAuth.HTTP_METHOD_DELETE,	'jsOAuth.HTTP_METHOD_DELETE');
 fireunit.compare('1.0',		jsOAuth.OAUTH_VERSION,		'jsOAuth.OAUTH_VERSION');
 
 var consumer = new jsOAuth(key, secret);
@@ -38,6 +34,7 @@ fireunit.ok(nonce_b.length == 16, 'Nonce length is 16 (2chars per byte), 64bits 
 nonce_list = null, nonce_a = null, nonce_b = null;
 
 fireunit.ok(consumer.getRequestToken,'consumer.getRequestToken is method');
+consumer.getRequestToken()
 
 // test url generation
 fireunit.compare(
@@ -73,6 +70,13 @@ var connection = new HttpRequest('http://www.google.com/search', HttpRequest.MET
     q: 'jsOAuth'
 });
 fireunit.ok(connection instanceof HttpRequest, 'connection instanceof HttpRequest');
+
+fireunit.compare('GET',     HttpRequest.METHOD_GET,     'HttpRequest.METHOD_GET');
+fireunit.compare('POST',    HttpRequest.METHOD_POST,    'HttpRequest.METHOD_POST');
+fireunit.compare('PUT',     HttpRequest.METHOD_PUT,     'HttpRequest.METHOD_PUT');
+fireunit.compare('DELETE',  HttpRequest.METHOD_DELETE,  'HttpRequest.METHOD_DELETE');
+fireunit.compare('HEAD',  HttpRequest.METHOD_HEAD,    'HttpRequest.METHOD_HEAD');
+fireunit.compare('OPTIONS',  HttpRequest.METHOD_OPTIONS,  'HttpRequest.METHOD_OPTIONS');
 
 connection.setUserAgent('test user agent');
 fireunit.compare('test user agent', connection.getUserAgent(), 'Set and get useragent string');

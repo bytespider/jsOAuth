@@ -100,7 +100,9 @@
          */
         jsoauth.getRequestToken = function () {
             var request = new this.Request(this.OAUTH_REQUEST_AUTH_URL, 
-                jsOAuth.HTTP_METHOD_POST, {});
+                HttpRequest.METHOD_POST, {});
+                
+            console.debug(request);
         },
         
         /**
@@ -149,12 +151,7 @@
             return math.floor(math.random() * chars.length);
         }
     }
-    
-    jsOAuth.HTTP_METHOD_GET          = 'GET';    /** @const */
-    jsOAuth.HTTP_METHOD_POST         = 'POST';   /** @const */
-    jsOAuth.HTTP_METHOD_PUT          = 'PUT';    /** @const */
-    jsOAuth.HTTP_METHOD_DELETE       = 'DELETE'; /** @const */
-    
+        
     jsOAuth.OAUTH_VERSION            = '1.0';    /** @const */
     
     jsOAuth.SIGNATURE_METHOD = {
