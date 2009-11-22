@@ -19,9 +19,11 @@
     function Hash() {
         var hash = this;
         
-        hash.sort = function(){};
-        hash.join = function(){};
-        hash.reverse = function(){};
+        hash.join = function(string){
+            string = (string != UNDEFINED) ? string : '';
+            return this.values().join(string);
+        };
+        //hash.reverse = function(){};
         hash.keys = function(){
             var i, arr = [], self = this;
             for (i in self) {
@@ -44,18 +46,40 @@
             _values = arr;
             return arr; 
         };
-        hash.shift = function(){};
-        hash.unshift = function(){};
-        hash.push = function(){};
-        hash.pop = function(){};
+        //hash.shift = function(){};
+        //hash.unshift = function(){};
+        //hash.push = function(){};
+        //hash.pop = function(){};
+        hash.sort = function(func){
+            var self = this, values = self.values(), i, value, key;
+            
+            if (func == UNDEFINED) {
+                values.sort();
+            } else {
+                values.sort(func);
+            }
+            
+            console.debug(self.keys());
+            console.debug(values);
+            
+            for (i = 0; i  < keys.length; i++) {
+                key = keys[i];
+                value = self[key];
+                delete self[key];
+                self[key] = value;
+            }
+            
+            return self;
+        };
+        
         hash.ksort = function(func){
             var self = this, keys = self.keys(), i, value, key;
             
             if (func == UNDEFINED) {
-                func = function (a, b) {return (a > b ? 1 : (a < b ? -1 : 0))};
+                keys.sort();
+            } else {
+                keys.sort(func);
             }
-            
-            keys.sort(func);
             
             for (i = 0; i  < keys.length; i++) {
                 key = keys[i];
