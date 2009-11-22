@@ -75,6 +75,12 @@ var connection = new HttpRequest('http://www.google.com/search', HttpRequest.MET
 });
 fireunit.ok(connection instanceof HttpRequest, 'connection instanceof HttpRequest');
 
+connection.setUserAgent('test user agent');
+fireunit.compare('test user agent', connection.getUserAgent(), 'Set and get useragent string');
+
+connection.send();
+console.debug(connection);
+
 /*
 fireunit.ok(typeof Url == 'function', 'Url is a constructor');
 
