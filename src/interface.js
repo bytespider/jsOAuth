@@ -183,7 +183,8 @@
     function generateKey(key_len) {
         key_len = key_len ? key_len : 64;
         
-        var key_bytes = key_len / 8, value = '',
+        var key_bytes = key_len / 8, value = '', key_iter = key_bytes / 4, 
+            key_remainder = key_bytes % 4,
             chars = ['20', '21', '22', '23', '24', '25', '26', '27', '28', '29', 
                      '2A', '2B', '2C', '2D', '2E', '2F', '30', '31', '32', '33', 
                      '34', '35', '36', '37', '38', '39', '3A', '3B', '3C', '3D', 
@@ -195,7 +196,13 @@
                      '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', 
                      '7A', '7B', '7C', '7D', '7E'],
             i;
-        for (i = 0; i < key_bytes; i++) {
+        
+        for (i = 0; i < key_iter; i++) {
+            value += chars[rand()] + chars[rand()] + chars[rand()]+ chars[rand()];
+        }
+        
+        // handle remaing bytes
+        for (i = 0; i < key_remainder; i++) {
             value += chars[rand()];
         }
         
