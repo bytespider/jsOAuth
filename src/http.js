@@ -12,7 +12,7 @@
         async = true, user = UNDEFINED, password = UNDEFINED;
         xhr = new XMLHttpRequest();
         
-        if (url != UNDEFINED && !(url instanceof Uri)) {
+        if (url != UNDEFINED && url != NULL) {
             url = new Uri(url);
         }
         method = (method != UNDEFINED) ? method : HttpRequest.METHOD_GET; 

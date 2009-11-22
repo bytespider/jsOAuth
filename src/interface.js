@@ -49,6 +49,8 @@
                 return new args_callee(url, method, parameters);
             }
             
+            request.constructor.call(request, url, method, parameters);
+            
             /** @property */
             request.url = url;
             
@@ -103,6 +105,7 @@
                 HttpRequest.METHOD_POST, {});
                 
             console.debug(request);
+            request.send();
         },
         
         /**

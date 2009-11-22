@@ -31,10 +31,6 @@ for (var i = 0; i < 500; i++) {
     nonce_list[nonce_b] = true;
 }
 fireunit.ok(nonce_b.length == 16, 'Nonce length is 16 (2chars per byte), 64bits of entropy');
-nonce_list = null, nonce_a = null, nonce_b = null;
-
-fireunit.ok(consumer.getRequestToken,'consumer.getRequestToken is method');
-consumer.getRequestToken()
 
 // test url generation
 fireunit.compare(
@@ -116,14 +112,13 @@ var secret = 'a845eb87bde903d230dfa1cf6e106e7891447bab';
 fireunit.ok(jsOAuth.Service.Dummy, 'jsOAuth.Service.Dummy is a class');
 
 var jsOAuthDummy = jsOAuth.Service.Dummy(key, secret, null, app_id);
-console.debug(jsOAuthDummy);
 fireunit.ok(jsOAuthDummy instanceof jsOAuth.Service.Dummy, 'jsOAuthDummy instanceof jsOAuth.Service.Dummy');
 
 fireunit.ok(jsOAuthDummy.getRequestToken, 'jsOAuthDummy has getRequestToken method');
 fireunit.ok(jsOAuthDummy.requestAuthorization, 'jsOAuthDummy has requestAuthorization method');
 fireunit.ok(jsOAuthDummy.getAccessToken, 'jsOAuthDummy has getAccessToken method');
 
-console.debug(jsOAuthDummy.getRequestToken());
+jsOAuthDummy.getRequestToken();
 
 fireunit.testDone();
 console.log ('Time spent: ' + ((new Date).getTime() - time_start) / 1000 + 'secs')

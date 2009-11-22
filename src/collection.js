@@ -32,7 +32,6 @@
                 }
             }
             
-            _keys = arr;
             return arr;
         };
         hash.values = function(){
@@ -43,7 +42,6 @@
                 }
             }
             
-            _values = arr;
             return arr; 
         };
         //hash.shift = function(){};
@@ -97,3 +95,5 @@
         // Only give to the world if they want it
         window['Collection'] = Collection;
     }
+    
+    

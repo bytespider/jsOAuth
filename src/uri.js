@@ -8,18 +8,18 @@
         var args = arguments, args_callee = args.callee, args_length = args.length,
             parsed_uri, scheme, host, port, path, query, anchor,
             parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/
-            Uri = this;
+            uri = this;
 
         if (!(this instanceof args_callee)) {
             return new args_callee(args);
         }
         
-        Uri.scheme = '';
-        Uri.host = '';
-        Uri.port = '';
-        Uri.path = '';
-        Uri.query = new QueryString();
-        Uri.anchor = '';
+        uri.scheme = '';
+        uri.host = '';
+        uri.port = '';
+        uri.path = '';
+        uri.query = new QueryString();
+        uri.anchor = '';
         
         if (args_length > 0 && args[0] !== NULL) {
             parsed_uri = args[0].match(parser);
@@ -45,12 +45,12 @@
                 host = host + ':' + port;
             }
             
-            Uri.scheme = scheme;
-            Uri.host = host;
-            Uri.port = port;
-            Uri.path = (path !== UNDEFINED) ? path : '/';
-            Uri.query.setQueryParams(query);
-            Uri.anchor = (anchor !== UNDEFINED) ? anchor : '';
+            uri.scheme = scheme;
+            uri.host = host;
+            uri.port = port;
+            uri.path = (path !== UNDEFINED) ? path : '/';
+            uri.query.setQueryParams(query);
+            uri.anchor = (anchor !== UNDEFINED) ? anchor : '';
         }
         /**
          * Returns the url string
@@ -58,7 +58,7 @@
          * @memberOf Uri
          * @return {String}
          */
-        Uri.toString = function () {
+        uri.toString = function () {
             var query = this.query.asString();
             return this.scheme + '://' + this.host + this.path + 
                 (query != '' ? '?' + query : '') +
