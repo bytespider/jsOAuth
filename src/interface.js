@@ -82,6 +82,8 @@
             
             return request;
         };
+        
+        jsoauth.Request.prototype = new HttpRequest();
             
         /**
          * 
