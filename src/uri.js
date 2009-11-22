@@ -79,9 +79,11 @@
             return new args_callee(obj);
         }
         
-        for(i in obj) {
-            if (obj.hasOwnProperty(i)) {
-                querystring[i] = obj[i];
+        if (obj != UNDEFINED) {
+            for (i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                    querystring[i] = obj[i];
+                }
             }
         }
         
@@ -97,7 +99,9 @@
         
         for (i in self) {
             if (self.hasOwnProperty(i)) {
-                val = (encode(i) + '=' + encode(self[i]));
+                if (i != UNDEFINED && self[i] != UNDEFINED) {
+                    val = (encode(i) + '=' + encode(self[i]));
+                }
                 q_arr.push(val);
             }
         }
