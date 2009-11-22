@@ -14,12 +14,12 @@
             return new args_callee(args);
         }
 		
-		Uri.scheme = EMPTY_STRING;
-		Uri.host = EMPTY_STRING;
-		Uri.port = EMPTY_STRING;
-		Uri.path = EMPTY_STRING;
+		Uri.scheme = '';
+		Uri.host = '';
+		Uri.port = '';
+		Uri.path = '';
 		Uri.query = new QueryString();
-		Uri.anchor = EMPTY_STRING;
+		Uri.anchor = '';
         
 		if (args_length > 0 && args[0] !== NULL) {
 			parsed_uri = args[0].match(parser);
@@ -32,12 +32,12 @@
 			query = parsed_uri[5];
 			anchor = parsed_uri[6];
 			
-			scheme = (scheme !== UNDEFINED) ? scheme.replace('://', EMPTY_STRING).toLowerCase() : 'http';
-			port = (port ? port.replace(':', EMPTY_STRING) : (scheme === 'https' ? '443' : '80'));
+			scheme = (scheme !== UNDEFINED) ? scheme.replace('://', '').toLowerCase() : 'http';
+			port = (port ? port.replace(':', '') : (scheme === 'https' ? '443' : '80'));
 			// correct the scheme based on port number
 			scheme = (scheme == 'http' && port === '443' ? 'https' : scheme);
-			query = query ? query.replace('?', EMPTY_STRING) : EMPTY_STRING;
-			anchor = anchor ? anchor.replace('#', EMPTY_STRING) : EMPTY_STRING;
+			query = query ? query.replace('?', '') : '';
+			anchor = anchor ? anchor.replace('#', '') : '';
 			
 			
 			// Fix the host name to include port if non-standard ports were given
@@ -50,7 +50,7 @@
 			Uri.port = port;
 			Uri.path = (path !== UNDEFINED) ? path : '/';
 			Uri.query.setQueryParams(query);
-			Uri.anchor = (anchor !== UNDEFINED) ? anchor : EMPTY_STRING;
+			Uri.anchor = (anchor !== UNDEFINED) ? anchor : '';
 		}
         /**
          * Returns the url string
@@ -60,14 +60,15 @@
          */
         Uri.toString = function () {
             return this.scheme + '://' + this.host + this.path + 
-                (this.query != EMPTY_STRING ? '?' + this.query : EMPTY_STRING) +
-                (this.anchor !== EMPTY_STRING ? '#' + this.anchor : EMPTY_STRING);
+                (this.query != '' ? '?' + this.query : '') +
+                (this.anchor !== '' ? '#' + this.anchor : '');
         };
     };
     
     QueryString = function () {
         var args = arguments, args_callee = args.callee, args_length = args.length, 
 			QueryString = this;
+        
         if (!(this instanceof args_callee)) {
             return this.toString();
         }
@@ -130,6 +131,67 @@
 		
 		return QueryString;
     };
+   
+    QueryString = function(obj){
+        var args = arguments, args_callee = args.callee, args_length = args.length,
+            i, querystring = this;
+          
+        if (!(this instanceof args_callee)) {
+            return new args_callee(obj);
+        }
+        
+        for(i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                querystring[i] = obj[i];
+            }
+        }
+        
+        return querystring;
+    };
+    // QueryString is a type of collection So inherit
+    QueryString.prototype = new Collection();
+    
+    QueryString.prototype.asString = function () {
+        var i, self = this, q_arr = [], ret = '', 
+        val = EMPTY_STRING, encode = QueryString.urlEncode;
+        console.debug(q_arr, 'before');
+        
+        self.ksort(); // lexicographical byte value ordering of the keys
+        
+        console.debug(q_arr, 'before');
+        for (i in self) {
+            if (self.hasOwnProperty(i)) {
+                val = (encode(i) + '=' + encode(self[i]));
+                q_arr.push(val);
+            }
+        }
+
+        if (q_arr.length > 0) {
+            ret = q_arr.join('&');
+        }
+
+        return ret;
+    };
+    
+    /** 
+     * rfc3986 compatable encode of a string
+     * 
+     * @param {String} string
+     */
+    QueryString.urlEncode = function (string){
+        var reserved_chars = /( |\!|\*|\"|\'|\(|\)|\;|\:|\@|\&|\=|\+|\$|\,|\/|\?|\%|\#|\[|\]|\<|\>|\{|\}|\||\\|`|\^)/, 
+            str_len = string.length, i, string_arr = string.split('');
+                              
+        for (i = 0; i < str_len; i++) {
+            if (string_arr[i].match(reserved_chars)) {
+                string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
+            }
+        }
+
+        return string_arr.join('');
+    };
+    
+    
     
     /** closure compiler "export" method, use quoted syntax */
     if (window['Uri'] === UNDEFINED) {

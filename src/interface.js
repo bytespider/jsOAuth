@@ -16,22 +16,22 @@
         jsoauth.key = key; /** @type {String|undefined} */
         jsoauth.secret = secret; /** @type {String|undefined} */
         jsoauth.callback_url = callback_url;  /** @type {String|undefined} */
-        jsoauth.signature = EMPTY_STRING;
+        jsoauth.signature = '';
         jsoauth.signature_method = jsOAuth.SIGNATURE_METHOD['PLAINTEXT'];
-        jsoauth.OAUTH_REALM = EMPTY_STRING;
-        jsoauth.OAUTH_REQUEST_TOKEN_URL = EMPTY_STRING;
-        jsoauth.OAUTH_REQUEST_AUTH_URL = EMPTY_STRING;
-        jsoauth.OAUTH_GET_TOKEN_URL = EMPTY_STRING;
+        jsoauth.OAUTH_REALM = '';
+        jsoauth.OAUTH_REQUEST_TOKEN_URL = '';
+        jsoauth.OAUTH_REQUEST_AUTH_URL = '';
+        jsoauth.OAUTH_GET_TOKEN_URL = '';
             
         jsoauth.oauth_parameters = {
             'oauth_consumer_key': key,
             'oauth_token': token,
             'oauth_signature_method': jsoauth.signature_method,
             'oauth_signature': jsoauth.signature,
-            'oauth_timestamp': EMPTY_STRING,
-            'oauth_nonce': EMPTY_STRING,
+            'oauth_timestamp': '',
+            'oauth_nonce': '',
             'oauth_version': jsoauth.OAUTH_VERSION,
-            'oauth_verifier': EMPTY_STRING
+            'oauth_verifier': ''
         };
         
         /**

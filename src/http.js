@@ -1,4 +1,11 @@
     
+    /**
+     * Wrapper for XMLHttpRequest
+     * 
+     * @param {String} url
+     * @param {String} method
+     * @param {Object} parameters
+     */
     HttpRequest = function (url, method, parameters) {
         var xhr, httprequest = this, 
         user_agent = 'jsOAuth-HttpRequest/0.1 (+http://www.lemonstudio.co.uk/jsOAuth)',
@@ -9,22 +16,6 @@
         method = (method != UNDEFINED) ? method : HttpRequest.METHOD_GET; 
         
         httprequest.parameters = new Collection(parameters);
-        httprequest.parameters.prototype.toString = function () {
-            var i, self = this, hasOwn = self.hasOwnProperty, query = [], ret = '';
-            
-            self.ksort(); // lexicographical byte value ordering of the keys
-            for (i in self) {
-                if (hasOwn(i)) {
-                    query.push(HttpRequest.urlEncode(i) + '=' + 
-                        HttpRequest.urlEncode(self[i]));
-                }
-            }
-            if (query.length > 0) {
-                ret = query.join('&');
-            }
-            
-            return ret;
-        };
         
         /**
          * set a custom user agent string
@@ -85,24 +76,6 @@
         };
     };
 
-    /** 
-     * rfc3986 compatable encode of a string
-     * 
-     * @param {String} string
-     */
-    HttpRequest.urlEncode = function (string){
-        var reserved_chars = /( |\!|\*|\"|\'|\(|\)|\;|\:|\@|\&|\=|\+|\$|\,|\/|\?|\%|\#|\[|\]|\<|\>|\{|\}|\||\\|`|\^)/, 
-            str_len = string.length, i, string_arr = string.split('');
-                              
-        for (i = 0; i < str_len; i++) {
-            if (string_arr[i].match(reserved_chars)) {
-                string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
-            }
-        }
-        
-        return string_arr.join('');
-    };
-    
     HttpRequest.METHOD_GET = 'GET';
     HttpRequest.METHOD_POST = 'POST';
     HttpRequest.METHOD_HEAD = 'HEAD';
