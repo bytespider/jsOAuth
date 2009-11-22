@@ -59,9 +59,6 @@
                 values.sort(func);
             }
             
-            console.debug(self.keys());
-            console.debug(values);
-            
             for (i = 0; i  < keys.length; i++) {
                 key = keys[i];
                 value = self[key];
