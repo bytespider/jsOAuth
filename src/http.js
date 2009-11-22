@@ -12,10 +12,15 @@
         async = true, user = UNDEFINED, password = UNDEFINED;
         xhr = new XMLHttpRequest();
         
-        url = (url != UNDEFINED) ? url : ''; 
+        if (!(url instanceof Uri)) {
+            url = new Uri(url);
+        }
         method = (method != UNDEFINED) ? method : HttpRequest.METHOD_GET; 
         
-        httprequest.parameters = new Collection(parameters);
+        if (!(parameters instanceof QueryString)) {
+            parameters = new QueryString(parameters);
+        }
+        httprequest.parameters = parameters;
         
         /**
          * set a custom user agent string
@@ -52,7 +57,7 @@
          * Open a connection and send the data
          */
         httprequest.send = function () {
-            var data = null, query = this.parameters.toString();
+            var data = null, query = this.parameters.asString();
             
             // we only open now so we have greater control over the connection
             if (method == HttpRequest.METHOD_POST) {
