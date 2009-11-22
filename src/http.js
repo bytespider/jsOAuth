@@ -57,18 +57,23 @@
          * Open a connection and send the data
          */
         httprequest.send = function () {
-            var data = null, query = this.parameters.asString();
+            var data = null, query = this.parameters, xhr_url;
             
             // we only open now so we have greater control over the connection
             if (method == HttpRequest.METHOD_POST) {
-                data = query;
+                data = query.asString();
             } else {
                 // append the data to the url
-                url += '?' + query;
+                url.query = query;
             }
-            xhr.open(method, url, async, user, password)
-            httprequest.setRequestHeader('User-Agent', user_agent);
             
+            xhr_url = url + '';
+            xhr.open(method, xhr_url, async, user, password);
+            //httprequest.setRequestHeader('User-Agent', user_agent);
+            
+            if (data != NULL) {
+                httprequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            }
             // send the data
             xhr.send(data);
         };

@@ -59,8 +59,9 @@
          * @return {String}
          */
         Uri.toString = function () {
+            var query = this.query.asString();
             return this.scheme + '://' + this.host + this.path + 
-                (this.query != '' ? '?' + this.query : '') +
+                (query != '' ? '?' + query : '') +
                 (this.anchor !== '' ? '#' + this.anchor : '');
         };
     };
