@@ -70,11 +70,10 @@ fireunit.compare('orange=an%20orange&param_a=an%20apple&param_b=a%20kiwi&param_c
 
 // test Http
 fireunit.ok(typeof HttpRequest == 'function', 'HttpRequest is a constructor');
-var con = new HttpRequest('http://www.google.com/search', HttpRequest.METHOD_GET, {
+var connection = new HttpRequest('http://www.google.com/search', HttpRequest.METHOD_GET, {
     q: 'jsOAuth'
 });
-console.debug(con);
-
+fireunit.ok(connection instanceof HttpRequest, 'connection instanceof HttpRequest');
 
 /*
 fireunit.ok(typeof Url == 'function', 'Url is a constructor');
