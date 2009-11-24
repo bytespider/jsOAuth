@@ -13,7 +13,7 @@ SRC_FILES = ${SRC_DIR}/start.js \
 	${SRC_DIR}/uri.js \
 	${SRC_DIR}/http.js \
 	${SRC_DIR}/end.js
-
+	
 VERSION = ${shell cat Version}
 TIMESTAMP = ${shell git log -1 . | grep Date: | sed 's/.*: //g'}
 REVISION = ${shell git rev-list --max-count=1 --all}
@@ -69,11 +69,13 @@ ${JOA_MIN}: ${JOA}
 	@@echo "Shrink complete."
 	@@echo ""
 	
-test: ${JOA}
+test: ${DIST_DIR} ${JOA}
 	@@echo "Copying files to ${TEST_SRV}"
 	@@mkdir -p ${TEST_SRV}
-	@@cp ${JOA} ${TEST_SRV}/.
-	@@cp -R ${TESTS_DIR}/* ${TEST_SRV}/.
+	@@cp -R ${DIST_DIR} ${TEST_SRV}/.
+	@@cp -R ${TESTS_DIR} ${TEST_SRV}/.
+	@@mkdir -p ${TEST_SRV}/src
+	@@cp -R ${SRC_DIR}/Service ${TEST_SRV}/src/.
 	@@echo "Tests copied."
 	@@echo ""
 
