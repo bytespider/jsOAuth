@@ -80,4 +80,5 @@ test: ${JOA}
 clean:
 	@@echo "Removing Distribution directory: ${DIST_DIR}"
 	@@rm -rf ${DIST_DIR}
+	@@echo "Removing Distribution directory: ${TEST_SRV}"
 	@@rm -rf ${TEST_SRV}
