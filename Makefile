@@ -3,6 +3,7 @@ SRC_DIR = src
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
 BUILD_DIR = ${PREFIX}/build
+TESTS_DIR = ${PREFIX}/tests
 
 DEST_DIR = ${DIST_DIR}
 
@@ -24,6 +25,8 @@ REV = sed 's/@REV/${REVISION}/'
 JOA = ${DIST_DIR}/jsOAuth-${VERSION}.js
 JOA_MIN = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
 JOA_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
+
+TEST_SRV = /c/wamp/www/jsoauth
 
 all: joauth
 	
@@ -65,7 +68,16 @@ ${JOA_MIN}: ${JOA}
 	   ${JOA}
 	@@echo "Shrink complete."
 	@@echo ""
+	
+test: ${JOA}
+	@@echo "Copying files to ${TEST_SRV}"
+	@@mkdir -p ${TEST_SRV}
+	@@cp ${JOA} ${TEST_SRV}/.
+	@@cp -R ${TESTS_DIR}/* ${TEST_SRV}/.
+	@@echo "Tests copied."
+	@@echo ""
 
 clean:
 	@@echo "Removing Distribution directory: ${DIST_DIR}"
 	@@rm -rf ${DIST_DIR}
+	@@rm -rf ${TEST_SRV}
