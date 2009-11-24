@@ -21,7 +21,7 @@
         // call parent constructor
         jsOAuthServiceDummy.constructor(key, secret, callback_url);
         jsOAuthServiceDummy.OAUTH_REALM = 
-          'http://localhost/oauth/'; /** @const */
+            'http://localhost/jsoauth/oauth/'; /** @const */
         
         jsOAuthServiceDummy.OAUTH_REQUEST_TOKEN_URL = 
             jsOAuthServiceDummy.OAUTH_REALM + 'request_token.php'; /** @const */
