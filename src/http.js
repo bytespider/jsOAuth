@@ -39,6 +39,14 @@
         };
         
         /**
+         * 
+         * @param {String,Object} url
+         */
+        httprequest.setUrl = function (url) {
+            url = url;
+        }
+        
+        /**
          * Wrapper for XMLHttpRequest::setRequestHeader
          * 
          * @param {String} header
@@ -69,7 +77,7 @@
             
             xhr_url = url + '';
             xhr.open(method, xhr_url, async, user, password);
-            //httprequest.setRequestHeader('User-Agent', user_agent);
+            httprequest.setRequestHeader('User-Agent', user_agent);
             
             if (data != NULL) {
                 httprequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -84,6 +92,8 @@
         httprequest.abort = function (){
             xhr.abort()
         };
+        
+        return httprequest;
     };
 
     HttpRequest.METHOD_GET = 'GET';

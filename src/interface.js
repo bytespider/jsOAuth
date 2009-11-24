@@ -49,36 +49,12 @@
                 return new args_callee(url, method, parameters);
             }
             
-            request.constructor.call(request, url, method, parameters);
-            
-            /** @property */
-            request.url = url;
-            
-            /** @property */
-            request.method = method;
-            
-            /** @property */
-            if (parameters != UNDEFINED) {
-                parameters = new QueryString(parameters);
-            }
-            request.parameters = (parameters !== UNDEFINED) ? parameters : {};
-            
-            /**
-             * Sign a request using the signature_method
-             * 
-             * @param {Object} consumer
-             * @param {String} token
-             */
-            request.sign = function (consumer, token) {
-                var params = consumer.oauth_parameters;
-                params.oauth_signature_method = signature_method;
-                params.oauth_timestamp = this.timestamp;
-                params.oauth_nonce = this.nonce;
-            };
-            
+            request = jsoauth.Request.prototype.constructor.call(
+                request, url, method, parameters);
+                
             /** @property */
             request.timestamp = (new Date).getTime(); // current timestamp
-            
+        
             /** @property */
             request.nonce = generateKey(64); // 64-bit rendom key
             
@@ -86,7 +62,20 @@
         };
         
         jsoauth.Request.prototype = new HttpRequest();
-            
+        
+        /**
+         * Sign a request using the signature_method
+         * 
+         * @param {Object} consumer
+         * @param {String} token
+         */
+        jsoauth.Request.prototype.sign = function (consumer, token) {
+            var params = consumer.oauth_parameters;
+            params.oauth_signature_method = signature_method;
+            params.oauth_timestamp = this.timestamp;
+            params.oauth_nonce = this.nonce;
+        };
+        
         /**
          * 
          * @constructor
@@ -101,8 +90,10 @@
          * @memberOf jsOAuth
          */
         jsoauth.getRequestToken = function () {
-            var request = new this.Request(this.OAUTH_REQUEST_AUTH_URL, 
-                HttpRequest.METHOD_POST, {});
+            console.log(this.OAUTH_REQUEST_TOKEN_URL, 'in getRequestToken');
+            console.log(HttpRequest.METHOD_GET);
+            var request = new this.Request(this.OAUTH_REQUEST_TOKEN_URL, 
+                HttpRequest.METHOD_GET, {});
                 
             console.debug(request);
             request.send();
