@@ -39,9 +39,6 @@ fireunit.compare(
     'urlEncode encodes string correctly'
 );
 
-var request = new consumer.Request('www.example.com', jsOAuth.HTTP_METHOD_GET, {});
-
-
 // test Collection
 fireunit.ok(typeof Collection == 'function', 'Collection is a constructor');
 var fruit = new Collection(

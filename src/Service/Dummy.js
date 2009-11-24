@@ -21,16 +21,16 @@
         // call parent constructor
         jsOAuthServiceDummy.constructor(key, secret, callback_url);
         jsOAuthServiceDummy.OAUTH_REALM = 
-          'https://localhost/oauth/';/** @const */
+          'http://localhost/oauth/'; /** @const */
         
         jsOAuthServiceDummy.OAUTH_REQUEST_TOKEN_URL = 
-            jsOAuthServiceDummy.OAUTH_REALM + 'get_request_token';/** @const */
+            jsOAuthServiceDummy.OAUTH_REALM + 'request_token.php'; /** @const */
          
         jsOAuthServiceDummy.OAUTH_REQUEST_AUTH_URL = 
-            jsOAuthServiceDummy.OAUTH_REALM + 'request_auth';/** @const */
+            jsOAuthServiceDummy.OAUTH_REALM + ''; /** @const */
          
         jsOAuthServiceDummy.OAUTH_GET_TOKEN_URL = 
-            jsOAuthServiceDummy.OAUTH_REALM + 'get_token';/** @const */
+            jsOAuthServiceDummy.OAUTH_REALM + 'access_token.php'; /** @const */
         
         return jsOAuthServiceDummy;
     };
