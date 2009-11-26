@@ -15,7 +15,7 @@
             args_length = args.length, jsOAuthServiceDummy = this;
             
         if (!(this instanceof args_callee)) {
-            return new args_callee(key, secret, callback_url, app_id);
+            return new args_callee(key, secret, callback_url);
         }
         
         // call parent constructor

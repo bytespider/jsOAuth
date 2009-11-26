@@ -23,7 +23,7 @@
         jsoauth.OAUTH_REQUEST_AUTH_URL = '';
         jsoauth.OAUTH_GET_TOKEN_URL = '';
             
-        jsoauth.oauth_parameters = {
+        jsoauth.oauth_parameters = new Collection({
             'oauth_consumer_key': key,
             'oauth_token': token,
             'oauth_signature_method': jsoauth.signature_method,
@@ -32,7 +32,7 @@
             'oauth_nonce': '',
             'oauth_version': jsoauth.OAUTH_VERSION,
             'oauth_verifier': ''
-        };
+        });
         
         /**
          * Create a new http request
@@ -70,10 +70,7 @@
          * @param {String} token
          */
         jsoauth.Request.prototype.sign = function (consumer, token) {
-            var params = consumer.oauth_parameters;
-            params.oauth_signature_method = signature_method;
-            params.oauth_timestamp = this.timestamp;
-            params.oauth_nonce = this.nonce;
+            return consumer.signature_method.sign(consumer, token);
         };
         
         /**
@@ -90,12 +87,27 @@
          * @memberOf jsOAuth
          */
         jsoauth.getRequestToken = function () {
-            console.log(this.OAUTH_REQUEST_TOKEN_URL, 'in getRequestToken');
-            console.log(HttpRequest.METHOD_GET);
             var request = new this.Request(this.OAUTH_REQUEST_TOKEN_URL, 
-                HttpRequest.METHOD_GET, {});
+                HttpRequest.METHOD_GET, {}), params = this.oauth_parameters,
+                auth = [];
                 
-            console.debug(request);
+            authorization_header = 'OAuth realm="' + this.OAUTH_REALM + '",';
+                
+            params.ksort();
+            params.oauth_signature = request.sign(this);
+            console.log(params.oauth_signature);
+            params.oauth_timestamp = request.timestamp;
+            params.oauth_nonce = request.nonce;
+            for (i in params) {
+                if (params.hasOwnProperty(i)) {
+                    auth.push(i + '="' + params[i] + '"');
+                }
+            }
+            authorization_header += auth.join(',');
+            
+            request.setRequestHeader('Authorization', authorization_header);
+            
+            // done.
             request.send();
         },
         
@@ -146,7 +158,7 @@
         }
     }
         
-    jsOAuth.OAUTH_VERSION            = '1.0';    /** @const */
+    jsOAuth.prototype.OAUTH_VERSION            = '1.0';    /** @const */
     
     jsOAuth.SIGNATURE_METHOD = {
         'HMAC-SHA1': {
@@ -161,9 +173,17 @@
             toString: function () {
                 return 'PLAINTEXT';
             },
-            sign: function(){
-                var signature = '';
-                return signature;
+            sign: function(consumer, token){
+                var signature = [];
+                signature.push(QueryString.urlEncode(consumer.secret));
+            
+                if (token) {
+                    signature.push(QueryString.urlEncode(token.secret));
+                } else {
+                    signature.push('');
+                }
+            
+                return QueryString.urlEncode(signature.join('&'));
             }
         }
     };

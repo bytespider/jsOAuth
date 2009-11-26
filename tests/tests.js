@@ -6,18 +6,17 @@ if (!fireunit) {
 
 fireunit.ok(typeof jsOAuth == 'function', 'jsOAuth is a constructor');
 
-var key = 'dj0yJmk9QUpHMUQyeWZabGNRJmQ9WVdrOVNHTnFRVk5WTm1jbWNHbzlOakEyT1RNNE5qSXgmcz1jb25zdW1lcnNlY3JldCZ4PThh';
-var secret = 'a845eb87bde903d230dfa1cf6e106e7891447bab';
-var app_id = 'HcjASU6g';
+var key = 'key';
+var secret = 'secret';
 
 // CONSTANTS
-fireunit.compare('1.0',		jsOAuth.OAUTH_VERSION,		'jsOAuth.OAUTH_VERSION');
+fireunit.compare('1.0',		jsOAuth.prototype.OAUTH_VERSION,		'jsOAuth.prototype.OAUTH_VERSION');
 
 var consumer = new jsOAuth(key, secret);
 fireunit.ok(consumer instanceof jsOAuth, 'consumer typeof jsOAuth');
 
-fireunit.compare(key,	consumer.key,	'consumer.key = dj0yJmk9QUpHMUQyeWZabGNRJmQ9WVdrOVNHTnFRVk5WTm1jbWNHbzlOakEyT1RNNE5qSXgmcz1jb25zdW1lcnNlY3JldCZ4PThh');
-fireunit.compare(secret,consumer.secret,'consumer.secret = a845eb87bde903d230dfa1cf6e106e7891447bab');
+fireunit.compare(key,	consumer.key,	'consumer.key = key');
+fireunit.compare(secret,consumer.secret,'consumer.secret = secret');
 fireunit.compare(undefined,consumer.callback_url,'consumer.callback_url = undefined');
 
 fireunit.ok(typeof consumer.Request == 'function', 'consumer.Request is a constructor');
@@ -103,12 +102,9 @@ var url = new Uri('www.google.com:443');
 fireunit.compare('https', url.scheme, 'Url: Correctly detected scheme is https from port (www.google.com:443)');
 
 
-var key = 'dj0yJmk9QUpHMUQyeWZabGNRJmQ9WVdrOVNHTnFRVk5WTm1jbWNHbzlOakEyT1RNNE5qSXgmcz1jb25zdW1lcnNlY3JldCZ4PThh';
-var secret = 'a845eb87bde903d230dfa1cf6e106e7891447bab';
-
 fireunit.ok(jsOAuth.Service.Dummy, 'jsOAuth.Service.Dummy is a class');
 
-var jsOAuthDummy = jsOAuth.Service.Dummy(key, secret, null, app_id);
+var jsOAuthDummy = jsOAuth.Service.Dummy(key, secret, null);
 fireunit.ok(jsOAuthDummy instanceof jsOAuth.Service.Dummy, 'jsOAuthDummy instanceof jsOAuth.Service.Dummy');
 
 fireunit.ok(jsOAuthDummy.getRequestToken, 'jsOAuthDummy has getRequestToken method');
