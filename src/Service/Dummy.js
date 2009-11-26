@@ -21,16 +21,16 @@
         // call parent constructor
         jsOAuthServiceDummy.constructor(key, secret, callback_url);
         jsOAuthServiceDummy.OAUTH_REALM = 
-            'http://localhost/jsoauth/tests/oauth/'; /** @const */
+            'http://oauth-sandbox.sevengoslings.net/'; /** @const */
         
         jsOAuthServiceDummy.OAUTH_REQUEST_TOKEN_URL = 
-            jsOAuthServiceDummy.OAUTH_REALM + 'request_token.php'; /** @const */
+            jsOAuthServiceDummy.OAUTH_REALM + 'request_token'; /** @const */
          
         jsOAuthServiceDummy.OAUTH_REQUEST_AUTH_URL = 
-            jsOAuthServiceDummy.OAUTH_REALM + ''; /** @const */
+            jsOAuthServiceDummy.OAUTH_REALM + 'authorize'; /** @const */
          
         jsOAuthServiceDummy.OAUTH_GET_TOKEN_URL = 
-            jsOAuthServiceDummy.OAUTH_REALM + 'access_token.php'; /** @const */
+            jsOAuthServiceDummy.OAUTH_REALM + 'access_token'; /** @const */
         
         return jsOAuthServiceDummy;
     };
