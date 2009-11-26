@@ -76,6 +76,7 @@
             }
             
             xhr_url = url + '';
+            console.log(xhr_url);
             xhr.open(method, xhr_url, async, user, password);
             xhr.setRequestHeader('User-Agent', user_agent);
             for (i in headers) {
@@ -83,7 +84,7 @@
             }
             
             if (data != NULL) {
-                httprequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             }
             // send the data
             xhr.send(data);

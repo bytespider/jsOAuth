@@ -100,7 +100,7 @@
         for (i in self) {
             if (self.hasOwnProperty(i)) {
                 if (i != UNDEFINED && self[i] != UNDEFINED) {
-                    val = (encode(i) + '=' + encode(self[i]));
+                    val = (i + '=' + self[i]);
                 }
                 q_arr.push(val);
             }

@@ -26,7 +26,7 @@
         jsoauth.oauth_parameters = new Collection({
             'oauth_consumer_key': key,
             'oauth_token': token,
-            'oauth_signature_method': jsoauth.signature_method,
+            'oauth_signature_method': jsoauth.signature_method.toString(),
             'oauth_signature': jsoauth.signature,
             'oauth_timestamp': '',
             'oauth_nonce': '',
@@ -53,7 +53,7 @@
                 request, url, method, parameters);
                 
             /** @property */
-            request.timestamp = (new Date).getTime(); // current timestamp
+            request.timestamp = ''; // current timestamp
         
             /** @property */
             request.nonce = generateKey(64); // 64-bit rendom key
@@ -71,6 +71,10 @@
          */
         jsoauth.Request.prototype.sign = function (consumer, token) {
             return consumer.signature_method.sign(consumer, token);
+        };
+        
+        jsoauth.Request.prototype.getTimestamp = function () {
+            return (new Date).getTime() / 1000 + '';
         };
         
         /**
@@ -96,7 +100,7 @@
             params.ksort();
             params.oauth_signature = request.sign(this);
             console.log(params.oauth_signature);
-            params.oauth_timestamp = request.timestamp;
+            params.oauth_timestamp = request.getTimestamp();
             params.oauth_nonce = request.nonce;
             for (i in params) {
                 if (params.hasOwnProperty(i)) {
@@ -106,6 +110,7 @@
             authorization_header += auth.join(',');
             
             request.setRequestHeader('Authorization', authorization_header);
+            request.parameters.setQueryParams(params);
             
             // done.
             request.send();
