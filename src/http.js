@@ -10,7 +10,7 @@
         var xhr, httprequest = this, 
         user_agent = 'jsOAuth-HttpRequest/0.1 (+http://www.lemonstudio.co.uk/jsOAuth)',
         async = true, user = UNDEFINED, password = UNDEFINED;
-        xhr = new XMLHttpRequest();
+        xhr = new XMLHttpRequest(), headers = {};
         
         if (url != UNDEFINED && url != NULL) {
             url = new Uri(url);
@@ -53,7 +53,7 @@
          * @param {String} value
          */
         httprequest.setRequestHeader = function (header, value) {
-            xhr.setRequestHeader(header, value);
+            headers[header] = value;
         };
         
         httprequest.setBasicAuthCredentials = function (user, password) {
@@ -65,7 +65,7 @@
          * Open a connection and send the data
          */
         httprequest.send = function () {
-            var data = null, query = this.parameters, xhr_url;
+            var data = null, query = this.parameters, xhr_url, i;
             
             // we only open now so we have greater control over the connection
             if (method == HttpRequest.METHOD_POST) {
@@ -77,7 +77,10 @@
             
             xhr_url = url + '';
             xhr.open(method, xhr_url, async, user, password);
-            httprequest.setRequestHeader('User-Agent', user_agent);
+            xhr.setRequestHeader('User-Agent', user_agent);
+            for (i in headers) {
+                xhr.setRequestHeader(i, headers[i]);
+            }
             
             if (data != NULL) {
                 httprequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
