@@ -153,7 +153,7 @@
      * @param {String} string
      */
     QueryString.urlEncode = function (string){
-        var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/g, 
+        var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/, 
             str_len = string.length, i, string_arr = string.split('');
                               
         for (i = 0; i < str_len; i++) {
