@@ -15,7 +15,7 @@
         if (url != UNDEFINED && url != NULL) {
             url = new Uri(url);
         }
-        method = (method != UNDEFINED) ? method : HttpRequest.METHOD_GET; 
+        method = method || HttpRequest.METHOD_GET; 
         
         if (!(parameters instanceof QueryString)) {
             parameters = new QueryString(parameters);

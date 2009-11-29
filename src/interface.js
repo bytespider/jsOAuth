@@ -74,7 +74,7 @@
         };
         
         jsoauth.Request.prototype.getTimestamp = function () {
-            return (new Date).getTime() / 1000 + '';
+            return parseInt((new Date).getTime() / 1000) + '';
         };
         
         /**
@@ -130,7 +130,7 @@
     };
     
     function generateKey(key_len) {
-        key_len = key_len ? key_len : 64;
+        key_len = key_len || 64;
         
         var key_bytes = key_len / 8, value = '', key_iter = key_bytes / 4, 
             key_remainder = key_bytes % 4,

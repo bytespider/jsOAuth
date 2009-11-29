@@ -20,7 +20,7 @@
         var hash = this;
         
         hash.join = function(string){
-            string = (string != UNDEFINED) ? string : '';
+            string = string || '';
             return this.values().join(string);
         };
         //hash.reverse = function(){};
@@ -44,28 +44,11 @@
             
             return arr; 
         };
-        //hash.shift = function(){};
-        //hash.unshift = function(){};
-        //hash.push = function(){};
-        //hash.pop = function(){};
-        hash.sort = function(func){
-            var self = this, values = self.values(), i, value, key;
-            
-            if (func == UNDEFINED) {
-                values.sort();
-            } else {
-                values.sort(func);
-            }
-            
-            for (i = 0; i  < keys.length; i++) {
-                key = keys[i];
-                value = self[key];
-                delete self[key];
-                self[key] = value;
-            }
-            
-            return self;
-        };
+        hash.shift = function(){throw 'not implimented'};
+        hash.unshift = function(){throw 'not implimented'};
+        hash.push = function(){throw 'not implimented'};
+        hash.pop = function(){throw 'not implimented'};
+        hash.sort = function(){throw 'not implimented'};
         
         hash.ksort = function(func){
             var self = this, keys = self.keys(), i, value, key;

@@ -48,9 +48,9 @@
             uri.scheme = scheme;
             uri.host = host;
             uri.port = port;
-            uri.path = (path !== UNDEFINED) ? path : '/';
+            uri.path = path || '/';
             uri.query.setQueryParams(query);
-            uri.anchor = (anchor !== UNDEFINED) ? anchor : '';
+            uri.anchor = anchor || '';
         }
         /**
          * Returns the url string
@@ -59,10 +59,10 @@
          * @return {String}
          */
         uri.toString = function () {
-            var query = this.query.asString();
-            return this.scheme + '://' + this.host + this.path + 
+            var self = this, query = self.query.asString();
+            return self.scheme + '://' + self.host + self.path + 
                 (query != '' ? '?' + query : '') +
-                (this.anchor !== '' ? '#' + this.anchor : '');
+                (self.anchor !== '' ? '#' + self.anchor : '');
         };
     };
     
@@ -94,7 +94,7 @@
     
     QueryString.prototype.asString = function () {
         var i, self = this, q_arr = [], ret = '', 
-        val = EMPTY_STRING, encode = QueryString.urlEncode;
+        val = '', encode = QueryString.urlEncode;
         self.ksort(); // lexicographical byte value ordering of the keys
         
         for (i in self) {
@@ -153,7 +153,7 @@
      * @param {String} string
      */
     QueryString.urlEncode = function (string){
-        var reserved_chars = /( |\!|\*|\"|\'|\(|\)|\;|\:|\@|\&|\=|\+|\$|\,|\/|\?|\%|\#|\[|\]|\<|\>|\{|\}|\||\\|`|\^)/, 
+        var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/g, 
             str_len = string.length, i, string_arr = string.split('');
                               
         for (i = 0; i < str_len; i++) {

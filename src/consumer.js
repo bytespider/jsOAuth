@@ -5,7 +5,7 @@
      * @constructor
      * @param {String} key
      * @param {String} secret
-     * @param {String=} callback_url
+     * @param {String} callback_url
      */
     jsOAuth = function (key, secret, callback_url) {
         var args = arguments, args_callee = args.callee, 
@@ -27,11 +27,11 @@
         jsOAuth.secret = secret;
         
         /** @type {Url|null} */
-        jsOAuth.callback_url = (callback_url !== UNDEFINED) ? new window.Url(callback_url) : NULL;
+        jsOAuth.callback_url = new window.Url(callback_url);
 		
         /** @type {String} */
         jsOAuth.token = EMPTY_STRING;
-		jsOAuth.signature = sign(key, secrect);
+		jsOAuth.signature = '';
 		
         return jsOAuth;
     };
@@ -60,22 +60,20 @@
      */
     jsOAuth.prototype.Request = function (oauth, url, method, parameters) {
 		var args = arguments, args_callee = args.callee, 
-			args_length = args.length, Request = this, 
+			args_length = args.length, request = this, 
 			xhr = new XMLHttpRequest(), // W3C compliant platforms only
 			async = true, setAuthorizationHeader, date = new Date();
 			
-        if (!(Request instanceof args_callee)) {
+        if (!(this instanceof args_callee)) {
             return new args_callee(oauth, url, method, parameters);
         }
         
         /** @type {Url|undefined} */
-        Request.url = (url !== UNDEFINED) ? url : EMPTY_STRING;
-        Request.method = (method !== UNDEFINED) ? method : jsOAuth.HTTP_METHOD_POST;
-        Request.parameters = (parameters !== UNDEFINED) ? parameters : {};
+        Request.url = url || '';
+        Request.method = method || jsOAuth.HTTP_METHOD_POST;
+        Request.parameters = parameters || {};
         
         // Open the connection
-		console.log(Request.method);
-		console.log(Request.url);
         xhr.open(Request.method, Request.url, async);
 		
         /**
@@ -104,7 +102,7 @@
 		 * @param {String|Object=} value
 		 */
         Request.setParameter = function (parameter, value) {
-			value = (value !== UNDEFINED) ? value : EMPTY_STRING;
+			value = value || EMPTY_STRING;
             Request.parameters[parameter] = value;
         };
 		
@@ -112,17 +110,6 @@
 		 * Set standard OAuth header
 		 */
 		setAuthorizationHeader = function () {
-			/*
-            Authorization: OAuth realm="http://sp.example.com/",
-            oauth_consumer_key="0685bd9184jfhq22",
-            oauth_token="ad180jjd733klru7",
-            oauth_signature_method="HMAC-SHA1",
-            oauth_signature="wOJIO9A2W5mFwDgiDvZbTSMK%2FPY%3D",
-            oauth_timestamp="137131200",
-            oauth_nonce="4572616e48616d6d65724c61686176",
-            oauth_version="1.0"
-			*/
-
 			var ts = date.getTime(), auth_header = 'OAuth realm="' + oauth.OAUTH_REALM + '"' + 
 				',oauth_consumer_key="' + oauth.key + '"'
 				',oauth_token="' + oauth.token + '"'
@@ -131,7 +118,7 @@
 				',oauth_timestamp="' + ts + '"'
 				',oauth_timestamp="' + Request.generateNonce(ts) + '"'
 				',oauth_version="' + oauth.OAUTH_VERSION + '"'
-			Request.setHeader('Authorization', auth_header);
+			request.setHeader('Authorization', auth_header);
 		}();
 		
         return Request;
@@ -139,7 +126,7 @@
     
 	jsOAuth.prototype.getRequestToken = function () {
 		var oauth = this;
-        var request = new oauth.Request(oauth, oauth.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
+        var request = new jsoauth.Request(oauth, oauth.OAUTH_REQUEST_TOKEN_URL, Url.method, {});
     };
     jsOAuth.prototype.requestAuthorization = function () {};
     jsOAuth.prototype.getAccessToken = function () {};
