@@ -12,10 +12,18 @@
         async = true, user = UNDEFINED, password = UNDEFINED;
         xhr = new XMLHttpRequest(), headers = {};
         
+        /* 
+         * we dont set any headers or do anything complicated else preflight is 
+         * enabled in modern browsers
+         */
+        httprequest.security = {
+            safeCrossDomain: true
+        };
+        
         if (url != UNDEFINED && url != NULL) {
             url = new Uri(url);
         }
-        method = method || HttpRequest.METHOD_GET; 
+        method = method || HttpRequest.METHOD_GET;
         
         if (!(parameters instanceof QueryString)) {
             parameters = new QueryString(parameters);
@@ -76,16 +84,19 @@
             }
             
             xhr_url = url + '';
-            console.log(xhr_url);
             xhr.open(method, xhr_url, async, user, password);
-            xhr.setRequestHeader('User-Agent', user_agent);
-            for (i in headers) {
-                xhr.setRequestHeader(i, headers[i]);
+            
+            if (this.security.safeCrossDomain === false) {
+                xhr.setRequestHeader('User-Agent', user_agent);
+                for (i in headers) {
+                    xhr.setRequestHeader(i, headers[i]);
+                }
+                
+                if (data != NULL) {
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                }
             }
             
-            if (data != NULL) {
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            }
             // send the data
             xhr.send(data);
         };

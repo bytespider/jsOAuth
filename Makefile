@@ -22,9 +22,10 @@ VER = sed 's/@VERSION/${VERSION}/'
 DATE = sed 's/@DATE/${TIMESTAMP}/'
 REV = sed 's/@REV/${REVISION}/'
 
-JOA = ${DIST_DIR}/jsOAuth-${VERSION}.js
-JOA_MIN = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
-JOA_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
+JOA_DEBUG = ${DIST_DIR}/jsOAuth.js
+JOA_PRODUCTION = ${DIST_DIR}/jsOAuth-${VERSION}.js
+JOA_PRODUCTION_MIN = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
+JOA_PRODUCTION_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
 
 TEST_SRV = /c/wamp/www/jsoauth
 
@@ -34,33 +35,41 @@ all: joauth
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-joauth: ${DIST_DIR} ${JOA} ${JOA_COMPILED} ${JOA_MIN}
-	
-${JOA}: ${SRC_FILES}
-	@@echo "Building" ${JOA}
-	@@echo "    Date:" ${TIMESTAMP}
-	@@echo "    Revision:" ${REVISION}
+joauth: ${DIST_DIR} ${JOA_PRODUCTION} ${JOA_COMPILED} ${JOA_MIN}
+
+${JOA_DEBUG}: ${SRC_FILES}
+	@@echo "Building" ${JOA_DEBUG}
 	
 	@@cat ${SRC_FILES} | \
 		${REV} | \
 		${DATE} | \
-		${VER} > ${JOA}
+		${VER} > ${JOA_DEBUG}
 	
 	@@echo "Build complete."
 	@@echo ""
+	
+${JOA_PRODUCTION}: ${JOA_DEBUG}
+	@@echo "Versioning" ${JOA_PRODUCTION}
+	@@echo "    Date:" ${TIMESTAMP}
+	@@echo "    Revision:" ${REVISION}
+	
+	@@cat ${JOA_DEBUG} > ${JOA_PRODUCTION}
+	
+	@@echo "Vesioning complete."
+	@@echo ""
 
-${JOA_COMPILED}: ${JOA}
-	@@echo "Compiling ${JOA} > ${JOA_COMPILED}"
+${JOA_COMPILED}: ${JOA_PRODUCTION}
+	@@echo "Compiling ${JOA_PRODUCTION} > ${JOA_COMPILED}"
 	@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar \
-	   --js ${JOA} \
+	   --js ${JOA_PRODUCTION} \
 	   --js_output_file ${JOA_COMPILED} \
 	   --compilation_level ADVANCED_OPTIMIZATIONS \
 	   --output_js_string_usage
 	@@echo "Compile complete."
 	@@echo ""
 
-${JOA_MIN}: ${JOA}
-	@@echo "Shrinking ${JOA} > ${JOA_MIN}"
+${JOA_MIN}: ${JOA_PRODUCTION}
+	@@echo "Shrinking ${JOA_PRODUCTION} > ${JOA_MIN}"
 	@java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar \
 	   --charset UTF-8 \
 	   -o ${JOA_MIN} \
@@ -69,11 +78,12 @@ ${JOA_MIN}: ${JOA}
 	@@echo "Shrink complete."
 	@@echo ""
 	
-test: ${DIST_DIR} ${JOA}
+test: ${DIST_DIR} ${JOA_DEBUG}
 	@@echo "Copying files to ${TEST_SRV}"
 	@@mkdir -p ${TEST_SRV}
-	@@cp -R ${DIST_DIR} ${TEST_SRV}/.
-	@@cp -R ${TESTS_DIR} ${TEST_SRV}/.
+	@@cp -R ${JOA_DEBUG} ${TEST_SRV}/.
+	@@cp -R ${TESTS_DIR}/index.html ${TEST_SRV}/.
+	@@cp -R ${TESTS_DIR}/tests.js ${TEST_SRV}/.
 	@@mkdir -p ${TEST_SRV}/src
 	@@cp -R ${SRC_DIR}/Service ${TEST_SRV}/src/.
 	@@echo "Tests copied."

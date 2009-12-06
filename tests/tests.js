@@ -79,7 +79,7 @@ if (typeof fireunit != 'undefined') {
     // Only testing Urls
     fireunit.ok(typeof Uri == 'function', 'Url is a constructor');
     
-    fireunit.compare('http://www.google.com', new Uri('www.google.com'), 'www.google.com');
+    fireunit.compare('http://www.google.com/', new Uri('www.google.com'), 'www.google.com');
     fireunit.compare('http://www.google.com/', new Uri('www.google.com/'), 'www.google.com/');
     fireunit.compare('http://www.google.com/', new Uri('www.google.com/?'), 'www.google.com/?');
     fireunit.compare('http://www.google.com/search', new Uri('www.google.com/search'), 'www.google.com/search');
@@ -88,9 +88,9 @@ if (typeof fireunit != 'undefined') {
     fireunit.compare('http://www.google.com/search#anchor', new Uri('www.google.com/search?#anchor'), 'http://www.google.com/search?#anchor');
     fireunit.compare('http://www.google.com/search#anchor', new Uri('www.google.com/search#anchor'), 'http://www.google.com/search#anchor');
     fireunit.compare('http://www.google.com/#anchor', new Uri('www.google.com/#anchor'), 'http://www.google.com/#anchor');
-    fireunit.compare('http://www.google.com#anchor', new Uri('www.google.com#anchor'), 'http://www.google.com#anchor');
+    fireunit.compare('http://www.google.com/#anchor', new Uri('www.google.com#anchor'), 'http://www.google.com#anchor');
     
-    fireunit.compare('http://www.google.com', new Uri('http://www.google.com'), 'http://www.google.com');
+    fireunit.compare('http://www.google.com/', new Uri('http://www.google.com'), 'http://www.google.com');
     fireunit.compare('http://www.google.com/', new Uri('http://www.google.com/'), 'http://www.google.com/');
     fireunit.compare('http://www.google.com/', new Uri('http://www.google.com/?'), 'http://www.google.com/?');
     fireunit.compare('http://www.google.com/search', new Uri('http://www.google.com/search'), 'http://www.google.com/search');
@@ -99,7 +99,7 @@ if (typeof fireunit != 'undefined') {
     fireunit.compare('http://www.google.com/search#anchor', new Uri('http://www.google.com/search?#anchor'), 'http://www.google.com/search?#anchor');
     fireunit.compare('http://www.google.com/search#anchor', new Uri('http://www.google.com/search#anchor'), 'http://www.google.com/search#anchor');
     fireunit.compare('http://www.google.com/#anchor', new Uri('http://www.google.com/#anchor'), 'http://www.google.com/#anchor');
-    fireunit.compare('http://www.google.com#anchor', new Uri('http://www.google.com#anchor'), 'http://www.google.com#anchor');
+    fireunit.compare('http://www.google.com/#anchor', new Uri('http://www.google.com#anchor'), 'http://www.google.com#anchor');
     
     var url = new Uri('www.google.com:443');
     fireunit.compare('https', url.scheme, 'Url: Correctly detected scheme is https from port (www.google.com:443)');
