@@ -84,7 +84,7 @@
             }
             
             xhr_url = url + '';
-            xhr.open(method, xhr_url, async, user, password);
+            xhr.open(method, xhr_url, async);
             
             if (this.security.safeCrossDomain === false) {
                 xhr.setRequestHeader('User-Agent', user_agent);
@@ -94,6 +94,15 @@
                 
                 if (data != NULL) {
                     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                }
+            }
+            
+            xhr.onreadystatechange = function(){
+                var xhr = this;
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        console.log(xhr.responseText);
+                    }
                 }
             }
             
