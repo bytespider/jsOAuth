@@ -93,13 +93,13 @@
         jsoauth.getRequestToken = function () {
             var request = new this.Request(this.OAUTH_REQUEST_TOKEN_URL, 
                 HttpRequest.METHOD_GET, {}), params = this.oauth_parameters,
-                auth = [];
+                auth = [], signature;
                 
             authorization_header = 'OAuth realm="' + this.OAUTH_REALM + '",';
                 
             params.ksort();
+            
             params.oauth_signature = request.sign(this);
-            console.log(params.oauth_signature);
             params.oauth_timestamp = request.getTimestamp();
             params.oauth_nonce = request.nonce;
             for (i in params) {
@@ -188,7 +188,7 @@
                     signature.push('');
                 }
             
-                return QueryString.urlEncode(signature.join('&'));
+                return signature.join('&');
             }
         }
     };
