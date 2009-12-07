@@ -104,6 +104,8 @@ if (typeof fireunit != 'undefined') {
     var url = new Uri('www.google.com:443');
     fireunit.compare('https', url.scheme, 'Url: Correctly detected scheme is https from port (www.google.com:443)');
     
+    fireunit.compare('effcdf6ae5eb2fa2d27416d5f184df9c259a7c79', HMAC_SHA1('Jefe', 'what do ya want for nothing?'), 'HMAC-SHA1');
+    
     
     fireunit.ok(jsOAuth.Service.Dummy, 'jsOAuth.Service.Dummy is a class');
     
@@ -114,7 +116,7 @@ if (typeof fireunit != 'undefined') {
     fireunit.ok(jsOAuthDummy.requestAuthorization, 'jsOAuthDummy has requestAuthorization method');
     fireunit.ok(jsOAuthDummy.getAccessToken, 'jsOAuthDummy has getAccessToken method');
     
-    jsOAuthDummy.getRequestToken();
+    //jsOAuthDummy.getRequestToken();
     
     fireunit.testDone();
 }
