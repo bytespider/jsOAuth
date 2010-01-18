@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OAuth Sandbox</title>
+        <script src="OAuth/Consumer/Abstract.js"></script>
+        <script src="OAuth/Consumer.js"></script>
+        <script src="OAuth/SignatureMethod/Abstract.js"></script>
+        <script src="OAuth/SignatureMethod.js"></script>
+        <script src="OAuth/SignatureMethod/Plaintext.js"></script>
+        <script src="OAuth/Service.js"></script>
+        <script src="OAuth/Service/OAuthSandbox.js"></script>
+        <script src="OAuth/Utilities.js"></script>
+    </head>
+    <body>
+        
+        <script>
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+            
+            var key = 'ba9df9055c77f338';
+            var secret = '846ffe1ec3b18989e73fe7fff833';
+            var sandbox_oauth = new OAuthServiceOAuthSandbox(key, secret);
+            
+            sandbox_oauth.authenticateAccess();
+            var data = sandbox_oauth.threeLegged();
+        </script>
+    </body>
+</html>
