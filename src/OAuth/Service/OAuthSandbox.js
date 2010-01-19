@@ -1,6 +1,10 @@
 function OAuthServiceOAuthSandbox(key, secret, token, token_secret) {
     var parent = OAuthServiceOAuthSandbox.prototype;
     
+    if (arguments.length > 0) {
+        this.init(key, secret, token, token_secret);
+    }
+
     this.realm = 'http://oauth-sandbox.sevengoslings.net/';
     this.accessTokenUrl = this.realm + 'access_token';
     this.authorizationUrl = this.realm + 'authorize';
@@ -17,9 +21,6 @@ function OAuthServiceOAuthSandbox(key, secret, token, token_secret) {
         parent.init.apply(this, arguments);
     }
     
-    if (arguments.length > 0) {
-        this.init(key, secret, token, token_secret);
-    }
 }
 
 OAuthServiceOAuthSandbox.prototype = new OAuthService();

@@ -16,9 +16,13 @@
         <script>
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
             
-            var key = 'ba9df9055c77f338';
-            var secret = '846ffe1ec3b18989e73fe7fff833';
-            var sandbox_oauth = new OAuthServiceOAuthSandbox(key, secret);
+            var key = '14f5532b7ae62d8d';
+            var secret = 'ca5fd9cd3d4b1d3ce27e75935ff3';
+
+            // oauth_token=829cebe86b1c84eb&oauth_token_secret=c99cfc4cb1285bfeac0efd9b6c62
+            var token = '829cebe86b1c84eb';
+            var token_secret = 'c99cfc4cb1285bfeac0efd9b6c62';
+            var sandbox_oauth = new OAuthServiceOAuthSandbox(key, secret, token, token_secret);
             
             sandbox_oauth.authenticateAccess();
             var data = sandbox_oauth.threeLegged();

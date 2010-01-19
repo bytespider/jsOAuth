@@ -1,9 +1,10 @@
-function OAuthService(key, secret, token, token_secret) {
+function OAuthService(key, secret, callback_url, token, token_secret) {
     var parent = OAuthService.prototype;
     
-    this.init = function(key, secret, token, token_secret) {
+    this.init = function(key, secret, callback_url, token, token_secret) {
         this.key = key || '';
         this.secret = secret || '';
+        this.callback_url = callback_url || '';
         this.token = token || '';
         this.token_secret = token_secret || '';
         
@@ -14,6 +15,10 @@ function OAuthService(key, secret, token, token_secret) {
         if (!(this.token && this.token_secret)) {
             // need to get a access token
             this.requestToken();
+        }
+
+        if (this.token && this.token_secret) {
+            this.authorize();
         }
         
     };

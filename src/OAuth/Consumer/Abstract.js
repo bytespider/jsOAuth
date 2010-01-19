@@ -1,10 +1,10 @@
 var VERSION = '1.0';
 var SIGNATURE_METHOD = 'PLAINTEXT';
 
-function OAuthConsumerAbstract(key, secret, token, token_secret) {}
+function OAuthConsumerAbstract(key, secret, callback_url, token, token_secret) {}
 
 OAuthConsumerAbstract.prototype = {
-    init: function(key, secret, token, token_secret){},
+    init: function(key, secret, callback_url, token, token_secret){},
     
     key: '',
     secret: '',
@@ -23,6 +23,7 @@ OAuthConsumerAbstract.prototype = {
     authenticateAccess: function(){},
     
     requestToken: function(){},
+    authorize: function(){},
     
     signRequest: function(){},
     
