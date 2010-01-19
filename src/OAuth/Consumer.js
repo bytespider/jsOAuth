@@ -1,7 +1,11 @@
 function OAuthConsumer(key, secret, token, token_secret) {
     var parent = OAuthConsumer.prototype;
     
-    this.init = function(key, secret, token, token_secret) {
+    if (arguments.length > 0) {
+        this.init(key, secret, token, token_secret);
+    }
+    
+    this.init = function(key, secret, callback_url, token, token_secret) {
         this.key = key || '';
         this.secret = secret || '';
         this.token = token || '';
@@ -13,7 +17,7 @@ function OAuthConsumer(key, secret, token, token_secret) {
     this.requestToken = function(){
         // create a header
         var request_params = {
-            'oauth_callback':'',
+            'oauth_callback': this.callback_url,
             'oauth_consumer_key': this.key,
             'oauth_token': this.token,
             'oauth_signature_method': SIGNATURE_METHOD,
@@ -46,7 +50,52 @@ function OAuthConsumer(key, secret, token, token_secret) {
         xhr.open('GET', url, false);
         xhr.setRequestHeader('Authorization', header);
         xhr.send(null);
-        alert(xhr.responseText);
+        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+            // oauth_token=hh5s93j4hdidpola&oauth_token_secret=hdhd0244k9j7ao03&
+            var token_string_params = xhr.responseText.split('&');
+            for (var i = 0; i < token_string_params.length; i++) {
+                var param = token_string_params[i].split('=');
+                if (param[0] == 'oauth_token') {
+                    this.token = param[1];
+                }
+                if (param[0] == 'oauth_token_secret') {
+                    this.token_secret = param[1];
+                }
+            }
+        }
+    };
+
+    this.authorize = function(){
+        var request_params = {
+            'oauth_callback': this.callback_url,
+            'oauth_consumer_key': this.key,
+            'oauth_token': this.token,
+            'oauth_signature_method': SIGNATURE_METHOD,
+            'oauth_timestamp': this.getTimestamp(),
+            'oauth_nonce': this.getNonce(),
+            'oauth_verifier': '',
+            'oauth_signature': (
+                new OAuthConsumer.signatureMethods[SIGNATURE_METHOD]
+             ).sign(this.secret, this.token_secret),
+            'oauth_version': VERSION
+        };
+        var request = [];
+        var xhr;
+        var url;
+        
+        for (var i in request_params) {
+            if (request_params.hasOwnProperty(i)) {
+                request.push(OAuthUtilities.urlEncode(i) + '=' 
+                    + OAuthUtilities.urlEncode(request_params[i]));
+            }
+        }
+        
+        url = this.authorizationUrl + '?' + request.join('&');     
+        var frame = document.createElement('iframe');
+        frame.src = url;
+        frame.width = '100%';
+        frame.height = '100%';
+        document.body.appendChild(frame);
     };
     
     this.getTimestamp = function() {
@@ -85,10 +134,6 @@ function OAuthConsumer(key, secret, token, token_secret) {
         function rand() {
             return Math.floor(Math.random() * chars.length);
         }
-    }
-    
-    if (arguments.length > 0) {
-        this.init(key, secret, token, token_secret);
     }
 }
 
