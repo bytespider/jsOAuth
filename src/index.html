@@ -12,7 +12,6 @@
         <script src="OAuth/Utilities.js"></script>
     </head>
     <body>
-        
         <script>
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
             
@@ -22,10 +21,34 @@
             // oauth_token=829cebe86b1c84eb&oauth_token_secret=c99cfc4cb1285bfeac0efd9b6c62
             var token = '829cebe86b1c84eb';
             var token_secret = 'c99cfc4cb1285bfeac0efd9b6c62';
-            var sandbox_oauth = new OAuthServiceOAuthSandbox(key, secret, token, token_secret);
+            var sandbox_oauth = new OAuthServiceOAuthSandbox(key, secret, '', token, token_secret);
             
-            sandbox_oauth.authenticateAccess();
-            var data = sandbox_oauth.threeLegged();
+            if (!(sandbox_oauth.token && sandbox_oauth.token_secret)) {
+                // need to get a access token
+                sandbox_oauth.requestToken();
+            }
+            
+            if (sandbox_oauth.token && sandbox_oauth.token_secret) {
+                var url = sandbox_oauth.authorize();
+                window.open(url);
+                var verification = document.createElement('input');
+                verification.setAttribute('type', 'text');
+                verification.setAttribute('id', 'verification');
+                document.body.appendChild(verification);
+                
+                var button = document.createElement('input');
+                button.setAttribute('type', 'button');
+                button.setAttribute('id', 'verify');
+                button.setAttribute('value', 'Verify');
+                document.body.appendChild(button);
+                button.onclick = function() {
+                    var verification = document.getElementById('verification');
+                    sandbox_oauth.accessToken(verification.value);
+                    var data = sandbox_oauth.twoLegged();
+                    var data = sandbox_oauth.threeLegged();
+                };
+            }
+            
         </script>
     </body>
 </html>

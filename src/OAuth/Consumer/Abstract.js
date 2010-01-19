@@ -8,6 +8,7 @@ OAuthConsumerAbstract.prototype = {
     
     key: '',
     secret: '',
+    callback_url: '',
     token: '',
     token_secret: '',
     
@@ -19,8 +20,6 @@ OAuthConsumerAbstract.prototype = {
     authenticationUrl: '',
     authorizationUrl: '',
     requestTokenUrl: '',
-    
-    authenticateAccess: function(){},
     
     requestToken: function(){},
     authorize: function(){},
