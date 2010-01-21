@@ -2,9 +2,7 @@
 <html>
     <head>
         <title>OAuth Sandbox</title>
-        <script src="OAuth/Consumer/Abstract.js"></script>
         <script src="OAuth/Consumer.js"></script>
-        <script src="OAuth/SignatureMethod/Abstract.js"></script>
         <script src="OAuth/SignatureMethod.js"></script>
         <script src="OAuth/SignatureMethod/Plaintext.js"></script>
         <script src="OAuth/Service.js"></script>
@@ -13,15 +11,15 @@
     </head>
     <body>
         <script>
-            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
-            
-            var key = '14f5532b7ae62d8d';
-            var secret = 'ca5fd9cd3d4b1d3ce27e75935ff3';
+            var options = {
+                debug: true,
+                key: '14f5532b7ae62d8d',
+                secret: 'ca5fd9cd3d4b1d3ce27e75935ff3'
+            };
 
             // oauth_token=829cebe86b1c84eb&oauth_token_secret=c99cfc4cb1285bfeac0efd9b6c62
-            var token = '829cebe86b1c84eb';
-            var token_secret = 'c99cfc4cb1285bfeac0efd9b6c62';
-            var sandbox_oauth = new OAuthServiceOAuthSandbox(key, secret, '', token, token_secret);
+            var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
+            var data = sandbox_oauth.twoLegged();
             
             if (!(sandbox_oauth.token && sandbox_oauth.token_secret)) {
                 // need to get a access token
@@ -44,7 +42,6 @@
                 button.onclick = function() {
                     var verification = document.getElementById('verification');
                     sandbox_oauth.accessToken(verification.value);
-                    var data = sandbox_oauth.twoLegged();
                     var data = sandbox_oauth.threeLegged();
                 };
             }

@@ -1,8 +1,8 @@
-function OAuthServiceTwitter(key, secret, token, token_secret) {
+function OAuthServiceTwitter(options) {
     var parent = OAuthServiceTwitter.prototype;
     
     if (arguments.length > 0) {
-        this.init(key, secret, token, token_secret);
+        this.init(options);
     }
 
     this.realm = 'https://twitter.com/oauth/';
@@ -11,7 +11,7 @@ function OAuthServiceTwitter(key, secret, token, token_secret) {
     this.authorizationUrl = this.realm + 'authorize';
     this.requestTokenUrl = this.realm + 'request_token';
     
-    this.init = function(key, secret, token, token_secret) {
+    this.init = function(options) {
         parent.init.apply(this, arguments);
     }
         

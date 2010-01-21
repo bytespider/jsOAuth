@@ -1,30 +1,42 @@
-function OAuthServiceOAuthSandbox(key, secret, token, token_secret) {
+var VERSION = '1.0';
+var SIGNATURE_METHOD = 'PLAINTEXT';
+
+function OAuthServiceOAuthSandbox(options) {
     var parent = OAuthServiceOAuthSandbox.prototype;
     
     if (arguments.length > 0) {
-        this.init(key, secret, token, token_secret);
+        this.init(options);
     }
 
+    this.init = function(options) {
+        parent.init.apply(this, arguments);
+    };
+    
+    this.signature_method = 'PLAINTEXT'; 
+    
     this.realm = 'http://oauth-sandbox.sevengoslings.net/';
     this.requestTokenUrl = this.realm + 'request_token';
     this.authorizationUrl = this.realm + 'authorize';
     this.accessTokenUrl = this.realm + 'access_token';
     
     this.twoLegged = function() {
+        if (this.debug) {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+        }
+        
         var url = 'http://oauth-sandbox.sevengoslings.net/two_legged';
-        netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
         
         // create a header
         var request_params = {
             //'oauth_callback': this.callback_url,
             'oauth_consumer_key': this.key,
             'oauth_token': this.token,
-            'oauth_signature_method': SIGNATURE_METHOD,
+            'oauth_signature_method': this.signature_method,
             'oauth_timestamp': this.getTimestamp(),
             'oauth_nonce': this.getNonce(),
             //'oauth_verifier': oauth_verifier,
             'oauth_signature': (
-                new OAuthConsumer.signatureMethods[SIGNATURE_METHOD]
+                new OAuthConsumer.signatureMethods[this.signature_method]
              ).sign(this.secret, this.token_secret),
             'oauth_version': VERSION
         };
@@ -53,8 +65,11 @@ function OAuthServiceOAuthSandbox(key, secret, token, token_secret) {
         }
     }
     this.threeLegged = function() {
+        if (this.debug) {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+        }
+        
         var url = 'http://oauth-sandbox.sevengoslings.net/three_legged';
-        netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
         
         // create a header
         var request_params = {
@@ -94,11 +109,6 @@ function OAuthServiceOAuthSandbox(key, secret, token, token_secret) {
             alert(xhr.responseText);
         }
     }
-    
-    this.init = function(key, secret, token, token_secret) {
-        parent.init.apply(this, arguments);
-    }
-    
 }
 
 OAuthServiceOAuthSandbox.prototype = new OAuthService();
