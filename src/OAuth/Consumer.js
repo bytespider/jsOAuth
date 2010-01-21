@@ -1,21 +1,21 @@
-function OAuthConsumer(key, secret, callback_url, token, token_secret) {
-    var parent = OAuthConsumer.prototype;
-    
+function OAuthConsumer(options) {
     if (arguments.length > 0) {
-        this.init(key, secret, token, callback_url, token_secret);
+        this.init(options);
     }
     
-    this.init = function(key, secret, callback_url, token, token_secret) {
-        this.key = key || '';
-        this.secret = secret || '';
-        this.callback_url = callback_url || 'oob';
-        this.token = token || '';
-        this.token_secret = token_secret || '';
-        
-        parent.init.apply(this, arguments);
+    this.init = function(options) {
+        this.debug = options.debug == true ? true : false;
+        this.key = options.key || '';
+        this.secret = options.secret || '';
+        this.callback_url = options.callback_url || 'oob';
+        this.token = options.token || '';
+        this.token_secret = options.token_secret || '';
     };
     
     this.requestToken = function(){
+        if (this.debug) {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+        }
         // create a header
         var request_params = {
             'oauth_callback': this.callback_url,
@@ -47,6 +47,7 @@ function OAuthConsumer(key, secret, callback_url, token, token_secret) {
         
         header = 'OAuth realm="' + this.realm + '",' + request_header.join(',');
         url = this.requestTokenUrl;
+        
         xhr = new XMLHttpRequest();
         xhr.open('POST', url, false);
         xhr.setRequestHeader('Authorization', header);
@@ -69,6 +70,10 @@ function OAuthConsumer(key, secret, callback_url, token, token_secret) {
     };
 
     this.authorize = function(){
+        if (this.debug) {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+        }
+        
         // create a header
         var request_params = {
             'oauth_callback': this.callback_url,
@@ -100,7 +105,9 @@ function OAuthConsumer(key, secret, callback_url, token, token_secret) {
     };
     
     this.accessToken = function(oauth_verifier){
-        netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+        if (this.debug) {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+        }
         
         // create a header
         var request_params = {
@@ -190,9 +197,8 @@ function OAuthConsumer(key, secret, callback_url, token, token_secret) {
         function rand() {
             return Math.floor(Math.random() * chars.length);
         }
-    }
+    };
 }
 
-OAuthConsumer.signatureMethods = {};
 
-OAuthConsumer.prototype = new OAuthConsumerAbstract();
+OAuthConsumer.signatureMethods = {};
