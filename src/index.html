@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>OAuth Sandbox</title>
+        <script src="OAuth/Cookie.js"></script>
         <script src="OAuth/Consumer.js"></script>
         <script src="OAuth/SignatureMethod.js"></script>
         <script src="OAuth/SignatureMethod/Plaintext.js"></script>
@@ -16,7 +17,10 @@
                 key: '14f5532b7ae62d8d',
                 secret: 'ca5fd9cd3d4b1d3ce27e75935ff3'
             };
-
+            
+            //var cookie = new OAuthCookie('oauth_token');
+            //cookie.destroy();
+            
             // oauth_token=829cebe86b1c84eb&oauth_token_secret=c99cfc4cb1285bfeac0efd9b6c62
             var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
             var data = sandbox_oauth.twoLegged();
