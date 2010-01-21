@@ -4,12 +4,26 @@ function OAuthConsumer(options) {
     }
     
     this.init = function(options) {
-        this.debug = options.debug == true ? true : false;
+        // default to using cookies
+        options.use_cookies = options.use_cookies || true;
+        
+        this.debug = options.debug == false ? false : true;
         this.key = options.key || '';
         this.secret = options.secret || '';
         this.callback_url = options.callback_url || 'oob';
         this.token = options.token || '';
         this.token_secret = options.token_secret || '';
+        this.use_cookies = options.use_cookies;
+        this.cookie;
+        
+        if (options.use_cookies) {
+            this.cookie = new OAuthCookie('oauth_token');
+            var values = this.cookie.getValue().split('|');
+            if (values) {
+                this.token = values[0];
+                this.token_secret = values[1];
+            }
+        }
     };
     
     this.requestToken = function(){
@@ -21,12 +35,12 @@ function OAuthConsumer(options) {
             'oauth_callback': this.callback_url,
             'oauth_consumer_key': this.key,
             'oauth_token': this.token,
-            'oauth_signature_method': SIGNATURE_METHOD,
+            'oauth_signature_method': this.signature_method,
             'oauth_timestamp': this.getTimestamp(),
             'oauth_nonce': this.getNonce(),
             'oauth_verifier': '',
             'oauth_signature': (
-                new OAuthConsumer.signatureMethods[SIGNATURE_METHOD]
+                new OAuthConsumer.signatureMethods[this.signature_method]
              ).sign(this.secret, this.token_secret),
             'oauth_version': VERSION
         };
@@ -64,6 +78,7 @@ function OAuthConsumer(options) {
                     this.token_secret = param[1];
                 }
             }
+            //this.cookie.setValue(this.token + '|' + this.token_secret);
         }
         
         return this;
@@ -156,6 +171,8 @@ function OAuthConsumer(options) {
                     this.token_secret = param[1];
                 }
             }
+            
+            this.cookie.setValue(this.token + '|' + this.token_secret);
         }
         
         return this;
