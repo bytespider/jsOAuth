@@ -27,7 +27,7 @@ function OAuthConsumer(options) {
         }
     };
     
-    this.requestToken = function(){
+    this.getRequestToken = function(){
         if (this.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
@@ -54,7 +54,7 @@ function OAuthConsumer(options) {
         return this;
     };
 
-    this.authorize = function(){
+    this.authorizeToken = function(){
         if (this.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
@@ -62,7 +62,7 @@ function OAuthConsumer(options) {
         return this.authorizationUrl + '?' + this.getRequestString();
     };
     
-    this.accessToken = function(){
+    this.getAccessToken = function(){
         if (this.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
@@ -120,7 +120,6 @@ function OAuthConsumer(options) {
     this.getRequestString = function() {
         var request = [];
         var params = {
-            'realm': this.realm,
             'oauth_callback': this.callback_url,
             'oauth_consumer_key': this.key,
             'oauth_token': this.token,
