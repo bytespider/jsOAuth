@@ -21,17 +21,16 @@
             //var cookie = new OAuthCookie('oauth_token');
             //cookie.destroy();
             
-            // oauth_token=829cebe86b1c84eb&oauth_token_secret=c99cfc4cb1285bfeac0efd9b6c62
             var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
             var data = sandbox_oauth.twoLegged();
             
             if (!(sandbox_oauth.token && sandbox_oauth.token_secret)) {
                 // need to get a access token
-                sandbox_oauth.requestToken();
+                sandbox_oauth.getRequestToken();
             }
             
             if (sandbox_oauth.token && sandbox_oauth.token_secret) {
-                var url = sandbox_oauth.authorize();
+                var url = sandbox_oauth.authorizeToken();
                 window.open(url);
                 var verification = document.createElement('input');
                 verification.setAttribute('type', 'text');
@@ -46,7 +45,7 @@
                 button.onclick = function() {
                     var verification = document.getElementById('verification');
                     sandbox_oauth.oauth_verifier = verification.value;
-                    sandbox_oauth.accessToken();
+                    sandbox_oauth.getAccessToken();
                     var data = sandbox_oauth.threeLegged();
                 };
             }
