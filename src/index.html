@@ -45,7 +45,8 @@
                 document.body.appendChild(button);
                 button.onclick = function() {
                     var verification = document.getElementById('verification');
-                    sandbox_oauth.accessToken(verification.value);
+                    sandbox_oauth.oauth_verifier = verification.value;
+                    sandbox_oauth.accessToken();
                     var data = sandbox_oauth.threeLegged();
                 };
             }
