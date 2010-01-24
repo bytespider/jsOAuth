@@ -11,12 +11,16 @@ in Adobe AIR and Appcelerator Titanium projects.
 
 ### Core
 
-  * 
+  * Authorisation storage
+  * Single authorisation entry-point
+  * Debug mode for testing localy in Firefox, see index.html for example
 
 Released under the GPLv3. Please see LICENSE in the project root folder for more
 information.
 
 ## Building
+
+**Currently building does not work**
 
 To build jsOAuth, simply type `make` from the command line.
 
