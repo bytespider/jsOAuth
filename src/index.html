@@ -15,7 +15,10 @@
             var options = {
                 debug: true,
                 key: '14f5532b7ae62d8d',
-                secret: 'ca5fd9cd3d4b1d3ce27e75935ff3'
+                secret: 'ca5fd9cd3d4b1d3ce27e75935ff3',
+                onauthorized: function(){
+                    var data = this.threeLegged();
+                }
             };
             
             //var cookie = new OAuthCookie('oauth_token');
@@ -23,33 +26,7 @@
             
             var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
             var data = sandbox_oauth.twoLegged();
-            
-            if (!(sandbox_oauth.token && sandbox_oauth.token_secret)) {
-                // need to get a access token
-                sandbox_oauth.getRequestToken();
-            }
-            
-            if (sandbox_oauth.token && sandbox_oauth.token_secret) {
-                var url = sandbox_oauth.authorizeToken();
-                window.open(url);
-                var verification = document.createElement('input');
-                verification.setAttribute('type', 'text');
-                verification.setAttribute('id', 'verification');
-                document.body.appendChild(verification);
-                
-                var button = document.createElement('input');
-                button.setAttribute('type', 'button');
-                button.setAttribute('id', 'verify');
-                button.setAttribute('value', 'Verify');
-                document.body.appendChild(button);
-                button.onclick = function() {
-                    var verification = document.getElementById('verification');
-                    sandbox_oauth.oauth_verifier = verification.value;
-                    sandbox_oauth.getAccessToken();
-                    var data = sandbox_oauth.threeLegged();
-                };
-            }
-            
+            sandbox_oauth.authorize();
         </script>
     </body>
 </html>
