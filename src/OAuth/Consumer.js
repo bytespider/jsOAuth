@@ -17,13 +17,49 @@ function OAuthConsumer(options) {
         this.oauth_verifier = options.oauth_verifier || '';
         this.cookie;
         
+        this.onauthorized = options.onauthorized;
+        
         if (options.use_cookies) {
             this.cookie = new OAuthCookie('oauth_token');
             var values = this.cookie.getValue().split('|');
             if (values) {
                 this.token = values[0];
                 this.token_secret = values[1];
+                this.oauth_verifier = values[2];
             }
+        }
+    };
+    
+    this.authorize = function(){
+        if (!(sandbox_oauth.token && sandbox_oauth.token_secret)) {
+            // need to get a access token
+            this.getRequestToken();
+        }
+        
+        if (this.token && this.token_secret && !this.oauth_verifier) {
+            var url = this.authorizeToken();
+            window.open(url);
+            var verification = document.createElement('input');
+            verification.setAttribute('type', 'text');
+            verification.setAttribute('id', 'verification');
+            document.body.appendChild(verification);
+            
+            var button = document.createElement('input');
+            button.setAttribute('type', 'button');
+            button.setAttribute('id', 'verify');
+            button.setAttribute('value', 'Verify');
+            document.body.appendChild(button);
+            
+            var self = this;
+            button.onclick = function() {
+                var verification = document.getElementById('verification');
+                self.oauth_verifier = verification.value;
+                self.getAccessToken();
+            };
+        }
+        
+        if(this.token && this.token_secret && this.oauth_verifier){
+            this.onauthorized.call(this);
         }
     };
     
@@ -48,7 +84,6 @@ function OAuthConsumer(options) {
                     this.token_secret = param[1];
                 }
             }
-            //this.cookie.setValue(this.token + '|' + this.token_secret);
         }
         
         return this;
@@ -84,9 +119,9 @@ function OAuthConsumer(options) {
                 }
             }
             
-            this.cookie.setValue(this.token + '|' + this.token_secret);
+            this.cookie.setValue(this.token + '|' + this.token_secret + '|' + this.oauth_verifier);
         }
-        
+        this.authorize();
         return this;
     };
     
@@ -142,6 +177,8 @@ function OAuthConsumer(options) {
         
         return request.join('&');
     };
+    
+    this.onauthorized = function(){};
     
     this.getTimestamp = function() {
         return parseInt((new Date).getTime() / 1000) + '';

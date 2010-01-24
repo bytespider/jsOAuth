@@ -26,44 +26,15 @@ function OAuthServiceOAuthSandbox(options) {
         
         var url = 'http://oauth-sandbox.sevengoslings.net/two_legged';
         
-        // create a header
-        var request_params = {
-            //'oauth_callback': this.callback_url,
-            'oauth_consumer_key': this.key,
-            'oauth_token': this.token,
-            'oauth_signature_method': this.signature_method,
-            'oauth_timestamp': this.getTimestamp(),
-            'oauth_nonce': this.getNonce(),
-            //'oauth_verifier': oauth_verifier,
-            'oauth_signature': (
-                new OAuthConsumer.signatureMethods[this.signature_method]
-             ).sign(this.secret, this.token_secret),
-            'oauth_version': VERSION
-        };
-        var request_header = [];
-        var request = [];
-        var header = '';
-        var xhr;
-
-        for (var i in request_params) {
-            if (request_params.hasOwnProperty(i)) {
-                request_header.push(OAuthUtilities.urlEncode(i) + '="' 
-                    + OAuthUtilities.urlEncode(request_params[i]) + '"');
-                request.push(OAuthUtilities.urlEncode(i) + '=' 
-                    + OAuthUtilities.urlEncode(request_params[i]));
-            }
-        }
-        
-        header = 'OAuth realm="' + this.realm + '",' + request_header.join(',');
-        url += '?' + request.join('&');
-        xhr = new XMLHttpRequest();
-        xhr.open('GET', url, false);
-        xhr.setRequestHeader('Authorization', header);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url + '?' + this.getRequestString(), false);
+        xhr.setRequestHeader('Authorization', this.getHeaderString());
         xhr.send(null);
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             alert(xhr.responseText);
         }
-    }
+    };
+    
     this.threeLegged = function() {
         if (this.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
@@ -71,44 +42,14 @@ function OAuthServiceOAuthSandbox(options) {
         
         var url = 'http://oauth-sandbox.sevengoslings.net/three_legged';
         
-        // create a header
-        var request_params = {
-            //'oauth_callback': this.callback_url,
-            'oauth_consumer_key': this.key,
-            'oauth_token': this.token,
-            'oauth_signature_method': SIGNATURE_METHOD,
-            'oauth_timestamp': this.getTimestamp(),
-            'oauth_nonce': this.getNonce(),
-            //'oauth_verifier': oauth_verifier,
-            'oauth_signature': (
-                new OAuthConsumer.signatureMethods[SIGNATURE_METHOD]
-             ).sign(this.secret, this.token_secret),
-            'oauth_version': VERSION
-        };
-        var request_header = [];
-        var request = [];
-        var header = '';
-        var xhr;
-
-        for (var i in request_params) {
-            if (request_params.hasOwnProperty(i)) {
-                request_header.push(OAuthUtilities.urlEncode(i) + '="' 
-                    + OAuthUtilities.urlEncode(request_params[i]) + '"');
-                request.push(OAuthUtilities.urlEncode(i) + '=' 
-                    + OAuthUtilities.urlEncode(request_params[i]));
-            }
-        }
-        
-        header = 'OAuth realm="' + this.realm + '",' + request_header.join(',');
-        url += '?' + request.join('&');
-        xhr = new XMLHttpRequest();
-        xhr.open('GET', url, false);
-        xhr.setRequestHeader('Authorization', header);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url + '?' + this.getRequestString(), false);
+        xhr.setRequestHeader('Authorization', this.getHeaderString());
         xhr.send(null);
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             alert(xhr.responseText);
         }
-    }
+    };
 }
 
 OAuthServiceOAuthSandbox.prototype = new OAuthService();

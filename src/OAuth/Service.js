@@ -6,9 +6,10 @@ function OAuthService(options) {
     }
     
     this.init = function(options) {
+        this.onauthorized = options.onauthorized;
         parent.init.apply(this, arguments);
     };
-           
+               
     this.signature_method = 'PLAINTEXT'; 
 }
 
