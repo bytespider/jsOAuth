@@ -5,18 +5,9 @@ function OAuthSignatureMethodHMACSHA1() {
         return signature.join('&');
     };
     
-    var blocksize = 64;
-    function hash(message) {
+    this.blocksize = 64;
+    this.hash(message) {
         
-    }
-    
-    function HMAC(key, message) {
-        if (key.length > blocksize) {
-            key = hash(key);
-        } else if (key.length < blocksize) {
-            key = key + (new Array(blocksize - key.length)).join(0);
-        }
-        return hash(key ^ (0x5c * blocksize) + hash((0x36 * blocksize) + message));
     }
 }
 
