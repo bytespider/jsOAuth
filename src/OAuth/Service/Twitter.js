@@ -5,6 +5,8 @@ function OAuthServiceTwitter(options) {
         this.init(options);
     }
 
+    this.signature_method = 'PLAINTEXT';
+
     this.realm = 'https://twitter.com/oauth/';
     this.accessTokenUrl = this.realm + 'access_token';
     this.authenticationUrl = this.realm + 'authenticate';

@@ -4,6 +4,8 @@ function OAuthConsumer(options) {
     }
     
     this.oauth_version = '1.0';
+    this.signature_method = 'PLAINTEXT';
+    
     this.init = function(options) {
         // default to using cookies
         options.use_cookies = options.use_cookies || true;
