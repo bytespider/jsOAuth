@@ -3,6 +3,7 @@ function OAuthConsumer(options) {
         this.init(options);
     }
     
+    this.oauth_version = '1.0';
     this.init = function(options) {
         // default to using cookies
         options.use_cookies = options.use_cookies || true;
@@ -139,7 +140,7 @@ function OAuthConsumer(options) {
             'oauth_signature': (
                 new OAuthConsumer.signatureMethods[this.signature_method]
              ).sign(this.secret, this.token_secret),
-            'oauth_version': VERSION
+            'oauth_version': this.oauth_version
         };
         
         var OU = OAuthUtilities;
