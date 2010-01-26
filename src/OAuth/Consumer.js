@@ -168,7 +168,7 @@ function OAuthConsumer(options) {
             'oauth_signature': (
                 new OAuthConsumer.signatureMethods[this.signature_method]
              ).sign(this.secret, this.token_secret),
-            'oauth_version': VERSION
+            'oauth_version': this.oauth_version
         };
         
         var OU = OAuthUtilities;
