@@ -1,6 +1,3 @@
-var VERSION = '1.0';
-var SIGNATURE_METHOD = 'PLAINTEXT';
-
 function OAuthServiceOAuthSandbox(options) {
     var parent = OAuthServiceOAuthSandbox.prototype;
     
