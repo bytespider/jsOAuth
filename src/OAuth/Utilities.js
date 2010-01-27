@@ -12,3 +12,9 @@ OAuthUtilities.urlEncode = function(string){
 
     return string_arr.join('');
 };
+
+OAuthUtilities.toByteString = function(str) {
+    return str.replace(/./g, function(s){
+        return s.charCodeAt(0).toString(16);
+    });
+}
