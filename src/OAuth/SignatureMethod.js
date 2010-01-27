@@ -9,23 +9,15 @@ function OAuthSignatureMethod() {
     this.hash = function(message){};
     
     this.hmac = function(key, message) {
-        //key = toByteString(key);
-        //message = toByteString(message);
-        if (key.length > this.blocksize) {
+        var l = key.length;
+        
+        if (l > this.blocksize) {
             key = this.hash(key);
-        } else if (key.length < this.blocksize) {
-            key = key + ((this.blocksize - key.length) * 0x00);
+        } else if (l < this.blocksize) {
+            key = key + (new Array(this.blocksize - l + 1)).join(0);
         }
         
-        console.log(key);
-        
-        return this.hash(key ^ (0x5c * this.blocksize) + 
-            this.hash((0x36 * this.blocksize) + message));
+        return this.hash(key ^ (new Array(this.blocksize + 1).join(0x5c)) + 
+            this.hash((new Array(this.blocksize + 1).join(0x36)) + message));
     };
-    
-    function toByteString(str) {
-        return str.replace(/./g, function(s){
-            return s.charCodeAt(0) & 0xFF;
-        });
-    }
 }
