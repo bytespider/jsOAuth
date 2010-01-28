@@ -14,10 +14,10 @@ function OAuthSignatureMethod() {
         if (l > this.blocksize) {
             key = this.hash(key);
         } else if (l < this.blocksize) {
-            key = key + (new Array(this.blocksize - l + 1)).join(0);
+            key = key + (new Array(1 + this.blocksize - l)).join(0);
         }
         
-        return this.hash(key ^ (new Array(this.blocksize + 1).join(0x5c)) + 
-            this.hash((new Array(this.blocksize + 1).join(0x36)) + message));
+        return this.hash(key ^ (new Array(1 + this.blocksize).join(0x5c)) + 
+            this.hash((new Array(1 + this.blocksize).join(0x36)) + message));
     };
 }

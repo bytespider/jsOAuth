@@ -15,19 +15,23 @@ function OAuthSignatureMethodHMACSHA1() {
         var h4 = 0xC3D2E1F0;
 
         message = OAuthUtilities.toByteString(message);
+        message += '80';
+
+        var bit_length = message.length * 4;
+        var bit_length_hex = parseInt(bit_length, 16);
+        var bit_length_hex_length = (bit_length_hex + '').length;
         
-        message = message.split('');
-        var bytes = message.length * 8;
-        message[bytes >> 5] |= 0x80 << 24 - bytes % 32;
-        message[(bytes + 64 >>> 9 << 4) + 15] = bytes;
-        alert(message);
+        var last_64_bit_hex = new Array(17 - bit_length_hex_length).join(0) + bit_length_hex;
+        var pad_l = 512 - ((bit_length + 64) % 512);
+        alert(pad_l);
+        var pad = new Array(1 + pad_l).join(0);
         
-                    var key_length_bin = l.toString(16);
-            key = key + (new Array(112 - l + 1)).join(0) + 
-                (new Array(16 - key_length_bin.length + 1)).join(0) + key_length_bin;
+        message += pad + last_64_bit_hex;
+        alert(message.length * 4);
     }
 }
 
 OAuthSignatureMethodHMACSHA1.prototype = new OAuthSignatureMethod();
 
 OAuthConsumer.signatureMethods['HMAC-SHA1'] = OAuthSignatureMethodHMACSHA1;
+
