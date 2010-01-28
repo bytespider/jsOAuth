@@ -1,0 +1,2 @@
+function OAuthToken(key, secret) {
+}
