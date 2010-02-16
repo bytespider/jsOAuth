@@ -34,7 +34,7 @@ function OAuthConsumer(options) {
     };
     
     this.authorize = function(){
-        if (!(sandbox_oauth.token && sandbox_oauth.token_secret)) {
+        if (!(this.token && this.token_secret)) {
             // need to get a access token
             this.getRequestToken();
         }
