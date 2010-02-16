@@ -9,11 +9,12 @@
         <script src="OAuth/SignatureMethod/HMAC-SHA1.js"></script>
         <script src="OAuth/Service.js"></script>
         <script src="OAuth/Service/OAuthSandbox.js"></script>
+        <script src="OAuth/Service/Google.js"></script>
         <script src="OAuth/Utilities.js"></script>
     </head>
     <body>
         <script>
-            var options = {
+            /*var options = {
                 debug: true,
                 key: '14f5532b7ae62d8d',
                 secret: 'ca5fd9cd3d4b1d3ce27e75935ff3',
@@ -24,10 +25,25 @@
             
             //var cookie = new OAuthCookie('oauth_token');
             //cookie.destroy();
-            
+			
             var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
             var data = sandbox_oauth.twoLegged();
-            sandbox_oauth.authorize();
+            sandbox_oauth.authorize();            
+			*/
+			var options = {
+                debug: true,
+                key: 'anonymous',
+                secret: 'anonymous',
+                onauthorized: function(){
+                    
+                }
+            };
+            
+            //var cookie = new OAuthCookie('oauth_token');
+            //cookie.destroy();
+            
+            var google_oauth = new OAuthServiceGoogle(options);
+            google_oauth.authorize();
         </script>
     </body>
 </html>
