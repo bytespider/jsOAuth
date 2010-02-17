@@ -1,6 +1,8 @@
 function OAuthUtilities() {}
 
 OAuthUtilities.urlEncode = function(string){
+	if (!string) return string;
+	
     var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/, 
         str_len = string.length, i, string_arr = string.split('');
                           

@@ -39,12 +39,12 @@ function OAuthConsumer(options) {
     };
     
     this.authorize = function(){
-        if (!(this.token && this.token_secret)) {
+        if (!(this.access_token.key && this.access_token.secret)) {
             // need to get a access token
             this.getRequestToken();
         }
         
-        if (this.token && this.token_secret && !this.oauth_verifier) {
+        if (this.access_token.key && this.access_token.secret && !this.oauth_verifier) {
             var url = this.authorizeToken();
             window.open(url);
             var verification = document.createElement('input');
@@ -66,7 +66,7 @@ function OAuthConsumer(options) {
             };
         }
         
-        if(this.token && this.token_secret && this.oauth_verifier){
+        if(this.access_token.key && this.access_token.secret && this.oauth_verifier){
             this.onauthorized.call(this);
         }
     };
@@ -79,25 +79,30 @@ function OAuthConsumer(options) {
         var request = new OAuthRequest({
             method: 'POST', url: this.requestTokenUrl, query: this.getHeaderParams()
         });
-        
-        new OAuthConsumer.signatureMethods[this.signature_method]).sign(
-            request, this.secret, this.token_secret
-        )
+		
+        var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
+            request, this.consumer_token.key, this.access_token.secret
+        );
+		
+		request.setQueryParam('oauth_signature', signature);
+		
+		var header_string = 'OAuth ' + request.toHeaderString();
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', this.requestTokenUrl, false);
-        xhr.setRequestHeader('Authorization', this.getHeaderString());
-        xhr.send(this.getRequestString());
+        xhr.open(request.getMethod(), request.getUrl(), false);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Authorization', header_string);
+        xhr.send(request+'');
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             // oauth_token=hh5s93j4hdidpola&oauth_token_secret=hdhd0244k9j7ao03&
             var token_string_params = xhr.responseText.split('&');
             for (var i = 0; i < token_string_params.length; i++) {
                 var param = token_string_params[i].split('=');
                 if (param[0] == 'oauth_token') {
-                    this.token = param[1];
+                    this.access_token.key = param[1];
                 }
                 if (param[0] == 'oauth_token_secret') {
-                    this.token_secret = param[1];
+                    this.access_token.secret = param[1];
                 }
             }
         }
