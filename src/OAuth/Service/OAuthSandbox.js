@@ -1,6 +1,8 @@
 function OAuthServiceOAuthSandbox(options) {
     var parent = OAuthServiceOAuthSandbox.prototype;
     
+    var name = 'sandbox';
+    
     if (arguments.length > 0) {
         this.init(options);
     }

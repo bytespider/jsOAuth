@@ -1,6 +1,8 @@
 function OAuthServiceTwitter(options) {
     var parent = OAuthServiceTwitter.prototype;
     
+    var name = 'twitter';
+    
     if (arguments.length > 0) {
         this.init(options);
     }

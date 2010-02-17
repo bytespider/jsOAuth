@@ -1,33 +1,38 @@
-function OAuthConsumer(options) {
-    if (arguments.length > 0) {
-        this.init(options);
-    }
+function OAuthConsumer(options) {  
+    var name = 'oauth';
     
     this.oauth_version = '1.0';
     this.signature_method = 'PLAINTEXT';
     
+    this.consumer_token;
+    this.access_token;
+    
+    this.cookie;
+    
+    this.getName = function () {
+        return name;
+    };
+    
     this.init = function(options) {
         // default to using cookies
-        options.use_cookies = options.use_cookies || true;
+        this.use_cookies = options.use_cookies == false ? false : true;
         
         this.debug = options.debug == false ? false : true;
-        this.key = options.key || '';
-        this.secret = options.secret || '';
+        
+        this.consumer_token = new OAuthToken(options.key, options.secret);
+        this.access_token = new OAuthToken(options.token_key, options.token_secret);
+
         this.callback_url = options.callback_url || 'oob';
-        this.token = options.token || '';
-        this.token_secret = options.token_secret || '';
-        this.use_cookies = options.use_cookies;
+
         this.oauth_verifier = options.oauth_verifier || '';
-        this.cookie;
         
         this.onauthorized = options.onauthorized;
         
         if (options.use_cookies) {
-            this.cookie = new OAuthCookie('oauth_token');
+            this.cookie = new OAuthCookie('oauth_token_' + this.getName());
             var values = this.cookie.getValue().split('|');
             if (values) {
-                this.token = values[0];
-                this.token_secret = values[1];
+                this.access_token.set(values[0], values[1]);
                 this.oauth_verifier = values[2];
             }
         }
@@ -70,6 +75,14 @@ function OAuthConsumer(options) {
         if (this.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
+        
+        var request = new OAuthRequest({
+            method: 'POST', url: this.requestTokenUrl, query: this.getHeaderParams()
+        });
+        
+        new OAuthConsumer.signatureMethods[this.signature_method]).sign(
+            request, this.secret, this.token_secret
+        )
 
         var xhr = new XMLHttpRequest();
         xhr.open('POST', this.requestTokenUrl, false);
@@ -126,6 +139,20 @@ function OAuthConsumer(options) {
         }
         this.authorize();
         return this;
+    };
+    
+    this.getHeaderParams = function () {
+        return {
+            'realm': this.realm,
+            'oauth_callback': this.callback_url,
+            'oauth_consumer_key': this.consumer_token.key,
+            'oauth_token': this.access_token.key,
+            'oauth_signature_method': this.signature_method,
+            'oauth_timestamp': this.getTimestamp(),
+            'oauth_nonce': this.getNonce(),
+            'oauth_verifier': this.oauth_verifier,
+            'oauth_version': this.oauth_version
+        };
     };
     
     this.getHeaderString = function() {
@@ -220,6 +247,10 @@ function OAuthConsumer(options) {
             return Math.floor(Math.random() * chars.length);
         }
     };
+    
+    if (arguments.length > 0) {
+        this.init(options);
+    }
 }
 
 
