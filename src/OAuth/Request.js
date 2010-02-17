@@ -42,6 +42,18 @@ function OAuthRequest(options) {
     };
     
     this.getQueryParams = function() {
+		var keys = [];
+		for (var k in query_params) {
+			keys.push(k);
+		}
+		
+		keys.sort();
+		
+		for(var k = 0; k < keys.length; k++) {
+			var value = query_params[keys[k]];
+			delete query_params[keys[k]];
+			query_params[keys[k]] = value;
+		}
         return query_params;
     };
     
@@ -50,22 +62,31 @@ function OAuthRequest(options) {
     };
     
     this.toString = function () {
-	var arr = [];
-	for (i in query_params) {
-            arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(this.query[i])+'');
-	}
-	
-	return arr.join('&');
+		var arr = [], qp = this.getQueryParams();
+		for (i in qp) {
+				if (qp[i]) {
+					arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(qp[i]+''));
+				}
+		}
+		
+		return arr.join('&');
     };
-
+	
+	 this.toHeaderString = function () {
+		var arr = [], qp = this.getQueryParams();
+		for (i in qp) {
+				arr.push(i + '="' + qp[i] + '"');
+		}
+		
+		return arr.join(',');
+    };
+	
     this.toSignatureBaseString = function () {
-        var arr = [
+        return [
             method, 
             OAuthUtilities.urlEncode(url), 
-            OAuthUtilities.urlEncode(this + '')
-        ];
-        
-        return arr.join('&');
+            this + ''
+        ].join('&');
     };
     
     
