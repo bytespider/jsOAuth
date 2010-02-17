@@ -39,8 +39,8 @@
                 }
             };
             
-            //var cookie = new OAuthCookie('oauth_token');
-            //cookie.destroy();
+            var cookie = new OAuthCookie('oauth_token');
+            cookie.destroy();
             
             var google_oauth = new OAuthServiceGoogle(options);
             google_oauth.authorize();
