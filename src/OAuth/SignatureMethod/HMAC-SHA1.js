@@ -1,6 +1,8 @@
 function OAuthSignatureMethodHMACSHA1() {
     this.name = 'HMAC-SHA1';
-    this.sign = function(consumer_secret, token_secret){
+    this.sign = function(request, consumer_secret, token_secret){
+
+        hmacString = Crypto.HMAC(Crypto.SHA1, "Message", "Secret Passphrase", { asString: true });
         var signature = [];
         return signature.join('&');
     };
