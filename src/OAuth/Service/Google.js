@@ -22,6 +22,10 @@ function OAuthServiceGoogle(options) {
         
         return params;
     };
+
+    this.getQueryParams = function () {
+        return 'scope=' + OAuthUtilities.urlEncode('https://www.google.com/m8/feeds/');
+    }
     
     if (arguments.length > 0) {
         this.init(options);

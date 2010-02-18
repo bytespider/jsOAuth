@@ -43,17 +43,19 @@ function OAuthRequest(options) {
     
     this.getQueryParams = function() {
 		var keys = [];
+        var values = [];
 		for (var k in query_params) {
 			keys.push(k);
 		}
-		
+
+        var qp = query_params;
+		query_params = {}; // reset
 		keys.sort();
 		
 		for(var k = 0; k < keys.length; k++) {
-			var value = query_params[keys[k]];
-			delete query_params[keys[k]];
-			query_params[keys[k]] = value;
+			query_params[keys[k]] = qp[keys[k]];
 		}
+        
         return query_params;
     };
     
@@ -64,7 +66,7 @@ function OAuthRequest(options) {
     this.toString = function () {
 		var arr = [], qp = this.getQueryParams();
 		for (i in qp) {
-				if (qp[i]) {
+				if (qp[i] && qp[i] != undefined) {
 					arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(qp[i]+''));
 				}
 		}
@@ -75,18 +77,22 @@ function OAuthRequest(options) {
 	 this.toHeaderString = function () {
 		var arr = [], qp = this.getQueryParams();
 		for (i in qp) {
-				arr.push(i + '="' + qp[i] + '"');
+            if (qp[i] && qp[i] != undefined) {
+				arr.push(i + '="' + OAuthUtilities.urlEncode(qp[i]) + '"');
+            }
 		}
 		
-		return arr.join(',');
+		return arr.join(', ');
     };
 	
     this.toSignatureBaseString = function () {
-        return [
+        var sbs = [
             method, 
             OAuthUtilities.urlEncode(url), 
-            this + ''
+            OAuthUtilities.urlEncode(this + '')
         ].join('&');
+        console.log(sbs);
+        return sbs;
     };
     
     

@@ -84,6 +84,7 @@ function OAuthConsumer(options) {
             request, this.consumer_token.key, this.access_token.secret
         );
 		
+        request.setQueryParam('scope', '');
 		request.setQueryParam('oauth_signature', signature);
 		
 		var header_string = 'OAuth ' + request.toHeaderString();
@@ -92,7 +93,7 @@ function OAuthConsumer(options) {
         xhr.open(request.getMethod(), request.getUrl(), false);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('Authorization', header_string);
-        xhr.send(request+'');
+        xhr.send(this.getQueryParams());
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             // oauth_token=hh5s93j4hdidpola&oauth_token_secret=hdhd0244k9j7ao03&
             var token_string_params = xhr.responseText.split('&');
@@ -124,7 +125,7 @@ function OAuthConsumer(options) {
         }
         
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', this.accessTokenUrl, false);
+        xhr.open('GET', this.accessTokenUrl, false);
         xhr.setRequestHeader('Authorization', this.getHeaderString());
         xhr.send(this.getRequestString());
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
@@ -148,7 +149,7 @@ function OAuthConsumer(options) {
     
     this.getHeaderParams = function () {
         return {
-            'realm': this.realm,
+            //'realm': this.realm,
             'oauth_callback': this.callback_url,
             'oauth_consumer_key': this.consumer_token.key,
             'oauth_token': this.access_token.key,
@@ -163,7 +164,7 @@ function OAuthConsumer(options) {
     this.getHeaderString = function() {
         var header = [];
         var params = {
-            'realm': this.realm,
+            //'realm': this.realm,
             'oauth_callback': this.callback_url,
             'oauth_consumer_key': this.key,
             'oauth_token': this.token,
@@ -190,7 +191,7 @@ function OAuthConsumer(options) {
     this.getRequestString = function() {
         var request = [];
         var params = {
-            'oauth_callback': this.callback_url,
+            //'oauth_callback': this.callback_url,
             'oauth_consumer_key': this.key,
             'oauth_token': this.token,
             'oauth_signature_method': this.signature_method,
