@@ -49,6 +49,7 @@
             cookie.destroy();
             
             var google_oauth = new OAuthServiceGoogle(options);
+			google_oauth.setScope(['https://www.google.com/m8/feeds/']);
             google_oauth.authorize();
         </script>
     </body>
