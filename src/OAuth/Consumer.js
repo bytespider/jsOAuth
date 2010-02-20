@@ -38,6 +38,8 @@ function OAuthConsumer(options) {
         }
     };
     
+    this.getDefaultRequestParams = function () {/*stub*/}
+   
     this.authorize = function(){
         if (!(this.access_token.key && this.access_token.secret)) {
             // need to get a access token
@@ -77,15 +79,20 @@ function OAuthConsumer(options) {
         }
         
         var request = new OAuthRequest({
-            method: 'POST', url: this.requestTokenUrl, query: this.getHeaderParams()
+            method: 'POST', url: this.requestTokenUrl, query: this.getDefaultRequestParams(), authorization_header_params: {
+				oauth_consumer_key: this.consumer_token.key,
+				oauth_signature_method: this.signature_method + '',
+				oauth_version: this.oauth_version
+			}
         });
 		
         var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
             request, this.consumer_token.key, this.access_token.secret
         );
 		
-        request.setQueryParam('scope', '');
-		request.setQueryParam('oauth_signature', signature);
+		alert(request.toSignatureBaseString());
+		
+		request.setAuthorizationHeaderParam('oauth_signature', signature);
 		
 		var header_string = 'OAuth ' + request.toHeaderString();
 
@@ -93,7 +100,7 @@ function OAuthConsumer(options) {
         xhr.open(request.getMethod(), request.getUrl(), false);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('Authorization', header_string);
-        xhr.send(this.getQueryParams());
+        xhr.send(request + '');
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             // oauth_token=hh5s93j4hdidpola&oauth_token_secret=hdhd0244k9j7ao03&
             var token_string_params = xhr.responseText.split('&');
@@ -215,44 +222,6 @@ function OAuthConsumer(options) {
     };
     
     this.onauthorized = function(){};
-    
-    this.getTimestamp = function() {
-        return parseInt((new Date).getTime() / 1000) + '';
-    };
-    
-    this.getNonce = function(key_length){
-        key_length = key_length || 64;
-        
-        var key_bytes = key_length / 8;
-        var value = '';
-        var key_iter = key_bytes / 4;
-        var key_remainder = key_bytes % 4;
-        var chars = ['20', '21', '22', '23', '24', '25', '26', '27', '28', '29', 
-                     '2A', '2B', '2C', '2D', '2E', '2F', '30', '31', '32', '33', 
-                     '34', '35', '36', '37', '38', '39', '3A', '3B', '3C', '3D', 
-                     '3E', '3F', '40', '41', '42', '43', '44', '45', '46', '47', 
-                     '48', '49', '4A', '4B', '4C', '4D', '4E', '4F', '50', '51', 
-                     '52', '53', '54', '55', '56', '57', '58', '59', '5A', '5B', 
-                     '5C', '5D', '5E', '5F', '60', '61', '62', '63', '64', '65', 
-                     '66', '67', '68', '69', '6A', '6B', '6C', '6D', '6E', '6F', 
-                     '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', 
-                     '7A', '7B', '7C', '7D', '7E'];
-        
-        for (var i = 0; i < key_iter; i++) {
-            value += chars[rand()] + chars[rand()] + chars[rand()]+ chars[rand()];
-        }
-        
-        // handle remaing bytes
-        for (var i = 0; i < key_remainder; i++) {
-            value += chars[rand()];
-        }
-        
-        return value;
-        
-        function rand() {
-            return Math.floor(Math.random() * chars.length);
-        }
-    };
     
     if (arguments.length > 0) {
         this.init(options);
