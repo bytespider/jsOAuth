@@ -136,6 +136,18 @@ function OAuthRequest(options) {
 				}
 		}
 		
+		// @TODO need to clean up the url at this point NS should have
+		return this.getUrl() + '?' + arr.join('&');
+    };
+	
+    this.toQueryString = function () {
+		var arr = [], qp = this.getQueryParams();
+		for (i in qp) {
+				if (qp[i] && qp[i] != undefined) {
+					arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(qp[i]+''));
+				}
+		}
+		
 		return arr.join('&');
     };
 	
