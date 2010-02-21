@@ -26,11 +26,9 @@ function OAuthServiceGoogle(options) {
 		return scope.join(' ');
 	};
     
-    this.getHeaderParams = function () {
-        var params = parent.getHeaderParams.apply(this);
+    this.getDefaultHeaderParams = function () {
+        var params = parent.getDefaultHeaderParams.apply(this);
         params.scope = this.getScope();
-		
-		alert(params);
         
         return params;
     };
