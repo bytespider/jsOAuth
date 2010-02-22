@@ -88,6 +88,8 @@ function OAuthConsumer(options) {
             };
 
             document.body.appendChild(mask);
+            // force - but this is bad
+            window.onload();
         }
         
         if(this.access_token.key && this.access_token.secret && this.oauth_verifier){
