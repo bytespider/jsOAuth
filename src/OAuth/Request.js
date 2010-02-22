@@ -45,7 +45,8 @@ function OAuthRequest(options) {
     };
     
     this.setUrl = function(url_string) {
-        // @TODO: add url normalization here NS should have
+        // @TODO: add url normalization here
+        // http://github.com/bytespider/jsOAuth/blob/master_before_0.3/src/uri.js
         url = url_string;
     };
     
@@ -136,7 +137,8 @@ function OAuthRequest(options) {
 				}
 		}
 		
-		// @TODO need to clean up the url at this point NS should have
+		// @TODO need to clean up the url at this point
+        // http://github.com/bytespider/jsOAuth/blob/master_before_0.3/src/uri.js
 		return this.getUrl() + '?' + arr.join('&');
     };
 	
