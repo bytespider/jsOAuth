@@ -52,28 +52,46 @@ function OAuthConsumer(options) {
         }
         
         if (this.access_token.key && this.access_token.secret && !this.oauth_verifier) {
+            var self = this;
             var url = this.authorizeToken();
             window.open(url);
-            var verification = document.createElement('input');
-            verification.setAttribute('type', 'text');
-            verification.setAttribute('id', 'verification');
-            document.body.appendChild(verification);
-            
-            var button = document.createElement('input');
-            button.setAttribute('type', 'button');
-            button.setAttribute('id', 'verify');
-            button.setAttribute('value', 'Verify');
-            document.body.appendChild(button);
-            
-            var self = this;
-            button.onclick = function() {
-                var verification = document.getElementById('verification');
-                self.oauth_verifier = verification.value;
+
+            var mask = document.getElementById('mask') || document.createElement('div');
+            mask.removeChild(document.getElementById('login'));
+            mask.setAttribute('id', 'mask');
+
+            var popup = document.createElement('div');
+            mask.appendChild(popup);
+            popup.setAttribute('id', 'start-app');
+            popup.setAttribute('class', 'popup');
+
+            var node;
+            node = document.createElement('p');
+            popup.appendChild(node);
+            node.appendChild(document.createTextNode('Once you have logged in and authorized this application with your browser, please enter the provided code and click the button below.'));
+
+            node = document.createElement('input');
+            popup.appendChild(node);
+            node.setAttribute('id', 'verification');
+            node.setAttribute('type', 'text');
+            node.setAttribute('placeholder', 'enter code');
+            node.style.width = '308px';
+
+            node = document.createElement('input');
+            popup.appendChild(node);
+            node.setAttribute('type', 'button');
+            node.setAttribute('value', 'Start application');
+            node.onclick = function() {
+                var code = document.getElementById('verification').value;
+                self.oauth_verifier = code;
                 self.getAccessToken();
             };
+
+            document.body.appendChild(mask);
         }
         
         if(this.access_token.key && this.access_token.secret && this.oauth_verifier){
+            document.body.removeChild(document.getElementById('mask'));
             this.onauthorized.call(this);
         }
     };
