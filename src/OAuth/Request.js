@@ -41,7 +41,11 @@ function OAuthRequest(options) {
     };
     
     this.getUrl = function() {
-        return url;
+        if (this.getMethod() == 'POST') {
+            return url;
+        } else {
+            return this.toString();        
+        }
     };
     
     this.setUrl = function(url_string) {
@@ -130,16 +134,9 @@ function OAuthRequest(options) {
     }
     
     this.toString = function () {
-		var arr = [], qp = this.getQueryParams();
-		for (i in qp) {
-				if (qp[i] && qp[i] != undefined) {
-					arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(qp[i]+''));
-				}
-		}
-		
 		// @TODO need to clean up the url at this point
         // http://github.com/bytespider/jsOAuth/blob/master_before_0.3/src/uri.js
-		return this.getUrl() + '?' + arr.join('&');
+		return url + '?' + this.toQueryString();
     };
 	
     this.toQueryString = function () {

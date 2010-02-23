@@ -40,6 +40,37 @@ function OAuthServiceGoogle(options) {
     this.getQueryParams = function () {
         return 'scope=' + OAuthUtilities.urlEncode('https://www.google.com/m8/feeds/');
     }
+
+    this.getContacts = function () {
+        if (this.debug) {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+        }
+		
+		var header_params = this.getDefaultHeaderParams();
+        
+        var request = new OAuthRequest({
+            method: 'GET', 
+			url: 'https://www.google.com/m8/feeds/contacts/default/full', 
+			query: {'alt':'json'}, 
+			authorization_header_params: header_params
+        });
+		
+        var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
+            request, this.consumer_token.key, this.access_token.secret
+        );
+		
+		request.setAuthorizationHeaderParam('oauth_signature', signature);
+		
+		var header_string = 'OAuth ' + request.toHeaderString();
+
+        var xhr = new XMLHttpRequest();
+        xhr.open(request.getMethod(), request.getUrl(), false);
+        xhr.setRequestHeader('Authorization', header_string);
+        xhr.send(request.toQueryString());
+        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+            document.write(xhr.responseText);
+        }
+    }
     
     if (arguments.length > 0) {
         this.init(options);
