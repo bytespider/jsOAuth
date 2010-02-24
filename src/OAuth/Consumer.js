@@ -179,7 +179,7 @@ function OAuthConsumer(options) {
         var request = new OAuthRequest({
             method: 'POST', 
 			url: this.requestTokenUrl, 
-			query: this.getRequestParams(), 
+			query: this.getRequestParameters(), 
 			authorization_header_params: header_params
         });
 		
