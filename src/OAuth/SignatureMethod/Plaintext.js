@@ -1,16 +1,11 @@
 function OAuthSignatureMethodPlaintext() {
     this.name = 'PLAINTEXT';
-    this.sign = function(consumer_secret, token_secret){
-        var signature = [];
-        signature.push(OAuthUtilities.urlEncode(consumer_secret));
+    this.sign = function(request, consumer_secret, token_secret){
+		var consumer_secret = OAuthUtilities.urlEncode(consumer_secret);
+		var token_secret = OAuthUtilities.urlEncode(token_secret || '');
+        var passphrase = consumer_secret + '&' + token_secret;
     
-        if (token_secret) {
-            signature.push(OAuthUtilities.urlEncode(token_secret));
-        } else {
-            signature.push('');
-        }
-    
-        return signature.join('&');
+        return passphrase;
     };
 }
 
