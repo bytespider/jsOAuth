@@ -11,9 +11,6 @@ function OAuthSignatureMethodHMACSHA1() {
 		
         return btoa(signature);
     };
-    
-    this.blocksize = 64;
-    this.hash = function (message) {/*stub*/}
 }
 
 OAuthSignatureMethodHMACSHA1.prototype = new OAuthSignatureMethod();
