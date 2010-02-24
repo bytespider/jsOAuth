@@ -16,7 +16,7 @@ function OAuthServiceGoogle(options) {
 
     
     this.init = function(options) {
-		_private.debug = 'debug' in options ? options.debug : _private.debug
+		_private.debug = 'debug' in options ? options.debug : _private.debug;
         parent.init.apply(this, arguments);
     };
 	
@@ -30,7 +30,7 @@ function OAuthServiceGoogle(options) {
     
     this.getAuthorizationHeaderParameters = function () {
         var params = parent.getAuthorizationHeaderParameters.apply(this);
-        params.scope = this.getScope();
+		params.scope = this.getScope();
         
         return params;
     };
