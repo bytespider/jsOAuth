@@ -1,7 +1,7 @@
 function OAuthUtilities() {}
 
 OAuthUtilities.urlEncode = function(string){
-	if (!string) return string;
+	if (!string) return '';
 	
     var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/, 
         str_len = string.length, i, string_arr = string.split('');
@@ -16,16 +16,9 @@ OAuthUtilities.urlEncode = function(string){
 };
 
 OAuthUtilities.urlDecode = function(string){
-	if (!string) return string;
+	if (!string) return '';
                           
     return string.replace(/%[a-fA-F0-9]{2}/ig, function (match) {
 		return String.fromCharCode(parseInt(match.replace('%', ''), 16));
 	});
 };
-
-OAuthUtilities.toByteString = function(str) {
-    return str.replace(/./g, function(s){
-        return s.charCodeAt(0).toString(16);
-    });
-}
-
