@@ -53,7 +53,7 @@ function OAuthServiceGoogle(options) {
         var request = new OAuthRequest({
             method: 'GET', 
 			url: 'https://www.google.com/m8/feeds/contacts/default/full', 
-			query: {'alt':'json'}, 
+			query: {}, 
 			authorization_header_params: header_params
         });
 		
@@ -68,9 +68,9 @@ function OAuthServiceGoogle(options) {
         var xhr = new XMLHttpRequest();
         xhr.open(request.getMethod(), request.getUrl(), false);
         xhr.setRequestHeader('Authorization', header_string);
-        xhr.send(request.toQueryString());
+        xhr.send(null);
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-            document.write(xhr.responseText);
+            document.write(xhr.responseXML);
         }
     };
     
