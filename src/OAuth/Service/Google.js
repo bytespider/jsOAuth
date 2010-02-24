@@ -35,7 +35,7 @@ function OAuthServiceGoogle(options) {
         return params;
     };
 	
-	this.getDefaultRequestParams = function () {
+	this.getRequestParameters = function () {
 		return {'scope': this.getScope()}
 	};
 
@@ -44,7 +44,7 @@ function OAuthServiceGoogle(options) {
     }
 
     this.getContacts = function () {
-        if (this.debug) {
+        if (_private.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
 		
@@ -72,7 +72,7 @@ function OAuthServiceGoogle(options) {
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             document.write(xhr.responseText);
         }
-    }
+    };
     
     if (arguments.length > 0) {
         this.init(options);

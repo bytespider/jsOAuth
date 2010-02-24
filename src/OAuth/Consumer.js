@@ -71,7 +71,10 @@ function OAuthConsumer(options) {
             window.open(url);
 
             var mask = document.getElementById('mask') || document.createElement('div');
-            mask.removeChild(document.getElementById('login'));
+			var popup = document.getElementById('login');
+			if (popup) {
+				mask.removeChild(popup);
+			}
             mask.setAttribute('id', 'mask');
 
             var popup = document.createElement('div');
@@ -115,12 +118,12 @@ function OAuthConsumer(options) {
     /**
      * @method
      */
-	this.deauthorize = function () {/*stub*/}
+	this.deauthorize = function () {/*stub*/};
     
     /**
      * @method
      */
-	this.getRequestParameters = function () {/*stub*/}
+	this.getRequestParameters = function () {return {}};
 	
     /**
      * @method
@@ -176,7 +179,7 @@ function OAuthConsumer(options) {
         var request = new OAuthRequest({
             method: 'POST', 
 			url: this.requestTokenUrl, 
-			query: this.getDefaultRequestParams(), 
+			query: this.getRequestParams(), 
 			authorization_header_params: header_params
         });
 		
