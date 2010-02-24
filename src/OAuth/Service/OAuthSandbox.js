@@ -1,13 +1,12 @@
 function OAuthServiceOAuthSandbox(options) {
     var parent = OAuthServiceOAuthSandbox.prototype;
     
-    var name = 'sandbox';
-    
-    if (arguments.length > 0) {
-        this.init(options);
-    }
+    var _private = {
+		debug: false
+	};
 
     this.init = function(options) {
+		_private.debug = 'debug' in options ? options.debug : _private.debug;
         parent.init.apply(this, arguments);
     };
     
@@ -17,38 +16,72 @@ function OAuthServiceOAuthSandbox(options) {
     this.requestTokenUrl = this.realm + 'request_token';
     this.authorizationUrl = this.realm + 'authorize';
     this.accessTokenUrl = this.realm + 'access_token';
-    
-    this.twoLegged = function() {
-        if (this.debug) {
-            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-        }
-        
-        var url = 'http://oauth-sandbox.sevengoslings.net/two_legged';
-        
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url + '?' + this.getRequestString(), false);
-        xhr.setRequestHeader('Authorization', this.getHeaderString());
-        xhr.send(null);
-        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-            alert(xhr.responseText);
-        }
-    };
+	
+	this.twoLegged = function() {
+		if (_private.debug) {
+			netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+		}
+		
+		var header_params = this.getAuthorizationHeaderParameters();
+		
+		var request = new OAuthRequest({
+			method: 'GET', 
+			url: 'http://oauth-sandbox.sevengoslings.net/two_legged', 
+			query: {}, 
+			authorization_header_params: header_params
+		});
+		
+		var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
+			request, this.getConsumerToken().secret, this.getAccessToken().secret
+		);
+		
+		request.setAuthorizationHeaderParam('oauth_signature', signature);
+		
+		var header_string = 'OAuth ' + request.toHeaderString();
+
+		var xhr = new XMLHttpRequest();
+		xhr.open(request.getMethod(), request.getUrl(), false);
+		xhr.setRequestHeader('Authorization', header_string);
+		xhr.send(request.toQueryString());
+		if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+			alert(xhr.responseText);
+		}
+	};
     
     this.threeLegged = function() {
-        if (this.debug) {
-            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-        }
-        
-        var url = 'http://oauth-sandbox.sevengoslings.net/three_legged';
-        
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url + '?' + this.getRequestString(), false);
-        xhr.setRequestHeader('Authorization', this.getHeaderString());
-        xhr.send(null);
-        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-            alert(xhr.responseText);
-        }
-    };
+		if (_private.debug) {
+			netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+		}
+		
+		var header_params = this.getAuthorizationHeaderParameters();
+		
+		var request = new OAuthRequest({
+			method: 'GET', 
+			url: 'http://oauth-sandbox.sevengoslings.net/three_legged', 
+			query: {}, 
+			authorization_header_params: header_params
+		});
+		
+		var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
+			request, this.getConsumerToken().secret, this.getAccessToken().secret
+		);
+		
+		request.setAuthorizationHeaderParam('oauth_signature', signature);
+		
+		var header_string = 'OAuth ' + request.toHeaderString();
+
+		var xhr = new XMLHttpRequest();
+		xhr.open(request.getMethod(), request.getUrl(), false);
+		xhr.setRequestHeader('Authorization', header_string);
+		xhr.send(request.toQueryString());
+		if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+			alert(xhr.responseText);
+		}
+	};
+	
+	if (arguments.length > 0) {
+        this.init(options);
+    }
 }
 
 OAuthServiceOAuthSandbox.prototype = new OAuthService();
