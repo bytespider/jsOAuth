@@ -1,9 +1,10 @@
 function OAuthServiceGoogle(options) {
     var parent = OAuthServiceGoogle.prototype;
-    
-    var name = 'google';
 	
-	var scope = [];
+	var _private = {
+		debug: false,
+		scope: []
+	};
     
     this.signature_method = 'HMAC-SHA1';
 
@@ -15,19 +16,20 @@ function OAuthServiceGoogle(options) {
 
     
     this.init = function(options) {
+		_private.debug = 'debug' in options ? options.debug : _private.debug
         parent.init.apply(this, arguments);
     };
 	
 	this.setScope = function (scope_arr) {
-		scope = scope_arr.slice(0);
+		scope = scope_arr;
 	};
 	
 	this.getScope = function () {
 		return scope.join(' ');
 	};
     
-    this.getDefaultHeaderParams = function () {
-        var params = parent.getDefaultHeaderParams.apply(this);
+    this.getAuthorizationHeaderParameters = function () {
+        var params = parent.getAuthorizationHeaderParameters.apply(this);
         params.scope = this.getScope();
         
         return params;
@@ -38,7 +40,7 @@ function OAuthServiceGoogle(options) {
 	};
 
     this.getQueryParams = function () {
-        return 'scope=' + OAuthUtilities.urlEncode('https://www.google.com/m8/feeds/');
+        return 'scope=' + OAuthUtilities.urlEncode(this.getScope());
     }
 
     this.getContacts = function () {
@@ -46,7 +48,7 @@ function OAuthServiceGoogle(options) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
 		
-		var header_params = this.getDefaultHeaderParams();
+		var header_params = this.getAuthorizationHeaderParameters();
         
         var request = new OAuthRequest({
             method: 'GET', 
@@ -56,7 +58,7 @@ function OAuthServiceGoogle(options) {
         });
 		
         var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
-            request, this.consumer_token.key, this.access_token.secret
+            request, this.getConsumerToken().secret, this.getAccessToken().secret
         );
 		
 		request.setAuthorizationHeaderParam('oauth_signature', signature);

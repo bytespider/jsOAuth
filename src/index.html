@@ -40,8 +40,8 @@
 			*/
 			var options = {
                 debug: true,
-                key: 'anonymous',
-                secret: 'anonymous',
+                consumer_key: 'anonymous',
+                consumer_secret: 'anonymous',
                 onauthorized: function(){
                     this.getContacts();
                 }
@@ -51,7 +51,7 @@
             //cookie.destroy();
             
             var google_oauth = new OAuthServiceGoogle(options);
-			google_oauth.setXOAuthDisplayName('Google jsOAuth test');
+			google_oauth.setDisplayName('Google jsOAuth test');
 			google_oauth.setScope(['https://www.google.com/m8/feeds/']);
         </script>
         <div id="mask">
