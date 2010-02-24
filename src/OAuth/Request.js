@@ -24,7 +24,6 @@ function OAuthRequest(options) {
             }
         }
     	query_params = options.query || {};
-		alert(query_params.toSource());
 		
 		if ('authorization_header_params' in options) {
 			for (var i in options.authorization_header_params) {

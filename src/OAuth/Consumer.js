@@ -12,7 +12,7 @@
  * @return {OAuthConsumer}
  */
 function OAuthConsumer(options) {  
-    const OAUTH_VERSION = '1.0';
+    var OAUTH_VERSION = '1.0';
 	
 	// private variables prepended with _ as private is a protected word
     var _private = {
@@ -34,7 +34,7 @@ function OAuthConsumer(options) {
 	 * @param {Object|undefined} options
 	 * 
 	 */
-    this.init = function(options) {
+    this.init = function (options) {
 		_private.debug = 'debug' in options ? options.debug : _private.debug;
         _private.consumer_token = new OAuthToken(options.consumer_key, options.consumer_secret);
         _private.access_token = new OAuthToken(options.token_key, options.token_secret);
@@ -50,7 +50,7 @@ function OAuthConsumer(options) {
         _private.cookie = new OAuthCookie('oauth_token');
         var values = _private.cookie.getValue().split('|');
         if (values) {
-            this.authorizeToken().set(values[0], values[1]);
+            this.getAccessToken().set(values[0], values[1]);
             _private.oauth_verifier = values[2];
         }
     };
@@ -59,15 +59,15 @@ function OAuthConsumer(options) {
      * @method
      * @param {Object|undefined} options
      */
-    this.authorize = function(){
+    this.authorize = function () {
         if (!(_private.access_token.key && _private.access_token.secret)) {
             // need to get a access token
-            this.getRequestToken();
+            this.fetchRequestToken();
         }
         
         if (_private.access_token.key && _private.access_token.secret && !_private.oauth_verifier) {
             var self = this;
-            var url = this.authorizeToken();
+            var url = this.getAuthorizeTokenUrl();
             window.open(url);
 
             var mask = document.getElementById('mask') || document.createElement('div');
@@ -95,10 +95,10 @@ function OAuthConsumer(options) {
             popup.appendChild(node);
             node.setAttribute('type', 'button');
             node.setAttribute('value', 'Start application');
-            node.onclick = function() {
+            node.onclick = function () {
                 var code = document.getElementById('verification').value;
                 self.setOAuthVerifier(code);
-                self.getAccessToken();
+                self.fetchAccessToken();
             };
 
             document.body.appendChild(mask);
@@ -106,7 +106,7 @@ function OAuthConsumer(options) {
             window.onload();
         }
         
-        if(_private.access_token.key && _private.access_token.secret && _private.oauth_verifier){
+        if(_private.access_token.key && _private.access_token.secret && _private.oauth_verifier) {
             document.body.removeChild(document.getElementById('mask'));
             this.onauthorized.call(this);
         }
@@ -115,24 +115,24 @@ function OAuthConsumer(options) {
     /**
      * @method
      */
-	this.deauthorize = function (){/*stub*/}
+	this.deauthorize = function () {/*stub*/}
     
     /**
      * @method
      */
-	this.getRequestParameters = function (){/*stub*/}
+	this.getRequestParameters = function () {/*stub*/}
 	
     /**
      * @method
      * @return {String} oauth_verifier
      */
-	this.getOAuthVerifier = function (){return _private.oauth_verifier};
+	this.getOAuthVerifier = function () {return _private.oauth_verifier};
 	
     /**
      * @method
      * @param {String} oauth_verifier
      */
-	this.setOAuthVerifier = function (oauth_verifier){
+	this.setOAuthVerifier = function (oauth_verifier) {
 		_private.oauth_verifier = oauth_verifier;
     };
 	
@@ -140,18 +140,18 @@ function OAuthConsumer(options) {
      * @method
      * @return {OAuthToken} consumer_token
      */
-	this.getConsumerToken = function (){return _private.consumer_token}
+	this.getConsumerToken = function () {return _private.consumer_token};
 	
     /**
      * @method
      * @return {OAuthToken} access_token
      */
-	this.getAccessToken = function (){return _private.access_token}
+	this.getAccessToken = function () {return _private.access_token};
 	
     /**
      * @method
      */
-    this.getAuthorizationHeaderParameters = function (){
+    this.getAuthorizationHeaderParameters = function () {
         return {
             oauth_callback          : _private.oauth_callback_url,
             oauth_consumer_key      : this.getConsumerToken().key,
@@ -161,12 +161,12 @@ function OAuthConsumer(options) {
             oauth_version           : OAUTH_VERSION,
             xoauth_displayname      : _private.xoauth_displayname
         };
-    }
+    };
    
     /**
      * @method
      */
-    this.getRequestToken = function(){
+    this.fetchRequestToken = function () {
         if (_private.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
@@ -212,7 +212,7 @@ function OAuthConsumer(options) {
     /**
      * @method
      */
-    this.authorizeToken = function(){
+    this.getAuthorizeTokenUrl= function () {
         if (_private.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
@@ -229,7 +229,7 @@ function OAuthConsumer(options) {
     /**
      * @method
      */
-    this.getAccessToken = function(){
+    this.fetchAccessToken = function () {
         if (_private.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
@@ -281,14 +281,14 @@ function OAuthConsumer(options) {
     /**
      * @param {String} display_name
      */
-	this.setDisplayName = function (display_name){
+	this.setDisplayName = function (display_name) {
 		_private.xoauth_displayname = display_name;
 	};
 	
 	/**
 	 * @return {String} xoauth_displayname
 	 */
-	this.getDisplayName = function (){
+	this.getDisplayName = function () {
 		return _private.xoauth_displayname;
 	};
 	
@@ -298,55 +298,55 @@ function OAuthConsumer(options) {
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onInit                    = function (options){/*stub*/};
+	this.onInit                    = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onAuthorization           = function (options){/*stub*/};
+	this.onAuthorization           = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onDeauthorization         = function (options){/*stub*/};
+	this.onDeauthorization         = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onAuthorized              = function (options){/*stub*/};
+	this.onAuthorized              = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onDeauthorized            = function (options){/*stub*/};
+	this.onDeauthorized            = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onRequestTokenSuccess     = function (options){/*stub*/};
+	this.onRequestTokenSuccess     = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onRequestTokenFailure     = function (options){/*stub*/};
+	this.onRequestTokenFailure     = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onAccessTokenSuccess      = function (options){/*stub*/};
+	this.onAccessTokenSuccess      = function (options) {/*stub*/};
 	
 	/**
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onAccessTokenFailure      = function (options){/*stub*/};
+	this.onAccessTokenFailure      = function (options) {/*stub*/};
     
     if (arguments.length > 0) {
         this.init(options);
