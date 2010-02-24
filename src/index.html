@@ -11,10 +11,10 @@
         <script src="OAuth/Request.js"></script>
         <script src="OAuth/Consumer.js"></script>
         <script src="OAuth/SignatureMethod.js"></script>
-        <!--script src="OAuth/SignatureMethod/Plaintext.js"></script-->
+        <script src="OAuth/SignatureMethod/Plaintext.js"></script>
         <script src="OAuth/SignatureMethod/HMAC-SHA1.js"></script>
         <script src="OAuth/Service.js"></script>
-        <!--script src="OAuth/Service/OAuthSandbox.js"></script-->
+        <script src="OAuth/Service/OAuthSandbox.js"></script>
         <script src="OAuth/Service/Google.js"></script>
         <script src="OAuth/Utilities.js"></script>
 
@@ -22,22 +22,22 @@
     </head>
     <body>
         <script>
-            /*var options = {
+            var options = {
                 debug: true,
-                key: '14f5532b7ae62d8d',
-                secret: 'ca5fd9cd3d4b1d3ce27e75935ff3',
+                consumer_key: '14f5532b7ae62d8d',
+                consumer_secret: 'ca5fd9cd3d4b1d3ce27e75935ff3',
                 onauthorized: function(){
                     var data = this.threeLegged();
                 }
             };
             
-            //var cookie = new OAuthCookie('oauth_token');
-            //cookie.destroy();
+            var cookie = new OAuthCookie('oauth_token');
+            cookie.destroy();
 			
             var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
             var data = sandbox_oauth.twoLegged();
             sandbox_oauth.authorize();            
-			*/
+			/*
 			var options = {
                 debug: true,
                 consumer_key: 'anonymous',
@@ -53,14 +53,16 @@
             var google_oauth = new OAuthServiceGoogle(options);
 			google_oauth.setDisplayName('Google jsOAuth test');
 			google_oauth.setScope(['https://www.google.com/m8/feeds/']);
+			*/
         </script>
-        <div id="mask">
+        
+		<!--div id="mask">
             <div id="login" class="popup">
                 <p>When you click the button below, a browser window will open where you
                 can login and authorize this application.</p>
                 <input type="button" value="Login and Authorize" onclick="google_oauth.authorize();">
             </div>
-        </div>
+        </div-->
         <script>
             window.onload = window.onresize = window.onscroll = function () {
                 var d = document;
