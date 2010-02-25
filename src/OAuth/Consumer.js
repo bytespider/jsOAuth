@@ -1,9 +1,3 @@
-/*
- @TODO:
-    - Fix cookie storage
-*/
-
-
 /**
  * Core OAuth consumer client 
  * @constructor
@@ -35,7 +29,7 @@ function OAuthConsumer(options) {
 	 * 
 	 */
     this.init = function (options) {
-		_private.debug = 'debug' in options ? options.debug : _private.debug;
+ 		_private.debug = 'debug' in options ? options.debug : _private.debug;
         _private.consumer_token = new OAuthToken(options.consumer_key, options.consumer_secret);
         _private.access_token = new OAuthToken(options.token_key, options.token_secret);
 
@@ -44,15 +38,20 @@ function OAuthConsumer(options) {
         _private.oauth_verifier = options.oauth_verifier || '';
         _private.xoauth_displayname = options.displayname || '';
         
-        this.onauthorized = options.onauthorized;
+        this.onAuthorized = options.onAuthorized || this.onAuthorized;
         
 		
         _private.cookie = new OAuthCookie('oauth_token');
-        var values = _private.cookie.getValue().split('|');
+        var values = _private.cookie.getValue();
         if (values) {
-            this.getAccessToken().set(values[0], values[1]);
-            _private.oauth_verifier = values[2];
-        }
+            values = values.split('|');
+			this.getAccessToken().set(values[0], values[1]);
+			_private.oauth_verifier = values[2];
+			this.onAuthorized.apply(this, [{}]);
+		} else {
+			this.onInitialized.apply(this, [{}]);
+		}
+		
     };
     
     /**
@@ -66,70 +65,35 @@ function OAuthConsumer(options) {
         }
         
         if (_private.access_token.key && _private.access_token.secret && !_private.oauth_verifier) {
-            var self = this;
-            var url = this.getAuthorizeTokenUrl();
-            window.open(url);
-
-            var mask = document.getElementById('mask') || document.createElement('div');
-			var popup = document.getElementById('login');
-			if (popup) {
-				mask.removeChild(popup);
-			}
-            mask.setAttribute('id', 'mask');
-
-            var popup = document.createElement('div');
-            mask.appendChild(popup);
-            popup.setAttribute('id', 'start-app');
-            popup.setAttribute('class', 'popup');
-
-            var node;
-            node = document.createElement('p');
-            popup.appendChild(node);
-            node.appendChild(document.createTextNode('Once you have logged in and authorized this application with your browser, please enter the provided code and click the button below.'));
-
-            node = document.createElement('input');
-            popup.appendChild(node);
-            node.setAttribute('id', 'verification');
-            node.setAttribute('type', 'text');
-            node.setAttribute('placeholder', 'enter code');
-            node.style.width = '308px';
-
-            node = document.createElement('input');
-            popup.appendChild(node);
-            node.setAttribute('type', 'button');
-            node.setAttribute('value', 'Start application');
-            node.onclick = function () {
-                var code = document.getElementById('verification').value;
-                self.setOAuthVerifier(code);
-                self.fetchAccessToken();
-            };
-
-            document.body.appendChild(mask);
-            // force - but this is bad
-            window.onload();
+			this.onAuthorization.apply(this, [
+                {
+                    url: this.getAuthorizeTokenUrl()
+                }
+			]);
         }
         
         if(_private.access_token.key && _private.access_token.secret && _private.oauth_verifier) {
-            document.body.removeChild(document.getElementById('mask'));
-            this.onauthorized.call(this);
+            this.onAuthorized.apply(this, [{}]);
         }
     };
 	
     /**
      * @method
      */
-	this.deauthorize = function () {/*stub*/};
+	this.deauthorize = function () {
+        this.onDeauthorized.apply(this, [{}]);
+    };
     
     /**
      * @method
      */
-	this.getRequestParameters = function () {return {}};
+	this.getRequestParameters = function () {return {};};
 	
     /**
      * @method
      * @return {String} oauth_verifier
      */
-	this.getOAuthVerifier = function () {return _private.oauth_verifier};
+	this.getOAuthVerifier = function () {return _private.oauth_verifier;};
 	
     /**
      * @method
@@ -301,7 +265,27 @@ function OAuthConsumer(options) {
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onInit                    = function (options) {/*stub*/};
+	this.onInitialized = function (options) {
+		var dom_parser, dom_string, dom; 
+        // display a popup to request login
+		dom_string =  '<div id="mask">';
+		dom_string += '<div id="login" class="popup">';
+		dom_string += '<p>When you click the button below, a browser window will open ';
+		dom_string += 'where you can login and authorize this application.</p>';
+		dom_string += '<input type="button" value="Login and Authorize">';
+		dom_string += '</div>';
+		dom_string += '</div>';
+		
+        dom_parser = new DOMParser();
+	    dom = dom_parser.parseFromString(dom_string, 'text/xml');
+		document.appendChild(dom);
+	};
+	
+	/**
+	 * 
+	 * @param {Object|undefined} options
+	 */
+	this.onBeforeAuthorize         = function (options) {/*stub*/};
 	
 	/**
 	 * 

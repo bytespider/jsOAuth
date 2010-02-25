@@ -8,7 +8,7 @@ function OAuthCookie(name, expires, path) {
     var cookie_expires = expires || cookie_date.toGMTString();
     var cookie_path = path || '/';
     
-    var cookie_value = '';
+    var cookie_value = null;
     
     var results = document.cookie.match('(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
     if (results) {
