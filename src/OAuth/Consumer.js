@@ -259,6 +259,31 @@ function OAuthConsumer(options) {
 		return _private.xoauth_displayname;
 	};
 	
+	this.signRequest = function (options) {
+		var header_params = this.getAuthorizationHeaderParameters();
+        
+		if (options instanceof 'OAuthRequest') {
+			var request = options;
+		} else {
+			var request = new OAuthRequest({
+				method: options.method, 
+				url: options.url,
+				query: options.query,
+				authorization_header_params: header_params
+			});
+		}
+		
+        var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
+            request, this.getConsumerToken().secret, this.getAccessToken().secret
+        );
+		
+		request.setAuthorizationHeaderParam('oauth_signature', signature);
+		
+		var header_string = 'OAuth ' + request.toHeaderString();
+		request.setHeader('Authorization', header_string);
+		
+		return request;
+	};
 	
 	// Hooks
 	/**
