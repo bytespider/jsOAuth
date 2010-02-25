@@ -1,5 +1,5 @@
 function OAuthRequest(options) {
-    var method = 'GET', url, query_params;
+    var method = 'GET', url, query_params, headers={};
     var oauth_header_params = {
 		    'oauth_callback': 'oob',
             'oauth_consumer_key': '',
@@ -131,7 +131,15 @@ function OAuthRequest(options) {
         function rand() {
             return Math.floor(Math.random() * chars.length);
         }
-    }
+    };
+	
+	this.getHeader = function (header) {
+		return headers[header];
+	};
+		
+	this.setHeader = function (header, value) {
+		headers[header] = value;
+	};
     
     this.toString = function () {
 		// @TODO need to clean up the url at this point
