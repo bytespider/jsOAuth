@@ -22,7 +22,7 @@
     </head>
     <body>
         <script>
-            var options = {
+            /*var options = {
                 debug: true,
                 consumer_key: '14f5532b7ae62d8d',
                 consumer_secret: 'ca5fd9cd3d4b1d3ce27e75935ff3',
@@ -37,7 +37,7 @@
             var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
             var data = sandbox_oauth.twoLegged();
             sandbox_oauth.authorize();            
-			/*
+			*/
 			var options = {
                 debug: true,
                 consumer_key: 'anonymous',
@@ -47,52 +47,46 @@
                 }
             };
             
-            //var cookie = new OAuthCookie('oauth_token');
-            //cookie.destroy();
+            var cookie = new OAuthCookie('oauth_token');
+            cookie.destroy();
             
             var google_oauth = new OAuthServiceGoogle(options);
 			google_oauth.setDisplayName('Google jsOAuth test');
 			google_oauth.setScope(['https://www.google.com/m8/feeds/']);
-			*/
+			
         </script>
         
-		<!--div id="mask">
-            <div id="login" class="popup">
-                <p>When you click the button below, a browser window will open where you
-                can login and authorize this application.</p>
-                <input type="button" value="Login and Authorize" onclick="google_oauth.authorize();">
-            </div>
-        </div-->
         <script>
             window.onload = window.onresize = window.onscroll = function () {
                 var d = document;
                 var mask = d.getElementById('mask');
-                
-                var wndWidth = window.innerWidth || d.documentElement.clientWidth || d.body.clientWidth;
-                var wndHeight = window.innerHeight || d.documentElement.clientHeight || d.body.clientHeight;
-
-                var offsetY = d.documentElement.scrollTop || d.body.scrollTop || window.pageYOffset;
-                var offsetX = d.documentElement.scrollLeft || d.body.scrollLeft || window.pageXOffset;
-
-                var pageWidth = offsetX < wndWidth ? wndWidth : offsetX;        
-                var pageHeight = offsetY < wndHeight ? wndHeight : offsetY;
-
-                mask.style.height = Math.max(
-                    Math.max(d.body.scrollHeight, d.documentElement.scrollHeight),
-                    Math.max(d.body.offsetHeight, d.documentElement.offsetHeight),
-                    Math.max(d.body.clientHeight, d.documentElement.clientHeight)
-                ) + 'px';
-
-                for(var i=0; i < mask.childNodes.length; i++) {
-                    var popup = mask.childNodes[i];
-                    if (popup.nodeType == 1) {
-                        var x = ((wndWidth - offsetX) - popup.offsetWidth) / 2;
-                        var y = ((wndHeight - offsetY) - popup.offsetHeight) / 2;
-                        
-                        popup.style.top = y + 'px';
-                        popup.style.left = x + 'px';
-                    }
-                }
+                if (mask) {
+	                var wndWidth = window.innerWidth || d.documentElement.clientWidth || d.body.clientWidth;
+	                var wndHeight = window.innerHeight || d.documentElement.clientHeight || d.body.clientHeight;
+	
+	                var offsetY = d.documentElement.scrollTop || d.body.scrollTop || window.pageYOffset;
+	                var offsetX = d.documentElement.scrollLeft || d.body.scrollLeft || window.pageXOffset;
+	
+	                var pageWidth = offsetX < wndWidth ? wndWidth : offsetX;        
+	                var pageHeight = offsetY < wndHeight ? wndHeight : offsetY;
+	
+	                mask.style.height = Math.max(
+	                    Math.max(d.body.scrollHeight, d.documentElement.scrollHeight),
+	                    Math.max(d.body.offsetHeight, d.documentElement.offsetHeight),
+	                    Math.max(d.body.clientHeight, d.documentElement.clientHeight)
+	                ) + 'px';
+	
+	                for(var i=0; i < mask.childNodes.length; i++) {
+	                    var popup = mask.childNodes[i];
+	                    if (popup.nodeType == 1) {
+	                        var x = ((wndWidth - offsetX) - popup.offsetWidth) / 2;
+	                        var y = ((wndHeight - offsetY) - popup.offsetHeight) / 2;
+	                        
+	                        popup.style.top = y + 'px';
+	                        popup.style.left = x + 'px';
+	                    }
+	                }
+				}
             }
         </script>
     </body>
