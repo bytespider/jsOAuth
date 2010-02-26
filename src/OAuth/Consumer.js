@@ -137,29 +137,28 @@ function OAuthConsumer(options) {
         if (_private.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
-		
-		var header_params = this.getAuthorizationHeaderParameters();
         
-        var request = new OAuthRequest({
-            method: 'POST', 
-			url: this.requestTokenUrl, 
-			query: this.getRequestParameters(), 
-			authorization_header_params: header_params
-        });
-		
-        var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
-            request, this.getConsumerToken().secret, this.getAccessToken().secret
-        );
-		
-		request.setAuthorizationHeaderParam('oauth_signature', signature);
-		
-		var header_string = 'OAuth ' + request.toHeaderString();
+		var request = this.getSignedRequest({
+			method: 'POST',
+			url: this.requestTokenUrl,
+			query: this.getRequestParameters(),
+		});
+
 
         var xhr = new XMLHttpRequest();
         xhr.open(request.getMethod(), request.getUrl(), false);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('Authorization', header_string);
-        xhr.send(request.toQueryString());
+		
+		var request_headers = request.getRequestHeaders();
+		for (var header in request_headers) {
+			xhr.setRequestHeader(header, request_headers[header]);
+		}
+		
+		if (request.getMethod() === 'POST') {
+            xhr.send(request.toQueryString());
+		} else {
+	        xhr.send(null);
+		}
+		
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             var token_string_params = xhr.responseText.split('&');
             for (var i = 0; i < token_string_params.length; i++) {
@@ -179,7 +178,7 @@ function OAuthConsumer(options) {
     /**
      * @method
      */
-    this.getAuthorizeTokenUrl= function () {
+    this.getAuthorizeTokenUrl = function () {
         if (_private.debug) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
@@ -201,28 +200,27 @@ function OAuthConsumer(options) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
 		
-		var header_params = this.getAuthorizationHeaderParameters();
-        
-        var request = new OAuthRequest({
-            method: 'POST', 
-			url: this.accessTokenUrl,
-			query: {oauth_verifier: _private.oauth_verifier},
-			authorization_header_params: header_params
+        var request = this.getSignedRequest({
+            method: 'POST',
+            url: this.accessTokenUrl,
+            query: {oauth_verifier: this.getOAuthVerifier()},
         });
-		
-        var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
-            request, this.getConsumerToken().secret, this.getAccessToken().secret
-        );
-		
-		request.setAuthorizationHeaderParam('oauth_signature', signature);
-		
-		var header_string = 'OAuth ' + request.toHeaderString();
+
 
         var xhr = new XMLHttpRequest();
         xhr.open(request.getMethod(), request.getUrl(), false);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('Authorization', header_string);
-        xhr.send(request.toQueryString());
+        
+        var request_headers = request.getRequestHeaders();
+        for (var header in request_headers) {
+            xhr.setRequestHeader(header, request_headers[header]);
+        }
+        
+        if (request.getMethod() === 'POST') {
+            xhr.send(request.toQueryString());
+        } else {
+            xhr.send(null);
+        }
+        
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
             // oauth_token=hh5s93j4hdidpola&oauth_token_secret=hdhd0244k9j7ao03&
             var token_string_params = xhr.responseText.split('&');
@@ -259,10 +257,10 @@ function OAuthConsumer(options) {
 		return _private.xoauth_displayname;
 	};
 	
-	this.signRequest = function (options) {
+	this.getSignedRequest = function (options) {
 		var header_params = this.getAuthorizationHeaderParameters();
         
-		if (options instanceof 'OAuthRequest') {
+		if (options instanceof OAuthRequest) {
 			var request = options;
 		} else {
 			var request = new OAuthRequest({
@@ -279,8 +277,7 @@ function OAuthConsumer(options) {
 		
 		request.setAuthorizationHeaderParam('oauth_signature', signature);
 		
-		var header_string = 'OAuth ' + request.toHeaderString();
-		request.setHeader('Authorization', header_string);
+		request.setRequestHeader('Authorization', 'OAuth ' + request.toHeaderString());
 		
 		return request;
 	};
@@ -291,19 +288,22 @@ function OAuthConsumer(options) {
 	 * @param {Object|undefined} options
 	 */
 	this.onInitialized = function (options) {
-		var dom_parser, dom_string, dom; 
+		var self = this;
+		var mask = document.createElement('div'), dom_string = ''; 
+		mask.setAttribute('id', 'mask');
+		document.body.appendChild(mask);
+		
         // display a popup to request login
-		dom_string =  '<div id="mask">';
 		dom_string += '<div id="login" class="popup">';
 		dom_string += '<p>When you click the button below, a browser window will open ';
 		dom_string += 'where you can login and authorize this application.</p>';
-		dom_string += '<input type="button" value="Login and Authorize">';
-		dom_string += '</div>';
+		dom_string += '<input id="oauth-authorize-submit" type="button" value="Login and Authorize">';
 		dom_string += '</div>';
 		
-        dom_parser = new DOMParser();
-	    dom = dom_parser.parseFromString(dom_string, 'text/xml');
-		document.appendChild(dom);
+        mask.innerHTML = dom_string;
+		document.getElementById('oauth-authorize-submit').onclick = function(){
+			self.authorize();
+		};
 	};
 	
 	/**
@@ -316,7 +316,29 @@ function OAuthConsumer(options) {
 	 * 
 	 * @param {Object|undefined} options
 	 */
-	this.onAuthorization           = function (options) {/*stub*/};
+	this.onAuthorization = function (options) {
+        var self = this;
+        var mask = document.getElementById('mask'), dom_string = ''; 
+        mask.removeChild(mask.firstChild);
+        
+        // display a popup to request login
+        dom_string += '<div id="start-app" class="popup">';
+        dom_string += '<p>Once you have logged in and authorized this ';
+        dom_string += 'application with your browser, please enter the provided ';
+        dom_string += 'code and click the button below.</p>';
+        dom_string += '<input id="verification" type="text" placeholder="enter code">';
+        dom_string += '<input id="oauth-authorize-submit" type="button" value="Start application">';
+        dom_string += '</div>';
+        
+        mask.innerHTML = dom_string;
+        document.getElementById('oauth-authorize-submit').onclick = function(){
+             var code = document.getElementById('verification').value;
+             self.setOAuthVerifier(code);
+             self.fetchAccessToken();
+        };
+		
+		window.open(options.url);
+    };
 	
 	/**
 	 * 

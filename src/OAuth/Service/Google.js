@@ -48,29 +48,30 @@ function OAuthServiceGoogle(options) {
             netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
 		
-		var header_params = this.getAuthorizationHeaderParameters();
-        
-        var request = new OAuthRequest({
-            method: 'GET', 
-			url: 'https://www.google.com/m8/feeds/contacts/default/full', 
-			query: {}, 
-			authorization_header_params: header_params
+        var request = this.getSignedRequest({
+            method: 'GET',
+            url: 'https://www.google.com/m8/feeds/contacts/default/full',
+            query: {},
         });
-		
-        var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
-            request, this.getConsumerToken().secret, this.getAccessToken().secret
-        );
-		
-		request.setAuthorizationHeaderParam('oauth_signature', signature);
-		
-		var header_string = 'OAuth ' + request.toHeaderString();
 
         var xhr = new XMLHttpRequest();
         xhr.open(request.getMethod(), request.getUrl(), false);
-        xhr.setRequestHeader('Authorization', header_string);
-        xhr.send(null);
+        
+        var request_headers = request.getRequestHeaders();
+        for (var header in request_headers) {
+            xhr.setRequestHeader(header, request_headers[header]);
+        }
+        
+        if (request.getMethod() === 'POST') {
+            xhr.send(request.toQueryString());
+        } else {
+            xhr.send(null);
+        }
+        
         if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-            document.write(xhr.responseXML);
+			document.write((new XMLSerializer()).serializeToString(xhr.responseXML));
+            document.mimeType = 'text/xml';
+			
         }
     };
     

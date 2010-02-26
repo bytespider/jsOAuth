@@ -42,7 +42,9 @@
                 debug: true,
                 consumer_key: 'anonymous',
                 consumer_secret: 'anonymous',
-                onauthorized: function(){
+                onAuthorized: function(){
+					var mask = document.getElementById('mask');
+					mask.parentNode.removeChild(mask);
                     this.getContacts();
                 }
             };

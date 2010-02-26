@@ -38,6 +38,9 @@ function OAuthRequest(options) {
     
     this.setMethod = function(method_string) {
         method = method_string.toUpperCase() || 'GET';
+		if (method === 'POST') {
+			this.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		}
     };
     
     this.getUrl = function() {
@@ -133,11 +136,15 @@ function OAuthRequest(options) {
         }
     };
 	
-	this.getHeader = function (header) {
+	this.getRequestHeaders = function (header) {
+		return headers;
+	};
+	
+	this.getRequestHeader = function (header) {
 		return headers[header];
 	};
 		
-	this.setHeader = function (header, value) {
+	this.setRequestHeader = function (header, value) {
 		headers[header] = value;
 	};
     
