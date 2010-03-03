@@ -99,7 +99,7 @@ function OAuthRequest(options) {
 	}
 	
 	function getTimestamp() {
-        return parseInt((new Date).getTime() / 1000) + '';
+        return parseInt(+new Date / 1000); // use short form of getting a timestamp
     };
     
     function getNonce(key_length) {
