@@ -34,4 +34,4 @@ Please do not post feature requests as issues.
 
 ## Authors
 
-  * Rob Griffiths (bytespider AT live DOT co DOT uk)
+  * Rob Griffiths (rob AT bytespider DOT eu)
