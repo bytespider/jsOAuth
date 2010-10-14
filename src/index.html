@@ -22,7 +22,7 @@
     </head>
     <body>
         <script>
-            /*var options = {
+            var options = {
                 debug: true,
                 consumer_key: '14f5532b7ae62d8d',
                 consumer_secret: 'ca5fd9cd3d4b1d3ce27e75935ff3',
@@ -36,26 +36,7 @@
 			
             var sandbox_oauth = new OAuthServiceOAuthSandbox(options);
             var data = sandbox_oauth.twoLegged();
-            sandbox_oauth.authorize();            
-			*/
-			var options = {
-                debug: true,
-                consumer_key: 'anonymous',
-                consumer_secret: 'anonymous',
-                onAuthorized: function(){
-					var mask = document.getElementById('mask');
-					mask.parentNode.removeChild(mask);
-                    this.getContacts();
-                }
-            };
-            
-            var cookie = new OAuthCookie('oauth_token');
-            cookie.destroy();
-            
-            var google_oauth = new OAuthServiceGoogle(options);
-			google_oauth.setDisplayName('Google jsOAuth test');
-			google_oauth.setScope(['https://www.google.com/m8/feeds/']);
-			
+            //sandbox_oauth.authorize();
         </script>
         
         <script>
@@ -89,7 +70,7 @@
 	                    }
 	                }
 				}
-            }
+            };
         </script>
     </body>
 </html>

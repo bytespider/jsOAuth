@@ -1,8 +1,10 @@
 /**
- * Core OAuth consumer client 
+ * Core OAuth consumer client
+ * 
  * @constructor
  * 
- * @param {Object} options
+ * @param {Object}
+ *            options
  * @return {OAuthConsumer}
  */
 function OAuthConsumer(options) {  
@@ -24,10 +26,11 @@ function OAuthConsumer(options) {
     
 	// Methods
 	/**
-	 * @method
-	 * @param {Object|undefined} options
-	 * 
-	 */
+     * @method
+     * @param {Object|undefined}
+     *            options
+     * 
+     */
     this.init = function (options) {
  		_private.debug = 'debug' in options ? options.debug : _private.debug;
         _private.consumer_token = new OAuthToken(options.consumer_key, options.consumer_secret);
@@ -56,7 +59,8 @@ function OAuthConsumer(options) {
     
     /**
      * @method
-     * @param {Object|undefined} options
+     * @param {Object|undefined}
+     *            options
      */
     this.authorize = function () {
         if (!(_private.access_token.key && _private.access_token.secret)) {
@@ -97,7 +101,8 @@ function OAuthConsumer(options) {
 	
     /**
      * @method
-     * @param {String} oauth_verifier
+     * @param {String}
+     *            oauth_verifier
      */
 	this.setOAuthVerifier = function (oauth_verifier) {
 		_private.oauth_verifier = oauth_verifier;
@@ -141,7 +146,7 @@ function OAuthConsumer(options) {
 		var request = this.getSignedRequest({
 			method: 'POST',
 			url: this.requestTokenUrl,
-			query: this.getRequestParameters(),
+			query: this.getRequestParameters()
 		});
 
 
@@ -203,7 +208,7 @@ function OAuthConsumer(options) {
         var request = this.getSignedRequest({
             method: 'POST',
             url: this.accessTokenUrl,
-            query: {oauth_verifier: this.getOAuthVerifier()},
+            query: {oauth_verifier: this.getOAuthVerifier()}
         });
 
 
@@ -244,15 +249,16 @@ function OAuthConsumer(options) {
     };
     
     /**
-     * @param {String} display_name
+     * @param {String}
+     *            display_name
      */
 	this.setDisplayName = function (display_name) {
 		_private.xoauth_displayname = display_name;
 	};
 	
 	/**
-	 * @return {String} xoauth_displayname
-	 */
+     * @return {String} xoauth_displayname
+     */
 	this.getDisplayName = function () {
 		return _private.xoauth_displayname;
 	};
@@ -282,11 +288,48 @@ function OAuthConsumer(options) {
 		return request;
 	};
 	
+	this.authenticatedRequest = function(url, method, query, callback) {
+        if (_private.debug) {
+            netscape.security.PrivilegeManager
+                    .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+        }
+        
+        var header_params = this.getAuthorizationHeaderParameters();
+        
+        var request = new OAuthRequest({
+            method : method,
+            url : url,
+            query : query,
+            authorization_header_params : header_params
+        });
+        
+        var signature = new OAuthConsumer.signatureMethods[this.signature_method]()
+                .sign(request, this.getConsumerToken().secret, this
+                        .getAccessToken().secret);
+        
+        request.setAuthorizationHeaderParam('oauth_signature', signature);
+        
+        var header_string = 'OAuth ' + request.toHeaderString();
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open(request.getMethod(), request.getUrl(), false);
+        xhr.setRequestHeader('Authorization', header_string);
+        
+        xhr.onreadystatechange = function (event) {
+            if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+                callback(xhr);
+            }
+        };
+        
+        xhr.send(request.toQueryString());
+    };
+	
 	// Hooks
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
 	this.onInitialized = function (options) {
 		var self = this;
 		var mask = document.createElement('div'), dom_string = ''; 
@@ -301,21 +344,24 @@ function OAuthConsumer(options) {
 		dom_string += '</div>';
 		
         mask.innerHTML = dom_string;
-		document.getElementById('oauth-authorize-submit').onclick = function(){
+		var button = document.getElementById('oauth-authorize-submit');
+		button.onclick = function (event) {
 			self.authorize();
 		};
 	};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onBeforeAuthorize         = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onBeforeAuthorize         = function (options) {/* stub */};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
 	this.onAuthorization = function (options) {
         var self = this;
         var mask = document.getElementById('mask'), dom_string = ''; 
@@ -341,46 +387,53 @@ function OAuthConsumer(options) {
     };
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onDeauthorization         = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onDeauthorization         = function (options) {/* stub */};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onAuthorized              = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onAuthorized              = function (options) {/* stub */};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onDeauthorized            = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onDeauthorized            = function (options) {/* stub */};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onRequestTokenSuccess     = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onRequestTokenSuccess     = function (options) {/* stub */};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onRequestTokenFailure     = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onRequestTokenFailure     = function (options) {/* stub */};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onAccessTokenSuccess      = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onAccessTokenSuccess      = function (options) {/* stub */};
 	
 	/**
-	 * 
-	 * @param {Object|undefined} options
-	 */
-	this.onAccessTokenFailure      = function (options) {/*stub*/};
+     * 
+     * @param {Object|undefined}
+     *            options
+     */
+	this.onAccessTokenFailure      = function (options) {/* stub */};
     
     if (arguments.length > 0) {
         this.init(options);

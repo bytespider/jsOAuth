@@ -106,18 +106,6 @@ if (typeof fireunit != 'undefined') {
     
     fireunit.compare('effcdf6ae5eb2fa2d27416d5f184df9c259a7c79', HMAC_SHA1('Jefe', 'what do ya want for nothing?'), 'HMAC-SHA1');
     
-    
-    fireunit.ok(jsOAuth.Service.Dummy, 'jsOAuth.Service.Dummy is a class');
-    
-    var jsOAuthDummy = jsOAuth.Service.Dummy(key, secret, null);
-    fireunit.ok(jsOAuthDummy instanceof jsOAuth.Service.Dummy, 'jsOAuthDummy instanceof jsOAuth.Service.Dummy');
-    
-    fireunit.ok(jsOAuthDummy.getRequestToken, 'jsOAuthDummy has getRequestToken method');
-    fireunit.ok(jsOAuthDummy.requestAuthorization, 'jsOAuthDummy has requestAuthorization method');
-    fireunit.ok(jsOAuthDummy.getAccessToken, 'jsOAuthDummy has getAccessToken method');
-    
-    //jsOAuthDummy.getRequestToken();
-    
     fireunit.testDone();
 }
 
