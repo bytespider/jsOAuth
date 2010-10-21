@@ -15,7 +15,7 @@ in Adobe AIR and Appcelerator Titanium projects.
   * Single authorisation entry-point
   * Debug mode for testing localy in Firefox, see index.html for example
 
-Released under the GPLv3. Please see LICENSE in the project root folder for more
+Released under the MIT. Please see LICENSE in the project root folder for more
 information.
 
 ## Building
