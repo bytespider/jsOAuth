@@ -112,13 +112,13 @@ function OAuthConsumer(options) {
      * @method
      * @return {OAuthToken} consumer_token
      */
-	this.getConsumerToken = function () {return _private.consumer_token};
+	this.getConsumerToken = function () {return _private.consumer_token;};
 	
     /**
      * @method
      * @return {OAuthToken} access_token
      */
-	this.getAccessToken = function () {return _private.access_token};
+	this.getAccessToken = function () {return _private.access_token;};
 	
     /**
      * @method
