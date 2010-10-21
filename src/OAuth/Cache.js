@@ -22,5 +22,5 @@ function OAuthCache(options) {
     
     this.toString = function () {
         return cache_data;
-    }
+    };
 }
