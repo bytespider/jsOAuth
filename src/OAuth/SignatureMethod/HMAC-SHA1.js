@@ -19,3 +19,4 @@ OAuthSignatureMethodHMACSHA1.prototype = new OAuthSignatureMethod();
 
 OAuthConsumer.signatureMethods['HMAC-SHA1'] = OAuthSignatureMethodHMACSHA1;
 
+JS.OAuthSignatureMethodHMACSHA1 = OAuthSignatureMethodHMACSHA1;

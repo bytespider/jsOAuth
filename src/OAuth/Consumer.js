@@ -439,3 +439,5 @@ function OAuthConsumer(options) {
 
 
 OAuthConsumer.signatureMethods = {};
+
+JS.OAuthConsumer = OAuthConsumer;

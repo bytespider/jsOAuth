@@ -34,3 +34,5 @@ function OAuthCookie(name, expires, path) {
     
     return this;
 }
+
+JS.OAuthCookie = OAuthCookie;

@@ -12,3 +12,5 @@ function OAuthSignatureMethodPlaintext() {
 OAuthSignatureMethodPlaintext.prototype = new OAuthSignatureMethod();
 
 OAuthConsumer.signatureMethods['PLAINTEXT'] = OAuthSignatureMethodPlaintext;
+
+JS.OAuthSignatureMethodPlaintext = OAuthSignatureMethodPlaintext;

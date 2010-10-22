@@ -24,3 +24,5 @@ function OAuthCache(options) {
         return cache_data;
     };
 }
+
+JS.OAuthCache = OAuthCache;

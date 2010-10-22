@@ -11,3 +11,5 @@ function OAuthToken(key, secret) {
         alert(this);
     };
 }
+
+JS.OAuthToken = OAuthToken;

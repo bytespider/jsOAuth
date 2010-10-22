@@ -8,3 +8,5 @@ OAuthSignatureMethod.prototype = {
         return this.name;
     }
 };
+
+JS.OAuthSignatureMethod = OAuthSignatureMethod;
