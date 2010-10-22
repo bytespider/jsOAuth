@@ -88,3 +88,5 @@ OAuthCryptoSHA1.prototype.hash = function (m) {
         }
     }
 };
+
+JS.OAuthCryptoSHA1 = OAuthCryptoSHA1;

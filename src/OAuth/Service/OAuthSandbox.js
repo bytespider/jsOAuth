@@ -38,4 +38,4 @@ function OAuthServiceOAuthSandbox(options) {
     }
 }
 
-OAuthServiceOAuthSandbox.prototype = new OAuthService();
+OAuthServiceOAuthSandbox.prototype = new JS.OAuthService();

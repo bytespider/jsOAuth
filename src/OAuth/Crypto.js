@@ -85,3 +85,5 @@ OAuthCrypto.byteArrayToString = function (byteArray) {
 OAuthCrypto.leftrotate = function (value, shift) {
     return (value << shift) | (value >>> (32 - shift));
 };
+
+JS.OAuthCrypto = OAuthCrypto;

@@ -23,3 +23,5 @@ OAuthUtilities.urlDecode = function(string){
 		return String.fromCharCode(parseInt(match.replace('%', ''), 16));
 	});
 };
+
+JS.OAuthUtilities = OAuthUtilities;

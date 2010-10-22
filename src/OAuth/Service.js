@@ -20,3 +20,5 @@ function OAuthService(options) {
 }
 
 OAuthService.prototype = new OAuthConsumer();
+
+JS.OAuthService = OAuthService;

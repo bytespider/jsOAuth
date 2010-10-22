@@ -204,3 +204,5 @@ function OAuthRequest(options) {
         this.init(options);
     }
 }
+
+JS.OAuthRequest = OAuthRequest;
