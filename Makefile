@@ -12,6 +12,8 @@ SRC_FILES = ${SRC_DIR}/start.js \
 	${SRC_DIR}/OAuth/Cookie.js \
 	${SRC_DIR}/OAuth/Request.js \
 	${SRC_DIR}/OAuth/Consumer.js \
+	${SRC_DIR}/OAuth/Crypto.js \
+	${SRC_DIR}/OAuth/Crypto/SHA1.js \
 	${SRC_DIR}/OAuth/SignatureMethod.js \
 	${SRC_DIR}/OAuth/SignatureMethod/Plaintext.js \
 	${SRC_DIR}/OAuth/SignatureMethod/HMAC-SHA1.js \
