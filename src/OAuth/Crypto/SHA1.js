@@ -1,6 +1,6 @@
 OAuthCryptoSHA1 = function (message) {
     if (arguments.length > 0) {
-        m = OAuthCrypto.stringToByteArray(message);
+        var m = OAuthCrypto.stringToByteArray(message);
         var crypto = new OAuthCryptoSHA1();
         var digest = crypto.hash(m);
         return OAuthCrypto.byteArrayToHex(digest);
@@ -13,7 +13,7 @@ OAuthCryptoSHA1.prototype.hash = function (m) {
     var H = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0];
     var K = [0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6];
     
-    var m, l;
+    var l;
     
     if (m.constructor === String) {
         m = stringToByteArray(m);
@@ -27,7 +27,7 @@ OAuthCryptoSHA1.prototype.hash = function (m) {
         ((l * 8) << 24) & 0xFF,
         ((l * 8) << 16) & 0xFF,
         ((l * 8) << 8) & 0xFF,
-        (l * 8) & 0xFF,
+        (l * 8) & 0xFF
     ];
     
     var ml = [0, 0, 0, (l * 8)];
