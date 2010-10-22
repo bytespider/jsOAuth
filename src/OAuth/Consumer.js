@@ -294,34 +294,29 @@ function OAuthConsumer(options) {
                     .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         }
         
-        var header_params = this.getAuthorizationHeaderParameters();
-        
-        var request = new OAuthRequest({
-            method : method,
-            url : url,
-            query : query,
-            authorization_header_params : header_params
+        var request = this.getSignedRequest({
+            method: method,
+            url: url,
+            query: query
         });
-        
-        var signature = new OAuthConsumer.signatureMethods[this.signature_method]()
-                .sign(request, this.getConsumerToken().secret, this
-                        .getAccessToken().secret);
-        
-        request.setAuthorizationHeaderParam('oauth_signature', signature);
-        
-        var header_string = 'OAuth ' + request.toHeaderString();
         
         var xhr = new XMLHttpRequest();
         xhr.open(request.getMethod(), request.getUrl(), false);
-        xhr.setRequestHeader('Authorization', header_string);
         
-        xhr.onreadystatechange = function (event) {
-            if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-                callback(xhr);
-            }
+        var request_headers = request.getRequestHeaders();
+        for (var header in request_headers) {
+            xhr.setRequestHeader(header, request_headers[header]);
+        }
+        
+        if (request.getMethod() === 'POST') {
+            xhr.send(request.toQueryString());
+        } else {
+            xhr.send(null);
+        }
+        
+        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+            callback(xhr);
         };
-        
-        xhr.send(request.toQueryString());
     };
 	
 	// Hooks
@@ -381,6 +376,8 @@ function OAuthConsumer(options) {
              var code = document.getElementById('verification').value;
              self.setOAuthVerifier(code);
              self.fetchAccessToken();
+             
+             mask.parentNode.removeChild(mask);
         };
 		
 		window.open(options.url);

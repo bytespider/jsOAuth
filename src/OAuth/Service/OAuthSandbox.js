@@ -21,7 +21,7 @@ function OAuthServiceOAuthSandbox(options) {
         this.authenticatedRequest(
                 'http://oauth-sandbox.sevengoslings.net/two_legged', 'GET', {},
                 function(data) {
-                    console.log(data);
+                    alert(data.responseText);
                 });
     };
     
@@ -29,7 +29,7 @@ function OAuthServiceOAuthSandbox(options) {
         this.authenticatedRequest(
                 'http://oauth-sandbox.sevengoslings.net/three_legged', 'GET', {},
                 function(data) {
-                    console.log(data);
+                    alert(data.responseText);
                 });
     };
     

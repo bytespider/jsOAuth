@@ -3,8 +3,9 @@ function OAuthUtilities() {}
 OAuthUtilities.urlEncode = function(string){
     if (!string) return '';
     
+    string = string + '';
     var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/, 
-        string = string + '', str_len = string.length, i, string_arr = string.split('');
+        str_len = string.length, i, string_arr = string.split('');
                           
     for (i = 0; i < str_len; i++) {
         if (string_arr[i].match(reserved_chars)) {

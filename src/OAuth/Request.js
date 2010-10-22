@@ -155,7 +155,7 @@ function OAuthRequest(options) {
     };
 	
     this.toQueryString = function () {
-		var arr = [], qp = this.getQueryParams();
+		var arr = [], qp = this.getQueryParams(), i;
 		for (i in qp) {
 				if (qp[i] && qp[i] != undefined) {
 					arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(qp[i]+''));
@@ -166,7 +166,7 @@ function OAuthRequest(options) {
     };
 	
 	 this.toHeaderString = function () {
-		var arr = [], hp = this.getAuthorizationHeaderParams();
+		var arr = [], hp = this.getAuthorizationHeaderParams(), i;
 		for (i in hp) {
             if (hp[i] && hp[i] != undefined) {
 				arr.push(i + '="' + OAuthUtilities.urlEncode(hp[i]) + '"');
@@ -177,7 +177,7 @@ function OAuthRequest(options) {
     };
 	
     this.toSignatureBaseString = function () {
-		var arr = [];
+		var arr = [], i;
 		
 		for (i in oauth_header_params) {
 				if (oauth_header_params[i] && oauth_header_params[i] != undefined) {
@@ -186,7 +186,9 @@ function OAuthRequest(options) {
 		}
 		for (i in query_params) {
 				if (query_params[i] && query_params[i] != undefined) {
-					arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(query_params[i]+''));
+				    if (!oauth_header_params[i]) {
+				        arr.push(OAuthUtilities.urlEncode(i) + '=' + OAuthUtilities.urlEncode(query_params[i]+''));
+				    }
 				}
 		}
 		
