@@ -7,7 +7,14 @@ function OAuthSignatureMethodHMACSHA1() {
         var passphrase = consumer_secret + '&' + token_secret;
 
 		var signature_base = request.toSignatureBaseString();
+		
+        var crypto = new OAuthCryptoSHA1();
+        var signature = crypto.HMAC(consumer_secret + '&' + token_secret, signature_base);
+        //console.log(signature);
+        
         var signature = Crypto.HMAC(Crypto.SHA1, signature_base, consumer_secret + '&' + token_secret, {asString: true});
+        console.log(signature);
+        
 		
         return btoa(signature);
     };
