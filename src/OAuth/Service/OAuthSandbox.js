@@ -10,7 +10,7 @@ function OAuthServiceOAuthSandbox(options) {
         parent.init.apply(this, arguments);
     };
     
-    this.signature_method = 'PLAINTEXT';
+    this.signature_method = 'HMAC-SHA1';
     
     this.realm = 'http://oauth-sandbox.sevengoslings.net/';
     this.requestTokenUrl = this.realm + 'request_token';
