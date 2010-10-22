@@ -20,8 +20,6 @@ information.
 
 ## Building
 
-**Currently building does not work**
-
 To build jsOAuth, simply type `make` from the command line.
 
 To start over once you have already built a copy, type `make clean` to delete
