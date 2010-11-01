@@ -10,9 +10,10 @@ DEST_DIR = ${DIST_DIR}
 SRC_FILES = ${SRC_DIR}/start.js \
 	${SRC_DIR}/OAuth/Consumer.js \
 	${SRC_DIR}/OAuth/Crypto.js \
-	${SRC_DIR}/end.js
+	${SRC_DIR}/end.js \
+	${SRC_DIR}/OAuth/Base64.js
 
-	
+
 VERSION = ${shell cat Version}
 TIMESTAMP = ${shell git log -1 . | grep Date: | sed 's/.*: //g'}
 REVISION = ${shell git rev-list --max-count=1 --all}
@@ -35,12 +36,12 @@ ${DIST_DIR}:
 
 ${JSOA_DEBUG}: ${SRC_FILES}
 	@@echo "Building" ${JSOA_DEBUG}
-	
+
 	@@cat ${SRC_FILES} | \
 		${REV} | \
 		${DATE} | \
 		${VER} > ${JSOA_DEBUG}
-	
+
 	@@echo "Build complete."
 	@@echo ""
 
@@ -48,9 +49,9 @@ ${JSOA_PRODUCTION}: ${JSOA_DEBUG}
 	@@echo "Versioning" ${JSOA_PRODUCTION}
 	@@echo "	Date:" ${TIMESTAMP}
 	@@echo "	Revision:" ${REVISION}
-	
+
 	@@cat ${JSOA_DEBUG} > ${JSOA_PRODUCTION}
-	
+
 	@@echo "Vesioning complete."
 	@@echo ""
 
