@@ -1,2 +1,3 @@
-    
+
+    global['OAuth'] = OAuth;    
 })(this);
