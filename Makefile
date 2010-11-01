@@ -8,18 +8,10 @@ TESTS_DIR = ${PREFIX}/tests
 DEST_DIR = ${DIST_DIR}
 
 SRC_FILES = ${SRC_DIR}/start.js \
-	${SRC_DIR}/OAuth/Token.js \
-	${SRC_DIR}/OAuth/Cookie.js \
-	${SRC_DIR}/OAuth/Request.js \
 	${SRC_DIR}/OAuth/Consumer.js \
 	${SRC_DIR}/OAuth/Crypto.js \
-	${SRC_DIR}/OAuth/Crypto/SHA1.js \
-	${SRC_DIR}/OAuth/SignatureMethod.js \
-	${SRC_DIR}/OAuth/SignatureMethod/Plaintext.js \
-	${SRC_DIR}/OAuth/SignatureMethod/HMAC-SHA1.js \
-	${SRC_DIR}/OAuth/Service.js \
-	${SRC_DIR}/OAuth/Utilities.js \
 	${SRC_DIR}/end.js
+
 	
 VERSION = ${shell cat Version}
 TIMESTAMP = ${shell git log -1 . | grep Date: | sed 's/.*: //g'}
@@ -67,8 +59,8 @@ ${JSOA_PRODUCTION_COMPILED}: ${JSOA_PRODUCTION}
 	@java -jar ${BUILD_DIR}/closure-compiler/compiler.jar \
 	   --js ${JSOA_PRODUCTION} \
 	   --js_output_file ${JSOA_PRODUCTION_COMPILED} \
-	   --compilation_level ADVANCED_OPTIMIZATIONS \
-	   --output_js_string_usage
+	   --charset UTF-8 \
+	   --compilation_level ADVANCED_OPTIMIZATIONS
 	@@echo "Compile complete."
 	@@echo ""
 
