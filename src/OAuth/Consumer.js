@@ -1,443 +1,220 @@
-/**
- * Core OAuth consumer client
- * 
- * @constructor
- * 
- * @param {Object}
- *            options
- * @return {OAuthConsumer}
- */
-function OAuthConsumer(options) {  
-    var OAUTH_VERSION = '1.0';
-	
-	// private variables prepended with _ as private is a protected word
-    var _private = {
-		debug: false,
-		cookie: null,
-		consumer_token: null,
-		access_token: null,
-		oauth_verifier: '',
-		oauth_callback_url: 'oob',
-		xoauth_displayname: ''
-	};
-	
-	// Properties
-    this.signature_method = 'PLAINTEXT';
-    
-	// Methods
-	/**
-     * @method
-     * @param {Object|undefined}
-     *            options
-     * 
-     */
-    this.init = function (options) {
- 		_private.debug = 'debug' in options ? options.debug : _private.debug;
-        _private.consumer_token = new OAuthToken(options.consumer_key, options.consumer_secret);
-        _private.access_token = new OAuthToken(options.token_key, options.token_secret);
-
-        _private.oauth_callback_url = options.callback_url || _private.oauth_callback_url;
-
-        _private.oauth_verifier = options.oauth_verifier || '';
-        _private.xoauth_displayname = options.displayname || '';
-        
-        this.onAuthorized = options.onAuthorized || this.onAuthorized;
-        
-		
-        _private.cookie = new OAuthCookie('oauth_token');
-        var values = _private.cookie.getValue();
-        if (values) {
-            values = values.split('|');
-			this.getAccessToken().set(values[0], values[1]);
-			_private.oauth_verifier = values[2];
-			this.onAuthorized.apply(this, [{}]);
-		} else {
-			this.onInitialized.apply(this, [{}]);
-		}
-		
-    };
+    /** @const */ var OAUTH_VERSION = '1.0';
     
     /**
-     * @method
-     * @param {Object|undefined}
-     *            options
+     * OAuth
+     * @constructor
      */
-    this.authorize = function () {
-        if (!(_private.access_token.key && _private.access_token.secret)) {
-            // need to get a access token
-            this.fetchRequestToken();
-        }
-        
-        if (_private.access_token.key && _private.access_token.secret && !_private.oauth_verifier) {
-			this.onAuthorization.apply(this, [
-                {
-                    url: this.getAuthorizeTokenUrl()
-                }
-			]);
-        }
-        
-        if(_private.access_token.key && _private.access_token.secret && _private.oauth_verifier) {
-            this.onAuthorized.apply(this, [{}]);
-        }
-    };
+    function OAuth(options) {
+	if (window === this) {
+	    return new OAuth(options);
+	}
 	
-    /**
-     * @method
-     */
-	this.deauthorize = function () {
-        this.onDeauthorized.apply(this, [{}]);
-    };
-    
-    /**
-     * @method
-     */
-	this.getRequestParameters = function () {return {};};
-	
-    /**
-     * @method
-     * @return {String} oauth_verifier
-     */
-	this.getOAuthVerifier = function () {return _private.oauth_verifier;};
-	
-    /**
-     * @method
-     * @param {String}
-     *            oauth_verifier
-     */
-	this.setOAuthVerifier = function (oauth_verifier) {
-		_private.oauth_verifier = oauth_verifier;
-    };
-	
-    /**
-     * @method
-     * @return {OAuthToken} consumer_token
-     */
-	this.getConsumerToken = function () {return _private.consumer_token;};
-	
-    /**
-     * @method
-     * @return {OAuthToken} access_token
-     */
-	this.getAccessToken = function () {return _private.access_token;};
-	
-    /**
-     * @method
-     */
-    this.getAuthorizationHeaderParameters = function () {
-        return {
-            oauth_callback          : _private.oauth_callback_url,
-            oauth_consumer_key      : this.getConsumerToken().key,
-            oauth_token             : this.getAccessToken().key,
-            oauth_signature_method  : this.signature_method + '',
-            oauth_verifier          : this.getOAuthVerifier(),
-            oauth_version           : OAUTH_VERSION,
-            xoauth_displayname      : _private.xoauth_displayname
-        };
-    };
-   
-    /**
-     * @method
-     */
-    this.fetchRequestToken = function () {
-        if (_private.debug) {
-            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-        }
-        
-		var request = this.getSignedRequest({
-			method: 'POST',
-			url: this.requestTokenUrl,
-			query: this.getRequestParameters()
-		});
-
-
-        var xhr = new XMLHttpRequest();
-        xhr.open(request.getMethod(), request.getUrl(), false);
-		
-		var request_headers = request.getRequestHeaders();
-		for (var header in request_headers) {
-			xhr.setRequestHeader(header, request_headers[header]);
-		}
-		
-		if (request.getMethod() === 'POST') {
-            xhr.send(request.toQueryString());
-		} else {
-	        xhr.send(null);
-		}
-		
-        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-            var token_string_params = xhr.responseText.split('&');
-            for (var i = 0; i < token_string_params.length; i++) {
-                var param = token_string_params[i].split('=');
-                if (param[0] == 'oauth_token') {
-                    this.getAccessToken().key = OAuthUtilities.urlDecode(param[1]);
-                }
-                if (param[0] == 'oauth_token_secret') {
-                    this.getAccessToken().secret = OAuthUtilities.urlDecode(param[1]);
-                }
-            }
-        }
-        
-        return this;
-    };
-
-    /**
-     * @method
-     */
-    this.getAuthorizeTokenUrl = function () {
-        if (_private.debug) {
-            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-        }
-		
-		var request = new OAuthRequest({
-            method: 'GET', 
-			url: this.authorizationUrl, 
-			query: {oauth_token: this.getAccessToken().key}
-        });
-        
-        return request + '';
-    };
-    
-    /**
-     * @method
-     */
-    this.fetchAccessToken = function () {
-        if (_private.debug) {
-            netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-        }
-		
-        var request = this.getSignedRequest({
-            method: 'POST',
-            url: this.accessTokenUrl,
-            query: {oauth_verifier: this.getOAuthVerifier()}
-        });
-
-
-        var xhr = new XMLHttpRequest();
-        xhr.open(request.getMethod(), request.getUrl(), false);
-        
-        var request_headers = request.getRequestHeaders();
-        for (var header in request_headers) {
-            xhr.setRequestHeader(header, request_headers[header]);
-        }
-        
-        if (request.getMethod() === 'POST') {
-            xhr.send(request.toQueryString());
-        } else {
-            xhr.send(null);
-        }
-        
-        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-            // oauth_token=hh5s93j4hdidpola&oauth_token_secret=hdhd0244k9j7ao03&
-            var token_string_params = xhr.responseText.split('&');
-            for (var i = 0; i < token_string_params.length; i++) {
-                var param = token_string_params[i].split('=');
-                if (param[0] == 'oauth_token') {
-                    this.getAccessToken().key = OAuthUtilities.urlDecode(param[1]);
-                }
-                if (param[0] == 'oauth_token_secret') {
-                    this.getAccessToken().secret = OAuthUtilities.urlDecode(param[1]);
-                }
-            }
-			
-			if (_private.cookie != undefined) {
-				_private.cookie.setValue(this.getAccessToken().key + '|' + this.getAccessToken().secret + '|' + this.getOAuthVerifier());
-			}
-        }
-		this.authorize();
-        
-        return this;
-    };
-    
-    /**
-     * @param {String}
-     *            display_name
-     */
-	this.setDisplayName = function (display_name) {
-		_private.xoauth_displayname = display_name;
-	};
-	
-	/**
-     * @return {String} xoauth_displayname
-     */
-	this.getDisplayName = function () {
-		return _private.xoauth_displayname;
-	};
-	
-	this.getSignedRequest = function (options) {
-		var header_params = this.getAuthorizationHeaderParameters();
-        
-		if (options instanceof OAuthRequest) {
-			var request = options;
-		} else {
-			var request = new OAuthRequest({
-				method: options.method, 
-				url: options.url,
-				query: options.query,
-				authorization_header_params: header_params
-			});
-		}
-		
-        var signature = new OAuthConsumer.signatureMethods[this.signature_method]().sign(
-            request, this.getConsumerToken().secret, this.getAccessToken().secret
-        );
-		
-		request.setAuthorizationHeaderParam('oauth_signature', signature);
-		
-		request.setRequestHeader('Authorization', 'OAuth ' + request.toHeaderString());
-		
-		return request;
-	};
-	
-	this.authenticatedRequest = function(url, method, query, callback) {
-        if (_private.debug) {
-            netscape.security.PrivilegeManager
-                    .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-        }
-        
-        var request = this.getSignedRequest({
-            method: method,
-            url: url,
-            query: query
-        });
-        
-        var xhr = new XMLHttpRequest();
-        xhr.open(request.getMethod(), request.getUrl(), false);
-        
-        var request_headers = request.getRequestHeaders();
-        for (var header in request_headers) {
-            xhr.setRequestHeader(header, request_headers[header]);
-        }
-        
-        if (request.getMethod() === 'POST') {
-            xhr.send(request.toQueryString());
-        } else {
-            xhr.send(null);
-        }
-        
-        if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-            callback(xhr);
-        };
-    };
-	
-	// Hooks
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onInitialized = function (options) {
-		var self = this;
-		var mask = document.createElement('div'), dom_string = ''; 
-		mask.setAttribute('id', 'mask');
-		document.body.appendChild(mask);
-		
-        // display a popup to request login
-		dom_string += '<div id="login" class="popup">';
-		dom_string += '<p>When you click the button below, a browser window will open ';
-		dom_string += 'where you can login and authorize this application.</p>';
-		dom_string += '<input id="oauth-authorize-submit" type="button" value="Login and Authorize">';
-		dom_string += '</div>';
-		
-        mask.innerHTML = dom_string;
-		var button = document.getElementById('oauth-authorize-submit');
-		button.onclick = function (event) {
-			self.authorize();
-		};
-	};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onBeforeAuthorize         = function (options) {/* stub */};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onAuthorization = function (options) {
-        var self = this;
-        var mask = document.getElementById('mask'), dom_string = ''; 
-        mask.removeChild(mask.firstChild);
-        
-        // display a popup to request login
-        dom_string += '<div id="start-app" class="popup">';
-        dom_string += '<p>Once you have logged in and authorized this ';
-        dom_string += 'application with your browser, please enter the provided ';
-        dom_string += 'code and click the button below.</p>';
-        dom_string += '<input id="verification" type="text" placeholder="enter code">';
-        dom_string += '<input id="oauth-authorize-submit" type="button" value="Start application">';
-        dom_string += '</div>';
-        
-        mask.innerHTML = dom_string;
-        document.getElementById('oauth-authorize-submit').onclick = function(){
-             var code = document.getElementById('verification').value;
-             self.setOAuthVerifier(code);
-             self.fetchAccessToken();
-             
-             mask.parentNode.removeChild(mask);
-        };
-		
-		window.open(options.url);
-    };
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onDeauthorization         = function (options) {/* stub */};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onAuthorized              = function (options) {/* stub */};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onDeauthorized            = function (options) {/* stub */};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onRequestTokenSuccess     = function (options) {/* stub */};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onRequestTokenFailure     = function (options) {/* stub */};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onAccessTokenSuccess      = function (options) {/* stub */};
-	
-	/**
-     * 
-     * @param {Object|undefined}
-     *            options
-     */
-	this.onAccessTokenFailure      = function (options) {/* stub */};
-    
-    if (arguments.length > 0) {
-        this.init(options);
+	return this.init(options);
     }
-}
+    
+    OAuth.prototype = {
+	init: function (options) {
+	    var oauth = {
+		debug: options.debug || false,
+		consumerKey: options.consumerKey,
+		consumerSecret: options.consumerSecret,
+		accessTokenSecret: options.accessTokenSecret || '',
+		signatureMethod: options.signatureMethod || 'HMAC-SHA1'
+	    };
+	    
+	    this.request = function (options) {
+		var method, url, data, headers, success, failure, xhr, i,
+		    headerParams, signatureMethod, signatureString, signature,
+		    query;
+		
+		method = options.method || 'GET';
+		url = options.url;
+		data = options.data || {};
+		headers = options.headers || {};
+		success = options.success || function (data) {};
+		failure = options.failure || function () {};
+		
+		if (oauth.debug) {
+		    netscape.security.PrivilegeManager
+			    .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+		}
+		
+		xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function () {
+		    if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
+			success(xhr.responseText);
+		    } else if(xhr.readyState == 4 && xhr.status != 200 && xhr.status != 0) {
+			failure();
+		    }
+		};
+		
+		
+		for(i in data) {
+		    query.push(i + '=' + data[i]);
+		}
+		
+		headerParams = {
+		    'oauth_callback': 'oob',
+		    'oauth_consumer_key': oauth.consumerKey,
+		    'oauth_token': oauth.accessTokenSecret,
+		    'oauth_signature_method': oauth.signatureMethod,
+		    'oauth_timestamp': getTimestamp(),
+		    'oauth_nonce': getNonce(),
+		    'oauth_verifier': oauth.verifier || '',
+		    'oauth_version': OAUTH_VERSION
+		};
+		
+		signatureMethod = oauth.signatureMethod;
+		signatureString = toSignatureBaseString(method, url, headerParams, query);
+		signature = OAuth['signatureMethod'][signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
+		
+		headerParams.oauth_signature = signature;
+		
+		query = query.join('&');
+		if(method == 'GET') {
+		    if (query) {
+			url += '?' + query;
+		    }
+		    query = null;
+		} else {
+		    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		}
+		
+		xhr.open(method, url, true);
+		
+		xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(headerParams));
+		xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+		for (i in headers) {
+		    xhr.setRequestHeader(i, headers[i]);
+		}
+		
+		xhr.send(query);
+	    }
+	},
+	
+	authenticate: function (options) {},
+	deauthenticate: function (options) {},
+	
+	request: '',
+	
+	get: function (url, success, failure) {
+	    this.request({'url': url, 'success': success, 'failure': failure});
+	},
+	post: function (url, success, failure) {
+	    this.request({'method': 'POST', 'url': url, 'success': success, 'failure': failure});
+	},
+	getJSON: function (url, success, failure) {
+	    this.get(url, function (json) {
+		success(JSON.parse(json));
+	    } , failure);
+	},
+	getXML: function (url, success, failure) {/* noop */}
+    };
+    
+    OAuth.signatureMethod = {
+	'HMAC-SHA1': function (consumer_secret, token_secret, signature_base) {
+	    var passphrase, signature;
+	    
+	    consumer_secret = OAuth.urlEncode(consumer_secret);
+	    token_secret = OAuth.urlEncode(token_secret || '');
+	    
+	    passphrase = consumer_secret + '&' + token_secret;
+	    signature = HMAC(SHA1(), passphrase, signature_base);
+	    
+	    return btoa(signature);
+	}
+    };
+    
+    function toHeaderString(params) {
+	var arr = [], i;
+	for (i in params) {
+            if (params[i] && params[i] != undefined && params[i] != '') {
+		arr.push(i + '="' + OAuth.urlEncode(params[i]) + '"');
+            }
+	}
+		
+	return arr.join(', ');
+    }
+    
+    function toSignatureBaseString(method, url, header_parms, query_params) {
+	var arr = [], i;
+		
+	for (i in header_parms) {
+	    if (header_parms[i] && header_parms[i] != undefined) {
+		arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(header_parms[i]+''));
+	    }
+	}
+	for (i in query_params) {
+	    if (query_params[i] && query_params[i] != undefined) {
+		if (!oauth_header_params[i]) {
+		    arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(query_params[i]+''));
+		}
+	    }
+	}
+		
+        return [
+            method, 
+            OAuth.urlEncode(url), 
+            OAuth.urlEncode(arr.sort().join('&'))
+        ].join('&');
+    }
+    
+    function getTimestamp() {
+        return parseInt(+new Date / 1000, 10); // use short form of getting a timestamp
+    };
+    
+    function getNonce(key_length) {
+        key_length = key_length || 64;
+        
+        var key_bytes = key_length / 8, value = '', key_iter = key_bytes / 4,
+	    key_remainder = key_bytes % 4, i,
+	    chars = ['20', '21', '22', '23', '24', '25', '26', '27', '28', '29', 
+                     '2A', '2B', '2C', '2D', '2E', '2F', '30', '31', '32', '33', 
+                     '34', '35', '36', '37', '38', '39', '3A', '3B', '3C', '3D', 
+                     '3E', '3F', '40', '41', '42', '43', '44', '45', '46', '47', 
+                     '48', '49', '4A', '4B', '4C', '4D', '4E', '4F', '50', '51', 
+                     '52', '53', '54', '55', '56', '57', '58', '59', '5A', '5B', 
+                     '5C', '5D', '5E', '5F', '60', '61', '62', '63', '64', '65', 
+                     '66', '67', '68', '69', '6A', '6B', '6C', '6D', '6E', '6F', 
+                     '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', 
+                     '7A', '7B', '7C', '7D', '7E'];
+        
+        for (i = 0; i < key_iter; i++) {
+            value += chars[rand()] + chars[rand()] + chars[rand()]+ chars[rand()];
+        }
+        
+        // handle remaing bytes
+        for (i = 0; i < key_remainder; i++) {
+            value += chars[rand()];
+        }
+	
+	function rand() {
+	    return Math.floor(Math.random() * chars.length);
+	}
+	
+	return value;
+    };
+    
+    OAuth.urlEncode = function (string) {
+	if (!string) return '';
+	
+	string = string + '';
+	var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/, 
+        str_len = string.length, i, string_arr = string.split('');
+                          
+	for (i = 0; i < str_len; i++) {
+	    if (string_arr[i].match(reserved_chars)) {
+		string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
+	    }
+	}
+    
+	return string_arr.join('');
+    };
 
-
-OAuthConsumer.signatureMethods = {};
-
-JS.OAuthConsumer = OAuthConsumer;
+    OAuth.urlDecode = function (string){
+	if (!string) return '';
+    
+	return string.replace(/%[a-fA-F0-9]{2}/ig, function (match) {
+	    return String.fromCharCode(parseInt(match.replace('%', ''), 16));
+	});
+    };
