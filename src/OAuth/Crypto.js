@@ -1,89 +1,184 @@
-
-function OAuthCrypto() {}
-
-OAuthCrypto.prototype = {
-    /**
-     *
-     * @param key string
-     * @param message string
-     */
-    HMAC: function (key, message) {
-        var k = OAuthCrypto.stringToByteArray(key);
-        var m = OAuthCrypto.stringToByteArray(message);
+    function SHA1(message) {
+	if (window === this) {
+	    return new SHA1(message);
+	}
+	
+	if (arguments.length > 0 && message != undefined) {
+	    var m = message, crypto, digest;
+	    if (m.constructor === String) {
+		m = stringToByteArray(m);
+	    }
+	    
+	    crypto = new SHA1();
+	    digest = crypto.hash(m);
+	    
+	    return byteArrayToHex(digest);
+	}
+	
+	return this;
+    }
+    
+    SHA1.prototype = new SHA1();
+    SHA1.prototype.blocksize = 64;
+    SHA1.prototype.hash = function (m) {
+	var H = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0],
+	    K = [0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6],
+	    l, pad, ml, blocks, b, block, bl, w, i, A, B, C, D, E, t, n, TEMP;
+	
+	
+	if (m.constructor === String) {
+	    m = stringToByteArray(m);
+	}
+	
+	l = m.length;
+	
+	pad = (Math.ceil((l + 9) / this.blocksize) * this.blocksize) - (l + 9);
+	
+	/*ml = [
+	    ((l * 8) << 24) & 0xFF,
+	    ((l * 8) << 16) & 0xFF,
+	    ((l * 8) << 8) & 0xFF,
+	    (l * 8) & 0xFF
+	];*/
+	
+	ml = [0, 0, 0, (l * 8)];
+	
+	m = m.concat([0x80], zeroPad(pad), [0, 0, 0, 0], ml);
+    
+	blocks = Math.ceil(m.length / this.blocksize);
+	
+	for (b = 0; b < blocks; b++) {
+	    block = m.slice(b * this.blocksize, (b+1) * this.blocksize);
+	    bl = block.length;
+	    
+	    w = [];
+	    
+	    for (i = 0; i < bl; i++) {
+		w[i >>> 2] |= block[i] << (24 - (i - ((i >> 2) * 4)) * 8);
+	    }
+	    
+	    A = H[0];
+	    B = H[1];
+	    C = H[2];
+	    D = H[3];
+	    E = H[4];
+	    
+	    for (t=0; t < 80; t++) {
+		if (t >= 16) {
+		    w[t] = leftrotate(w[t-3] ^ w[t-8] ^ w[t-14] ^ w[t-16], 1);
+		}
+		
+		n = Math.floor(t / 20);
+		TEMP = leftrotate(A, 5) + fn(n, B, C, D) + E + K[n] + w[t];
+		
+		E = D;
+		D = C;
+		C = leftrotate(B, 30);
+		B = A;
+		A = TEMP;
+	    }
+	    
+	    H[0] += A;
+	    H[1] += B;
+	    H[2] += C;
+	    H[3] += D;
+	    H[4] += E;
+	}
+	
+	function fn(t, B, C, D) {
+	    switch (t) {
+		case 0: 
+		    return (B & C) | ((~B) & D);
+		case 1: 
+		case 3:
+		    return B ^ C ^ D;
+		case 2: 
+		    return (B & C) | (B & D) | (C & D);
+	    }
+	    
+	    return -1;
+	}
+	
+	return wordsToByteArray(H);
+    }
+    
+    function HMAC(fn, key, message){
+	var k = stringToByteArray(key), m = stringToByteArray(message),
+	    l = k.length, byteArray, oPad, iPad, i;
         
-        var l = k.length;
-        
-        if (l > this.blocksize) {
-            k = this.hash(k);
+        if (l > fn.blocksize) {
+            k = fn.hash(k);
             l = k.length;
         }
         
-        k = k.concat(OAuthCrypto.zeroPad(this.blocksize - l));
+        k = k.concat(zeroPad(fn.blocksize - l));
         
-        var oPad = k.slice(0); // copy
-        var iPad = k.slice(0); // copy       
+        oPad = k.slice(0); // copy
+        iPad = k.slice(0); // copy       
         
-        for (var i = 0; i < this.blocksize; i++) {
+        for (i = 0; i < fn.blocksize; i++) {
             oPad[i] ^= 0x5C;
             iPad[i] ^= 0x36;            
         }
         
-        var byteArray = this.hash(oPad.concat(this.hash(iPad.concat(m))));
-        return OAuthCrypto.byteArrayToString(byteArray);
-    },
-    hash: null,
-    blocksize: null
-};
-
-OAuthCrypto.zeroPad = function (length) {
-    return new Array(length + 1).join(0).split('');
-};
-
-OAuthCrypto.stringToByteArray = function (str) {
-    var bytes = [];
-    for(var i = 0; i < str.length; i++) {
-        var c = str.charCodeAt(i);
-        var w = (c >>> 24);
-        var x = (c >>> 16);
-        var y = (c >>> 8);
-        var z = c & 0xFF;
-        if (w > 0) {bytes.push(w);}
-        if (x > 0) {bytes.push(x);}
-        if (y > 0) {bytes.push(y);}
-        if (z > 0) {bytes.push(z);}
+        byteArray = fn.hash(oPad.concat(fn.hash(iPad.concat(m))));
+        return byteArrayToString(byteArray);
     }
-    return bytes;
-};
-
-OAuthCrypto.wordsToByteArray = function (words) {
-    var bytes = [];
-    for (var b = 0; b < words.length * 32; b += 8) {
-        bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
-    }
-    return bytes;
-};
-
-OAuthCrypto.byteArrayToHex = function (byteArray) {
-    var hex = [];
-    var l = byteArray.length;
-    for (var i = 0; i < l; i++) {
-        hex.push((byteArray[i] >>> 4).toString(16));
-        hex.push((byteArray[i] & 0xF).toString(16));
-    }
-    return hex.join('');
-};
-
-OAuthCrypto.byteArrayToString = function (byteArray) {
-    var string = '';
-    var l = byteArray.length;
-    for (var i = 0; i < l; i++) {
-        string += String.fromCharCode(byteArray[i]);
-    }
-    return string;
-};
-
-OAuthCrypto.leftrotate = function (value, shift) {
-    return (value << shift) | (value >>> (32 - shift));
-};
-
-JS.OAuthCrypto = OAuthCrypto;
+    
+    function zeroPad(length) {
+	return new Array(length + 1).join(0).split('');
+    };
+    
+    function stringToByteArray(str) {
+	var bytes = [], i, code, byteA, byteB, byteC, byteD;
+	for(i = 0; i < str.length; i++) {
+	    code = str.charCodeAt(i);
+	    byteA = (code >>> 24);
+	    byteB = (code >>> 16);
+	    byteC = (code >>> 8);
+	    byteD = code & 0xFF;
+	    
+	    if (byteA > 0) {
+		bytes.push(byteA);
+	    }
+	    if (byteB > 0) {
+		bytes.push(byteB);
+	    }
+	    if (byteC > 0) {
+		bytes.push(byteC);
+	    }
+	    if (byteD > 0) {
+		bytes.push(byteD);
+	    }
+	}
+	return bytes;
+    };
+    
+    function wordsToByteArray(words) {
+	var bytes = [], i;
+	for (i = 0; i < words.length * 32; i += 8) {
+	    bytes.push((words[i >>> 5] >>> (24 - i % 32)) & 0xFF);
+	}
+	return bytes;
+    };
+    
+    function byteArrayToHex(byteArray) {
+	var hex = [], l = byteArray.length, i;
+	for (i = 0; i < l; i++) {
+	    hex.push((byteArray[i] >>> 4).toString(16));
+	    hex.push((byteArray[i] & 0xF).toString(16));
+	}
+	return hex.join('');
+    };
+    
+    function byteArrayToString(byteArray) {
+	var string = '', l = byteArray.length, i;
+	for (i = 0; i < l; i++) {
+	    string += String.fromCharCode(byteArray[i]);
+	}
+	return string;
+    };
+    
+    function leftrotate(value, shift) {
+	return (value << shift) | (value >>> (32 - shift));
+    };
