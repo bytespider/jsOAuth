@@ -1,31 +1,40 @@
+
 (function (global) {
+    var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    // add Base64 encode, I cant seem to trust the browser one
 
-    // add Base64 encode, but only if we need it
-	global.btoa = global.btoa || function (string) {
-        var i, len = string.length, byte1, byte2, byte3,
-            en1, en2, en3, en4, output;
+    /**
+     * Base64 encode a string
+     * @param string {string} the string to be base64 encoded
+     */
+    global.OAuth.btoa = function (string) {
+        var i = 0, length = string.length, ascii, index, output = '';
 
-        for (i = 0; i < len; i+=3) {
-            byte1 = string.charCodeAt(i);
-			byte2 = string.charCodeAt(i+1);
-			byte3 = string.charCodeAt(i+2);
+        for (; i < length; i+=3) {
+            ascii = [
+                string.charCodeAt(i),
+                string.charCodeAt(i+1),
+                string.charCodeAt(i+2)
+            ];
 
-            en1 = byte1 >> 2;
-			en2 = ((byte1 & 3) << 4) | (byte2 >> 4);
-			en3 = ((byte2 & 15) << 2) | (byte3 >> 6);
-			en4 = byte3 & 63;
+            index = [
+                ascii[0] >> 2,
+                ((ascii[0] & 3) << 4) | ascii[1] >> 4,
+                ((ascii[1] & 15) << 2) | ascii[2] >> 6,
+                ascii[2] & 63
+            ];
 
-            if (isNaN(byte2)) {
-				encode3 = encode4 = 64;
-			} else if (isNaN(byte3)) {
-				encode4 = 64;
-			}
+            if (isNaN(ascii[1])) {
+                index[2] = 64;
+            }
+            if (isNaN(ascii[2])) {
+                index[3] = 64;
+            }
 
-            output += b64.charAt(en1) + b64.charAt(en2) + b64.charAt(en3) + b64.charAt(en4);
+            output += b64[index[0]] + b64[index[1]] + b64[index[2]] +b64[index[3]];
         }
 
-        return output
+        return output;
     };
 })(this);
