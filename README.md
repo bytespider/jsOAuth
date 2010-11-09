@@ -1,17 +1,17 @@
 # jsOAuth - JavaScript OAuth library
 
-jsOAuth is a javascript library implimenting the OAuth protocol. jsOAuth aims to 
-form the basis of custom service objects such as Twitter. Both Yahoo and Twitter 
-OAuth services will be catered for in the first release.
+jsOAuth is a javascript library implimenting the OAuth protocol. jsOAuth aims to
+form the basis of custom clients such as Twitter and  Yahoo.
 
-Written in JavaScript, jsOAuth aims to be a fully featured OAUth library for use 
-in Adobe AIR and Appcelerator Titanium projects.
+Written in JavaScript, jsOAuth aims to be a fully featured OAUth library for use
+in Adobe AIR, Appcelerator Titanium and PhoneGAP.
+In fact, anywhere that javascript can be used and has cross-domain
+XMLHttpRequests.
 
 ## Features
 
 ### Core
 
-  * Authorisation storage
   * Single authorisation entry-point
   * Debug mode for testing localy in Firefox, see index.html for example
 
@@ -25,10 +25,42 @@ To build jsOAuth, simply type `make` from the command line.
 To start over once you have already built a copy, type `make clean` to delete
 all built distribution files
 
+## Usage
+
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.2.min.js) and include it in your html.
+
+	<script type="text/javascript" src="library/jsOAuth-0.7.2.min.js"></script>
+
+This gives you a global OAuth object for you to set up and make requests with.
+Setting it up is simple.
+
+    <script type="text/javascript">
+        var oauth, options;
+
+        options = {
+            debug: true,
+            consumerKey: 'ba9df9055c77f338',
+            consumerSecret: '846ffe1ec3b18989e73fe7fff833'
+        };
+
+        oauth = OAuth(options);
+    </script>
+
+You'll need to replace the consumer key and secret with your own. Once that is
+done, you can make your authenticated 2-legged request.
+
+    <script type="text/javascript">
+        oauth.get('http://oauth-sandbox.sevengoslings.net/two_legged', function (data) {
+            alert(data);
+        });
+    </script>
+
+Hopefuly the syntax will look familier to you, if you've any kind of javscript
+framework such as jQuery.
+
 ## Issues
 
 Please report all issues on the GitHub [issue tracker for jsOauth](http://github.com/bytespider/jsOAuth/issues).
-Please do not post feature requests as issues.
 
 ## Authors
 
