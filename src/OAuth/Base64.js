@@ -2,13 +2,11 @@
 (function (global) {
     var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-    // add Base64 encode, I cant seem to trust the browser one
-
     /**
      * Base64 encode a string
      * @param string {string} the string to be base64 encoded
      */
-    global.OAuth.btoa = function (string) {
+    global.btoa = global.btoa || function (string) {
         var i = 0, length = string.length, ascii, index, output = '';
 
         for (; i < length; i+=3) {

@@ -179,7 +179,7 @@
             token_secret = OAuth.urlEncode(token_secret || '');
 
             passphrase = consumer_secret + '&' + token_secret;
-            signature = HMAC(SHA1(), passphrase, signature_base);
+            signature = HMAC(SHA1.prototype, passphrase, signature_base);
 
             return OAuth.btoa(signature);
         }
@@ -296,7 +296,7 @@
 
         for (i = 0; i < str_len; i++) {
             if (string_arr[i].match(reserved_chars)) {
-            string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
+                string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
             }
         }
 
