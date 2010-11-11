@@ -18,13 +18,6 @@ XMLHttpRequests.
 Released under the MIT. Please see LICENSE in the project root folder for more
 information.
 
-## Building
-
-To build jsOAuth, simply type `make` from the command line.
-
-To start over once you have already built a copy, type `make clean` to delete
-all built distribution files
-
 ## Usage
 
 Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.2.min.js) and include it in your html.
@@ -57,6 +50,18 @@ done, you can make your authenticated 2-legged request.
 
 Hopefuly the syntax will look familier to you, if you've any kind of javscript
 framework such as jQuery.
+
+## Building
+
+To build the entire library type `make` from the command line.
+
+To build just the W3C compatable version, type `make jsoauth` from the command line.
+To build just CommonJS/Node.JS compatable module type `make commonjs` from the command line.
+
+All files are compiled into the dist directory.
+
+To start over once you have already built a copy, type `make clean` to delete
+all built distribution files
 
 ## Issues
 
