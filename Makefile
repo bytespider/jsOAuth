@@ -13,6 +13,7 @@ DEST_DIR = ${DIST_DIR}
 
 SRC_FILES = ${SRC_DIR}/start.js \
 	${SRC_DIR}/OAuth/Consumer.js \
+	${SRC_DIR}/OAuth/Request.js \
 	${SRC_DIR}/OAuth/Crypto.js \
 	${SRC_DIR}/end.js \
 	${SRC_DIR}/OAuth/Base64.js

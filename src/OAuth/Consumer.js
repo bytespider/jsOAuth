@@ -53,7 +53,8 @@
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
 
-                xhr = new XMLHttpRequest();
+                /** @todo factory out this */
+                xhr = Request();
                 xhr.onreadystatechange = function () {
                     if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
                         success({text: xhr.responseText, xml: xhr.responseXML});
@@ -183,7 +184,7 @@
             passphrase = consumer_secret + '&' + token_secret;
             signature = HMAC(SHA1.prototype, passphrase, signature_base);
 
-            return exports.btoa(signature);
+            return global.btoa(signature);
         }
     };
 
