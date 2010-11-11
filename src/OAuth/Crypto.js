@@ -5,7 +5,7 @@
                 m = stringToByteArray(m);
             }
 
-            if (global == this) {
+            if (!(this instanceof SHA1)) {
                 crypto =  new SHA1(message);
             } else {
                 crypto = this;
@@ -14,7 +14,7 @@
 
             return byteArrayToHex(digest);
         } else {
-            if (global == this) {
+            if (!(this instanceof SHA1)) {
                 return new SHA1();
             }
         }
