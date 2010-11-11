@@ -3,7 +3,11 @@ SRC_DIR = src
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
 BUILD_DIR = ${PREFIX}/build
-TESTS_DIR = ${PREFIX}/tests
+SPEC_DIR = ${PREFIX}/spec
+
+COMMONJS_DIR = ${DIST_DIR}/CommonJS
+COMMONJS_LIB_DIR = ${COMMONJS_DIR}/lib
+COMMONJS_TEST_DIR = ${COMMONJS_DIR}/tests
 
 DEST_DIR = ${DIST_DIR}
 
@@ -26,15 +30,16 @@ JSOA_DEBUG = ${DIST_DIR}/jsOAuth.js
 JSOA_PRODUCTION = ${DIST_DIR}/jsOAuth-${VERSION}.js
 JSOA_PRODUCTION_MIN = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
 JSOA_PRODUCTION_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
+JSOA_COMMONJS = ${COMMONJS_LIB_DIR}/jsOAuth.js
 
-all: jsoauth
+all: jsoauth commonjs
 
 jsoauth: ${DIST_DIR} ${JSOA_PRODUCTION} ${JSOA_PRODUCTION_MIN} ${JSOA_PRODUCTION_COMPILED}
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-${JSOA_DEBUG}: ${SRC_FILES}
+${JSOA_DEBUG}: ${SRC_FILES} ${DIST_DIR}
 	@@echo "Building" ${JSOA_DEBUG}
 
 	@@cat ${SRC_FILES} | \
@@ -75,6 +80,18 @@ ${JSOA_PRODUCTION_MIN}: ${JSOA_PRODUCTION}
 	@@echo "Shrink complete."
 	@@echo ""
 
+${JSOA_COMMONJS}: ${JSOA_PRODUCTION_MIN}
+	@@echo "Building CommonJS / Node.JS module"
+	@@mkdir -p ${COMMONJS_LIB_DIR}
+	@@mkdir -p ${COMMONJS_TEST_DIR}
+	@@cat ${JSOA_PRODUCTION_MIN} > ${JSOA_COMMONJS}
+	@@cp ${SPEC_DIR}/test-* ${COMMONJS_TEST_DIR}/.
+	@@cp ${SRC_DIR}/package.json ${COMMONJS_DIR}/.
+	@@echo "Build complete."
+
+commonjs: ${JSOA_COMMONJS}
+
 clean:
 	@@echo "Removing Distribution directory: ${DIST_DIR}"
 	@@rm -rf ${DIST_DIR}
+	@@echo ""

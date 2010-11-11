@@ -1,8 +1,9 @@
-var OAuth = require('jsOAuth');
-
-console.debug(JSON.stringify(OAuth));
+var jsOAuth = require('jsOAuth');
+var OAuth = jsOAuth.OAuth;
 
 exports.basics = function (test) {
 	test.assertNotEqual(OAuth, undefined, 'OAuth exists');
-	test.assertEqual(typeof OAuth({}).get, 'function', 'get function exists')
+
+	var oauth = OAuth({});
+	test.assertEqual(typeof oauth.get, 'function', 'get function exists')
 };

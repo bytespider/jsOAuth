@@ -5,7 +5,7 @@
                 m = stringToByteArray(m);
             }
 
-            if (window == this) {
+            if (global == this) {
                 crypto =  new SHA1(message);
             } else {
                 crypto = this;
@@ -14,7 +14,7 @@
 
             return byteArrayToHex(digest);
         } else {
-            if (window == this) {
+            if (global == this) {
                 return new SHA1();
             }
         }

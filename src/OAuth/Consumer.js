@@ -6,7 +6,7 @@
      * @constructor
      */
     function OAuth(options) {
-        if (window === this) {
+        if (!(this instanceof OAuth)) {
             return new OAuth(options);
         }
 
@@ -105,6 +105,8 @@
 
                 xhr.send(query);
             }
+
+            return this;
         },
 
         authenticate: function (options) {},
@@ -181,7 +183,7 @@
             passphrase = consumer_secret + '&' + token_secret;
             signature = HMAC(SHA1.prototype, passphrase, signature_base);
 
-            return OAuth.btoa(signature);
+            return exports.btoa(signature);
         }
     };
 
