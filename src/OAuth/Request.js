@@ -1,10 +1,15 @@
 	/**
 	 * Factory object for XMLHttpRequest
 	 */
-	function Request() {
+	function Request(debug) {
+		var XMLHttpRequest;
+
 		// CommonJS require
-		if (undefined != require) {
-			var XMLHttpRequest = require("xhr").XMLHttpRequest;
+		if (typeof require != 'undefined') {
+			XMLHttpRequest = require("xhr").XMLHttpRequest;
+		}
+		if (typeof this.XMLHttpRequest != 'undefined') {
+			XMLHttpRequest = this.XMLHttpRequest;
 		}
 
 		return new XMLHttpRequest();

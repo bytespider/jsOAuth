@@ -6,4 +6,3 @@
  */
 var exports = exports || this;
 exports.OAuth = (function (global) {
-
