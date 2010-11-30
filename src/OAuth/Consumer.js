@@ -52,8 +52,7 @@
                     netscape.security.PrivilegeManager
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
-
-                /** @todo factory out this */
+                
                 xhr = Request(oauth.debug);
                 xhr.onreadystatechange = function () {
                     if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
