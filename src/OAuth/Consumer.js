@@ -16,7 +16,7 @@
     OAuth.prototype = {
         init: function (options) {
             var oauth = {
-                debug: options.debug || false,
+                enablePrivilege: options.enablePrivilege || false,
                 consumerKey: options.consumerKey,
                 consumerSecret: options.consumerSecret,
                 accessTokenSecret: options.accessTokenSecret || '',
@@ -48,7 +48,7 @@
                 success = options.success || function (data) {};
                 failure = options.failure || function () {};
 
-                if (oauth.debug) {
+                if (oauth.enablePrivilege) {
                     netscape.security.PrivilegeManager
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
