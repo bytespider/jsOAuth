@@ -52,13 +52,13 @@
                     netscape.security.PrivilegeManager
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
-                
+
                 xhr = Request(oauth.debug);
                 xhr.onreadystatechange = function () {
                     if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
-                        success({text: xhr.responseText, xml: xhr.responseXML});
+                        success({text: xhr.responseText});//, xml: xhr.responseXML});
                     } else if(xhr.readyState == 4 && xhr.status != 200 && xhr.status != 0) {
-                        failure({text: xhr.responseText, xml: xhr.responseXML});
+                        failure({text: xhr.responseText});//, xml: xhr.responseXML});
                     }
                 };
 
@@ -150,7 +150,7 @@
             this.get(url, function (data) {
                 success(JSON.parse(data.text));
             } , failure);
-        },
+        }
 
         /**
          * Wrapper for JSON pasrsed GET OAuth.request
@@ -159,11 +159,11 @@
          * @param success {function} callback for a successful request
          * @param failure {function} callback for a failed request
          */
-        getXML: function (url, success, failure) {
+        /*getXML: function (url, success, failure) {
             this.get(url, function (data) {
                 success(data.xml);
             } , failure);
-        }
+        }*/
     };
 
     OAuth.signatureMethod = {
