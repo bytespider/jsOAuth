@@ -158,7 +158,7 @@ exports.OAuth = (function (global) {
             this.get(url, function (data) {
                 success(JSON.parse(data.text));
             } , failure);
-        },
+        }
 
         /**
          * Wrapper for JSON pasrsed GET OAuth.request
@@ -167,11 +167,11 @@ exports.OAuth = (function (global) {
          * @param success {function} callback for a successful request
          * @param failure {function} callback for a failed request
          */
-        getXML: function (url, success, failure) {
+        /*getXML: function (url, success, failure) {
             this.get(url, function (data) {
                 success(data.xml);
             } , failure);
-        }
+        }*/
     };
 
     OAuth.signatureMethod = {
@@ -329,26 +329,26 @@ exports.OAuth = (function (global) {
 	 * Factory object for XMLHttpRequest
 	 */
 	function Request(debug) {
-		var XMLHttpRequest;
+		var XHR;
 
 
 		switch (true)
 		{
-			case typeof global.Titanium.Network.createHTTPClient != 'undefined':
-				XMLHttpRequest = global.Titanium.Network.createHTTPClient();
+			case typeof global.Titanium != 'undefined' && typeof global.Titanium.Network.createHTTPClient != 'undefined':
+				XHR = global.Titanium.Network.createHTTPClient();
 				break;
 
 			// CommonJS require
 			case typeof require != 'undefined':
-				XMLHttpRequest = new require("xhr").XMLHttpRequest();
+				XHR = new require("xhr").XMLHttpRequest();
 				break;
 
 			case typeof global.XMLHttpRequest != 'undefined':
-				XMLHttpRequest = new global.XMLHttpRequest();
+				XHR = new global.XMLHttpRequest();
 				break;
 		}
 
-		return XMLHttpRequest;
+		return XHR;
 	}
     function SHA1(message) {
         if (message != undefined) {
