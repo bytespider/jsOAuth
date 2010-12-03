@@ -1,0 +1,26 @@
+#appname:jsOAuth Test Suite Desktop
+#appid:eu.bytespider.jsoauth
+#publisher:rgrif
+#image:default_app_logo.png
+#url:bytespider.eu
+#guid:3149e64e-14ea-4107-b1e8-63b0da876e14
+#desc:No description provided
+#type:desktop
+runtime:1.0.0
+api:1.0.0
+javascript:1.0.0
+tianalytics:1.0.0
+tiapp:1.0.0
+tifilesystem:1.0.0
+tiplatform:1.0.0
+tiui:1.0.0
+ticodec:1.0.0
+tidatabase:1.0.0
+tidesktop:1.0.0
+tigrowl:1.0.0
+timedia:1.0.0
+timonkey:1.0.0
+tinetwork:1.0.0
+tinotification:1.0.0
+tiprocess:1.0.0
+tiworker:1.0.0

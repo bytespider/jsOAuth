@@ -1,0 +1,64 @@
+/**
+ * Appcelerator Titanium Mobile
+ * Copyright (c) 2009-2010 by Appcelerator, Inc. All Rights Reserved.
+ * Licensed under the terms of the Apache Public License
+ * Please see the LICENSE included with this distribution for details.
+ * 
+ * WARNING: This is generated code. Modify at your own risk and without support.
+ */
+#ifdef USE_TI_UITABLEVIEW
+
+#import "TiViewProxy.h"
+#import "TiDimension.h"
+
+@class TiUITableViewCell;
+@class TiUITableView;
+@class TiUITableViewSectionProxy;
+
+typedef enum  
+{
+    TiCellBackgroundViewPositionTop, 
+    TiCellBackgroundViewPositionMiddle, 
+    TiCellBackgroundViewPositionBottom,
+	TiCellBackgroundViewPositionSingleLine
+} TiCellBackgroundViewPosition;
+
+@interface TiUITableViewRowProxy : TiViewProxy <TiProxyDelegate>
+{
+@private
+	NSString *tableClass;
+	TiUITableView *table;
+	TiUITableViewSectionProxy *section;
+	TiDimension height;
+	BOOL configuredChildren;
+	
+	UIView * rowContainerView;
+	BOOL modifyingRow;
+	BOOL attaching;
+	NSInteger row;
+	TiUITableViewCell* callbackCell;
+}
+
+#pragma mark Public APIs
+
+@property(nonatomic,readonly)	NSString *tableClass;
+
+#pragma mark Framework
+
+@property(nonatomic,readwrite,retain) TiUITableView *table;
+@property(nonatomic,readwrite,assign) TiUITableViewSectionProxy *section;
+@property(nonatomic,readwrite,assign) NSInteger row;
+@property(nonatomic,readwrite,retain) TiUITableViewCell* callbackCell;
+
+-(void)initializeTableViewCell:(UITableViewCell*)cell;
+-(void)renderTableViewCell:(UITableViewCell*)cell;
+-(CGFloat)sizeWidthForDecorations:(CGFloat)oldWidth forceResizing:(BOOL)force;
+-(CGFloat)rowHeight:(CGFloat)width;
+-(TiProxy *)touchedViewProxyInCell:(UITableViewCell *)targetCell;
+-(id)createEventObject:(id)initialObject;
+-(void)triggerAttach;
+-(void)updateRow:(NSDictionary*)data withObject:(NSDictionary*)properties;
+
+@end
+
+#endif
