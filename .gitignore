@@ -4,3 +4,5 @@
 *.[oa]
 dist/
 *.komodoproject
+
+/spec/ti/jsOAuth Test Suite/build/iphone/build/build.log
