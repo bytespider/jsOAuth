@@ -31,13 +31,15 @@ Setting it up is simple.
         var oauth, options;
 
         options = {
-            debug: true,
+            enablePrivilege: true,
             consumerKey: 'ba9df9055c77f338',
             consumerSecret: '846ffe1ec3b18989e73fe7fff833'
         };
 
         oauth = OAuth(options);
     </script>
+
+*Note: **EnablePrivilege** lets you test jsOAuth in Firefox*
 
 You'll need to replace the consumer key and secret with your own. Once that is
 done, you can make your authenticated 2-legged request.
