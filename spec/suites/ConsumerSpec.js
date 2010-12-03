@@ -15,7 +15,7 @@ test('OAuth 2-Legged Request', function () {
     asyncTest("request", function() {
         stop(5000);
         var oauth = OAuth({
-            debug: true,
+            enablePrivilege: true,
             consumerKey: 'ba9df9055c77f338',
             consumerSecret: '846ffe1ec3b18989e73fe7fff833'
         });

@@ -1,5 +1,5 @@
 
-Titanium.include('jsOAuth.js');
+Titanium.include('jsOAuth-0.7.4.min.js');
 var window =  Ti.UI.createWindow();
 
 var oauth = OAuth({
