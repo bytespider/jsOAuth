@@ -4,17 +4,21 @@
 	function Request(debug) {
 		var XMLHttpRequest;
 
-		// CommonJS require
-		if (typeof require != 'undefined') {
-			XMLHttpRequest = new require("xhr").XMLHttpRequest();
-		}
 
-		if (typeof Titanium.Network.HTTPClient != 'undefined') {
-			XMLHttpRequest = Titanium.Network.createHTTPClient();
-		}
+		switch (true)
+		{
+			case typeof global.Titanium.Network.createHTTPClient != 'undefined':
+				XMLHttpRequest = global.Titanium.Network.createHTTPClient();
+				break;
 
-		if (typeof this.XMLHttpRequest != 'undefined') {
-			XMLHttpRequest = new this.XMLHttpRequest();
+			// CommonJS require
+			case typeof require != 'undefined':
+				XMLHttpRequest = new require("xhr").XMLHttpRequest();
+				break;
+
+			case typeof global.XMLHttpRequest != 'undefined':
+				XMLHttpRequest = new global.XMLHttpRequest();
+				break;
 		}
 
 		return XMLHttpRequest;
