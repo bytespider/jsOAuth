@@ -30,12 +30,13 @@ REV = sed 's/@REV/${REVISION}/'
 JSOA_DEBUG = ${DIST_DIR}/jsOAuth.js
 JSOA_PRODUCTION = ${DIST_DIR}/jsOAuth-${VERSION}.js
 JSOA_PRODUCTION_MIN = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
+JSOA_PRODUCTION_UGLY = ${DIST_DIR}/jsOAuth-${VERSION}.ugly.js
 JSOA_PRODUCTION_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
 JSOA_COMMONJS = ${COMMONJS_LIB_DIR}/jsOAuth.js
 
 all: jsoauth commonjs
 
-jsoauth: ${DIST_DIR} ${JSOA_PRODUCTION} ${JSOA_PRODUCTION_MIN} ${JSOA_PRODUCTION_COMPILED}
+jsoauth: ${DIST_DIR} ${JSOA_PRODUCTION} ${JSOA_PRODUCTION_MIN} ${JSOA_PRODUCTION_UGLY} ${JSOA_PRODUCTION_COMPILED}
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
@@ -79,6 +80,16 @@ ${JSOA_PRODUCTION_MIN}: ${JSOA_PRODUCTION}
 	   -v \
 	   ${JSOA_PRODUCTION}
 	@@echo "Shrink complete."
+	@@echo ""
+
+${JSOA_PRODUCTION_UGLY}: ${JSOA_PRODUCTION}
+	@@echo "Uglifying ${JSOA_PRODUCTION} > ${JSOA_PRODUCTION_UGLY}"
+	@${BUILD_DIR}/uglifyjs \
+	   --unsafe \
+	   -o ${JSOA_PRODUCTION_UGLY} \
+	   -v \
+	   ${JSOA_PRODUCTION}
+	@@echo "Uglify complete."
 	@@echo ""
 
 ${JSOA_COMMONJS}: ${JSOA_PRODUCTION_MIN}
