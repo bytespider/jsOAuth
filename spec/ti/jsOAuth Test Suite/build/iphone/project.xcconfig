@@ -1,6 +1,0 @@
-TI_VERSION=1.4.2
-TI_SDK_DIR=/Library/Application Support/Titanium/mobilesdk/osx/$(TI_VERSION)/iphone
-TI_APPID=eu.bytespider.jsoauth
-OTHER_LDFLAGS[sdk=iphoneos4*]=$(inherited) -weak_framework iAd
-OTHER_LDFLAGS[sdk=iphonesimulator4*]=$(inherited) -weak_framework iAd
-#include "module"
