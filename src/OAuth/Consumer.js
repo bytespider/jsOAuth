@@ -1,4 +1,5 @@
-    /** @const */ var OAUTH_VERSION = '1.0';
+    /** @const */ var OAUTH_VERSION_1_0 = '1.0';
+    /** @const */ var OAUTH_VERSION_2_0 = '2.0';
 
     /**
      * OAuth
@@ -14,14 +15,47 @@
     }
 
     OAuth.prototype = {
+        realm: '',
+        requestTokenUrl: '',
+        authorizationUrl: '',
+        accessTokenUrl: '',
+
         init: function (options) {
+            var empty = '';
             var oauth = {
                 enablePrivilege: options.enablePrivilege || false,
+
                 consumerKey: options.consumerKey,
                 consumerSecret: options.consumerSecret,
-                accessTokenSecret: options.accessTokenSecret || '',
+                accessTokenKey: options.accessTokenKey || empty,
+                accessTokenSecret: options.accessTokenSecret || empty,
+                verifier: '',
+
                 signatureMethod: options.signatureMethod || 'HMAC-SHA1'
             };
+
+            this.realm = options.realm || empty;
+            this.requestTokenUrl = options.requestTokenUrl || empty;
+            this.authorizationUrl = options.authorizationUrl || empty;
+            this.accessTokenUrl = options.accessTokenUrl || empty;
+
+            this.getAccessToken = function () {
+                return [oauth.accessTokenKey, oauth.accessTokenSecret];
+            };
+
+            this.setAccessToken = function (tokenArray) {
+                oauth.accessTokenKey = tokenArray[0];
+                oauth.accessTokenSecret = tokenArray[1];
+            }
+
+            this.getAccessToken = function () {
+                return [oauth.accessTokenKey, oauth.accessTokenSecret];
+            };
+
+            this.setAccessToken = function (tokenArray) {
+                oauth.accessTokenKey = tokenArray[0];
+                oauth.accessTokenSecret = tokenArray[1];
+            }
 
             /**
              * Makes an authenticated http request
@@ -62,7 +96,6 @@
                     }
                 };
 
-
                 for(i in data) {
                     query.push(i + '=' + data[i]);
                 }
@@ -74,8 +107,8 @@
                     'oauth_signature_method': oauth.signatureMethod,
                     'oauth_timestamp': getTimestamp(),
                     'oauth_nonce': getNonce(),
-                    'oauth_verifier': oauth.verifier || '',
-                    'oauth_version': OAUTH_VERSION
+                    'oauth_verifier': oauth.verifier,
+                    'oauth_version': OAUTH_VERSION_1_0
                 };
 
                 signatureMethod = oauth.signatureMethod;
@@ -109,10 +142,49 @@
             return this;
         },
 
-        authenticate: function (options) {},
-        deauthenticate: function (options) {},
+        authenticate: function (options, success, failure) {
+            var self = this;
+            var accessToken = this.getAccessToken();
+            if (!(accessToken[0] && accessToken[1])) {
+                var args = Array.slice.call(arguments);
+                var reqSuccess = function () {
+                    self.authenticate.apply(self, args);
+                }
+                this.getRequestToken({}, reqSuccess);
+            } else {
+
+                if (this.oauth_verifier) {
+                    success(this);
+                } else {
+                    var url = this.authorizeToken();
+                    window.open(url);
+                }
+            }
+        },
+
+        deauthenticate: function (options, success) {},
 
         request: '',
+        getAccessToken: '',
+        setAccessToken: '',
+
+        getRequestToken: function (options, success, failure) {
+            this.request({
+                method: 'POST',
+                url: this.requestTokenUrl,
+                success: function (data) {
+                    console.log(data);
+                },
+                failure: function (data) {
+                    console.log(data);
+                }
+            });
+        },
+
+        authorizeToken: function () {
+
+        },
+
 
         /**
          * Wrapper for GET OAuth.request
