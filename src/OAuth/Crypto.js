@@ -1,5 +1,5 @@
     function SHA1(message) {
-        if (message != undefined) {
+        if (message !== undefined) {
             var m = message, crypto, digest;
             if (m.constructor === String) {
                 m = stringToByteArray(m);
@@ -29,6 +29,20 @@
             K = [0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6],
             lb, hb,
             l, pad, ml, blocks, b, block, bl, w, i, A, B, C, D, E, t, n, TEMP;
+
+        function fn(t, B, C, D) {
+            switch (t) {
+                case 0:
+                    return (B & C) | ((~B) & D);
+                case 1:
+                case 3:
+                    return B ^ C ^ D;
+                case 2:
+                    return (B & C) | (B & D) | (C & D);
+            }
+
+            return -1;
+        }
 
 
         if (m.constructor === String) {
@@ -95,22 +109,8 @@
             H[4] += E;
         }
 
-        function fn(t, B, C, D) {
-            switch (t) {
-                case 0:
-                    return (B & C) | ((~B) & D);
-                case 1:
-                case 3:
-                    return B ^ C ^ D;
-                case 2:
-                    return (B & C) | (B & D) | (C & D);
-            }
-
-            return -1;
-        }
-
         return wordsToByteArray(H);
-    }
+    };
 
     function HMAC(fn, key, message, toHex){
         var k = stringToByteArray(key), m = stringToByteArray(message),
@@ -140,8 +140,9 @@
     }
 
     function zeroPad(length) {
-        return new Array(length + 1).join(0).split('');
-    };
+        var arr = new Array(++length);
+        return arr.join(0).split('');
+    }
 
     function stringToByteArray(str) {
         var bytes = [], i, code, byteA, byteB, byteC, byteD;
@@ -166,7 +167,7 @@
             }
         }
         return bytes;
-    };
+    }
 
     function wordsToByteArray(words) {
         var bytes = [], i;
@@ -174,7 +175,7 @@
             bytes.push((words[i >>> 5] >>> (24 - i % 32)) & 0xFF);
         }
         return bytes;
-    };
+    }
 
     function byteArrayToHex(byteArray) {
         var hex = [], l = byteArray.length, i;
@@ -183,7 +184,7 @@
             hex.push((byteArray[i] & 0xF).toString(16));
         }
         return hex.join('');
-    };
+    }
 
     function byteArrayToString(byteArray) {
         var string = '', l = byteArray.length, i;
@@ -191,8 +192,8 @@
             string += String.fromCharCode(byteArray[i]);
         }
         return string;
-    };
+    }
 
     function leftrotate(value, shift) {
         return (value << shift) | (value >>> (32 - shift));
-    };
+    }
