@@ -46,7 +46,7 @@
             this.setAccessToken = function (tokenArray) {
                 oauth.accessTokenKey = tokenArray[0];
                 oauth.accessTokenSecret = tokenArray[1];
-            }
+            };
 
             this.getAccessToken = function () {
                 return [oauth.accessTokenKey, oauth.accessTokenSecret];
@@ -55,7 +55,7 @@
             this.setAccessToken = function (tokenArray) {
                 oauth.accessTokenKey = tokenArray[0];
                 oauth.accessTokenSecret = tokenArray[1];
-            }
+            };
 
             /**
              * Makes an authenticated http request
@@ -87,11 +87,11 @@
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
 
-                xhr = Request(oauth.debug);
+                xhr = Request();
                 xhr.onreadystatechange = function () {
-                    if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
+                    if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status === 0)) {
                         success({text: xhr.responseText});//, xml: xhr.responseXML});
-                    } else if(xhr.readyState == 4 && xhr.status != 200 && xhr.status != 0) {
+                    } else if(xhr.readyState == 4 && xhr.status != 200 && xhr.status !== 0) {
                         failure({text: xhr.responseText});//, xml: xhr.responseXML});
                     }
                 };
@@ -114,7 +114,7 @@
                 signatureMethod = oauth.signatureMethod;
 
                 signatureString = toSignatureBaseString(method, url, headerParams, query);
-                signature = OAuth['signatureMethod'][signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
+                signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
                 headerParams.oauth_signature = signature;
 
@@ -137,7 +137,7 @@
                 }
 
                 xhr.send(query);
-            }
+            };
 
             return this;
         },
@@ -149,7 +149,7 @@
                 var args = Array.slice.call(arguments);
                 var reqSuccess = function () {
                     self.authenticate.apply(self, args);
-                }
+                };
                 this.getRequestToken({}, reqSuccess);
             } else {
 
@@ -270,7 +270,7 @@
         var arr = [], i;
 
         for (i in params) {
-            if (params[i] && params[i] != undefined && params[i] != '') {
+            if (params[i] && params[i] !== undefined && params[i] !== '') {
                 arr.push(i + '="' + OAuth.urlEncode(params[i]+'') + '"');
             }
         }
@@ -292,14 +292,14 @@
         var arr = [], i;
 
         for (i in header_parms) {
-            if (header_parms[i] && header_parms[i] != undefined && header_parms[i] != '') {
+            if (header_parms[i] && header_parms[i] !== undefined && header_parms[i] !== '') {
                 arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(header_parms[i]+''));
             }
         }
 
         for (i in query_params) {
-            if (query_params[i] && query_params[i] != undefined && query_params[i] != '') {
-                if (!oauth_header_params[i]) {
+            if (query_params[i] && query_params[i] !== undefined && query_params[i] !== '') {
+                if (!query_params[i]) {
                     arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(query_params[i]+''));
                 }
             }
@@ -316,8 +316,8 @@
      * Generate a timestamp for the request
      */
     function getTimestamp() {
-        return parseInt(+new Date / 1000, 10); // use short form of getting a timestamp
-    };
+        return parseInt(+new Date() / 1000, 10); // use short form of getting a timestamp
+    }
 
     /**
      * Generate a nonce for the request
@@ -325,6 +325,10 @@
      * @param key_length {number} Optional nonce length
      */
     function getNonce(key_length) {
+        function rand() {
+            return Math.floor(Math.random() * chars.length);
+        }
+
         key_length = key_length || 64;
 
         var key_bytes = key_length / 8, value = '', key_iter = key_bytes / 4,
@@ -349,12 +353,8 @@
             value += chars[rand()];
         }
 
-        function rand() {
-            return Math.floor(Math.random() * chars.length);
-        }
-
         return value;
-    };
+    }
 
     /**
      * Url encode a string
@@ -362,10 +362,12 @@
      * @param string {string} string to be url encoded
      */
     OAuth.urlEncode = function (string) {
-        if (!string) return '';
+        if (!string) {
+            return '';
+        }
 
         string = string + '';
-        var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|{|}|\||\\|`|\^/,
+        var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|\{|\}|\||\\|`|\^/,
             str_len = string.length, i, string_arr = string.split('');
 
         for (i = 0; i < str_len; i++) {
@@ -383,7 +385,9 @@
      * @param string {string} string to be url decoded
      */
     OAuth.urlDecode = function (string){
-        if (!string) return '';
+        if (!string) {
+            return '';
+        }
 
         return string.replace(/%[a-fA-F0-9]{2}/ig, function (match) {
             return String.fromCharCode(parseInt(match.replace('%', ''), 16));
