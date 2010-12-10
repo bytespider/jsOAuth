@@ -22,7 +22,7 @@ information.
 
 Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.4.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-0.7.4.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-0.7.4.2.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
