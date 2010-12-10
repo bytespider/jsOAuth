@@ -6,3 +6,4 @@ dist/
 *.komodoproject
 /spec/ti/jsOAuth Test Suite/build/iphone/build/build.log
 spec/ti
+src/index.html
