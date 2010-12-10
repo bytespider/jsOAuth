@@ -87,7 +87,7 @@
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
 
-                xhr = Request(oauth.debug);
+                xhr = Request();
                 xhr.onreadystatechange = function () {
                     if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status === 0)) {
                         success({text: xhr.responseText});//, xml: xhr.responseXML});
@@ -299,7 +299,7 @@
 
         for (i in query_params) {
             if (query_params[i] && query_params[i] !== undefined && query_params[i] !== '') {
-                if (!oauth_header_params[i]) {
+                if (!query_params[i]) {
                     arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(query_params[i]+''));
                 }
             }

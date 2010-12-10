@@ -1,7 +1,7 @@
 	/**
 	 * Factory object for XMLHttpRequest
 	 */
-	function Request(debug) {
+	function Request() {
 		var XHR;
 
 
