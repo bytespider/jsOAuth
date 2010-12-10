@@ -96,10 +96,6 @@
                     }
                 };
 
-                for(i in data) {
-                    query.push(i + '=' + data[i]);
-                }
-
                 headerParams = {
                     'oauth_callback': 'oob',
                     'oauth_consumer_key': oauth.consumerKey,
@@ -113,11 +109,15 @@
 
                 signatureMethod = oauth.signatureMethod;
 
-                signatureString = toSignatureBaseString(method, url, headerParams, query);
+                signatureString = toSignatureBaseString(method, url, headerParams, data);
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
                 headerParams.oauth_signature = signature;
 
+                for(i in data) {
+                    query.push(i + '=' + data[i]);
+                }
+                
                 query = query.sort().join('&');
                 if(method == 'GET') {
                     if (query) {
@@ -297,13 +297,17 @@
             }
         }
 
+        console.log(query_params);
+
         for (i in query_params) {
             if (query_params[i] && query_params[i] !== undefined && query_params[i] !== '') {
-                if (!query_params[i]) {
+                if (!header_parms[i]) {
                     arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(query_params[i]+''));
                 }
             }
         }
+
+        console.log(arr);
 
         return [
             method,
