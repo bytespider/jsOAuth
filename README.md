@@ -3,7 +3,7 @@
 jsOAuth is a javascript library implimenting the OAuth protocol. jsOAuth aims to
 form the basis of custom clients such as Twitter and  Yahoo.
 
-Written in JavaScript, jsOAuth aims to be a fully featured OAUth library for use
+Written in JavaScript, jsOAuth aims to be a fully featured OAuth library for use
 in Adobe AIR, Appcelerator Titanium and PhoneGAP.
 In fact, anywhere that javascript can be used and has cross-domain
 XMLHttpRequests.
