@@ -20,9 +20,9 @@ information.
 
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.4.min.js) and include it in your html.
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.4.3.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-0.7.4.2.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-0.7.4.3.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
@@ -52,6 +52,10 @@ done, you can make your authenticated 2-legged request.
 
 Hopefuly the syntax will look familier to you, if you've any kind of javscript
 framework such as jQuery.
+
+**Please let me know if jsOAuth doesn't work for you or if you're application
+requires something jsOAuth doesn't currently support. I'm always happy to hear your
+suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOAuth%20suggestion/feedback)**
 
 ## Building
 
