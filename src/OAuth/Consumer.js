@@ -115,17 +115,20 @@
                 headerParams.oauth_signature = signature;
 
                 for(i in data) {
-                    query.push(i + '=' + data[i]);
+                    query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
                 }
-                
+
                 query = query.sort().join('&');
+                console.info(query);
                 if(method == 'GET') {
                     if (query) {
                         url += '?' + query;
                     }
                     query = null;
                 } else {
-                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    if (!!headers['Content-Type']) {
+                        headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    }
                 }
 
                 xhr.open(method, url, true);
@@ -288,26 +291,22 @@
      *                               example: {'q':'foobar'}
      *                               for GET this will append a query string
      */
-    function toSignatureBaseString(method, url, header_parms, query_params) {
+    function toSignatureBaseString(method, url, header_params, query_params) {
         var arr = [], i;
 
-        for (i in header_parms) {
-            if (header_parms[i] && header_parms[i] !== undefined && header_parms[i] !== '') {
-                arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(header_parms[i]+''));
+        for (i in header_params) {
+            if (header_params[i] !== undefined && header_params[i] !== '') {
+                arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(header_params[i]+''));
             }
         }
 
-        console.log(query_params);
-
         for (i in query_params) {
-            if (query_params[i] && query_params[i] !== undefined && query_params[i] !== '') {
-                if (!header_parms[i]) {
-                    arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(query_params[i]+''));
+            if (query_params[i] !== undefined && query_params[i] !== '') {
+                if (!header_params[i]) {
+                    arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(query_params[i] + ''));
                 }
             }
         }
-
-        console.log(arr);
 
         return [
             method,
