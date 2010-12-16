@@ -73,7 +73,7 @@
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [];
+                    query = [], appendQueryString;
 
                 method = options.method || 'GET';
                 url = options.url;
@@ -81,6 +81,7 @@
                 headers = options.headers || {};
                 success = options.success || function (data) {};
                 failure = options.failure || function () {};
+                appendQueryString = options.appendQueryString ? options.appendQueryString : false;
 
                 if (oauth.enablePrivilege) {
                     netscape.security.PrivilegeManager
@@ -119,8 +120,8 @@
                 }
 
                 query = query.sort().join('&');
-                
-                if(method == 'GET') {
+
+                if(appendQueryString || method == 'GET') {
                     if (query) {
                         url += '?' + query;
                     }
