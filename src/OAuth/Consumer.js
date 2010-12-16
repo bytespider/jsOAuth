@@ -119,7 +119,7 @@
                 }
 
                 query = query.sort().join('&');
-                console.info(query);
+                
                 if(method == 'GET') {
                     if (query) {
                         url += '?' + query;
