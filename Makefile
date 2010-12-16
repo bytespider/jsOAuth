@@ -83,14 +83,13 @@ ${JSOA_PRODUCTION_MIN}: ${JSOA_PRODUCTION}
 	@@echo ""
 
 ${JSOA_PRODUCTION_UGLY}: ${JSOA_PRODUCTION}
-	#@@echo "Uglifying ${JSOA_PRODUCTION} > ${JSOA_PRODUCTION_UGLY}"
-	#@${BUILD_DIR}/uglifyjs \
-	#   --unsafe \
-	#   -o ${JSOA_PRODUCTION_UGLY} \
-	#   -v \
-	#   ${JSOA_PRODUCTION}
-	#@@echo "Uglify complete."
-	#@@echo ""
+	@@echo "Uglifying ${JSOA_PRODUCTION} > ${JSOA_PRODUCTION_UGLY}"
+	@@curl --data-urlencode js_code@${JSOA_PRODUCTION} \
+    	-o ${JSOA_PRODUCTION_UGLY} \
+    	http://marijnhaverbeke.nl/uglifyjs
+
+	@@echo "Uglify complete."
+	@@echo ""
 
 ${JSOA_COMMONJS}: ${JSOA_PRODUCTION_MIN}
 	@@echo "Building CommonJS / Node.JS module"

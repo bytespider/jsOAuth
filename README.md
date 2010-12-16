@@ -53,6 +53,10 @@ done, you can make your authenticated 2-legged request.
 Hopefuly the syntax will look familier to you, if you've any kind of javscript
 framework such as jQuery.
 
+**Please let me know if jsOAuth doesn't work for you or if you're application
+requires something jsOAuth doesn't currently support. I'm always happy to hear your
+suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOAuth%20suggestion/feedback)**
+
 ## Building
 
 To build the entire library type `make` from the command line.
