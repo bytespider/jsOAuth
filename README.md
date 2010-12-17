@@ -59,7 +59,7 @@ suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOA
 
 If you like jsOAuth and want to see new features, please donate.
 
-<a href='http://www.pledgie.com/campaigns/14219'><img alt='Click here to lend your support to: jsOAuth: A javascript OAuth library and make a donation at www.pledgie.com !' src='http://www.pledgie.com/campaigns/14219.png?skin_name=chrome' border='0' /></a>
+<a href="http://www.pledgie.com/campaigns/14219"><img alt="Click here to lend your support to: jsOAuth: A javascript OAuth library and make a donation at www.pledgie.com !" src="http://www.pledgie.com/campaigns/14219.png?skin_name=chrome" border=0 /></a>
 
 ## Building
 
