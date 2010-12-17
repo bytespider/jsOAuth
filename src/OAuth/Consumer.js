@@ -371,7 +371,7 @@
         }
 
         string = string + '';
-        var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|\{|\}|\||\\|`|\^/,
+        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\]/,
             str_len = string.length, i, string_arr = string.split('');
 
         for (i = 0; i < str_len; i++) {
