@@ -57,9 +57,7 @@ framework such as jQuery.
 requires something jsOAuth doesn't currently support. I'm always happy to hear your
 suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOAuth%20suggestion/feedback)**
 
-If you like jsOAuth and want to see new features, please donate.
-
-<a href="http://www.pledgie.com/campaigns/14219"><img alt="Click here to lend your support to: jsOAuth: A javascript OAuth library and make a donation at www.pledgie.com !" src=http%3A%2F%2Fpledgie.com%2Fcampaigns%2F14219.png%3Fskin_name%3Dchrome" border=0 /></a>
+If you like jsOAuth and want to see new features, [please donate](http://pledgie.com/campaigns/14219/).
 
 ## Building
 
