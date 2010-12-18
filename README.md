@@ -3,7 +3,7 @@
 jsOAuth is a javascript library implimenting the OAuth protocol. jsOAuth aims to
 form the basis of custom clients such as Twitter and  Yahoo.
 
-Written in JavaScript, jsOAuth aims to be a fully featured OAuth library for use
+Written in JavaScript, jsOAuth aims to be a fully featured open source OAuth library for use
 in Adobe AIR, Appcelerator Titanium and PhoneGAP.
 In fact, anywhere that javascript can be used and has cross-domain
 XMLHttpRequests.
@@ -56,6 +56,8 @@ framework such as jQuery.
 **Please let me know if jsOAuth doesn't work for you or if you're application
 requires something jsOAuth doesn't currently support. I'm always happy to hear your
 suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOAuth%20suggestion/feedback)**
+
+If you like jsOAuth and want to see new features, [please donate](http://pledgie.com/campaigns/14219/).
 
 ## Building
 

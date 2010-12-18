@@ -100,7 +100,7 @@
                 headerParams = {
                     'oauth_callback': 'oob',
                     'oauth_consumer_key': oauth.consumerKey,
-                    'oauth_token': oauth.accessTokenSecret,
+                    'oauth_token': oauth.accessTokenKey,
                     'oauth_signature_method': oauth.signatureMethod,
                     'oauth_timestamp': getTimestamp(),
                     'oauth_nonce': getNonce(),
