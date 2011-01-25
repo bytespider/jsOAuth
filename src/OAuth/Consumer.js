@@ -90,10 +90,30 @@
 
                 xhr = Request();
                 xhr.onreadystatechange = function () {
-                    if(xhr.readyState == 4 && (xhr.status == 200 || xhr.status === 0)) {
-                        success({text: xhr.responseText});//, xml: xhr.responseXML});
-                    } else if(xhr.readyState == 4 && xhr.status != 200 && xhr.status !== 0) {
-                        failure({text: xhr.responseText});//, xml: xhr.responseXML});
+                    if (xhr.readyState === 4) {
+                        var regex = /^(.*?):\s*(.*?)\r?$/mg,
+                            requestHeaders = headers,
+                            responseHeaders = {},
+                            responseHeadersString = '',
+                            match;
+
+                        if (!!xhr.getAllResponseHeaders) {
+                            responseHeadersString = xhr.getAllResponseHeaders();
+                            while((match = regex.exec(responseHeadersString))) {
+                                responseHeaders[match[1]] = match[2];
+                            }
+                        } else if(!!xhr.getResponseHeaders) {
+                            responseHeadersString = xhr.getResponseHeaders();
+                            for (var i = 0, len = responseHeadersString.length; i < len; ++i) {
+                                responseHeaders[responseHeadersString[i][0]] = responseHeadersString[i][1];
+                            }
+                        }
+
+                        if(xhr.status == 200 || xhr.status === 0) {
+                            success({text: xhr.responseText, requestHeaders: requestHeaders, responseHeaders: responseHeaders});//, xml: xhr.responseXML});
+                        } else if(xhr.status != 200 && xhr.status !== 0) {
+                            failure({text: xhr.responseText, requestHeaders: requestHeaders, responseHeaders: responseHeaders});//, xml: xhr.responseXML});
+                        }
                     }
                 };
 
@@ -371,7 +391,7 @@
         }
 
         string = string + '';
-        var reserved_chars = / |!|\*|"|'|\(|\)|;|:|@|&|=|\+|\$|,|\/|\?|%|#|\[|\]|<|>|\{|\}|\||\\|`|\^/,
+        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\]/,
             str_len = string.length, i, string_arr = string.split('');
 
         for (i = 0; i < str_len; i++) {
