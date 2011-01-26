@@ -87,6 +87,14 @@
                     netscape.security.PrivilegeManager
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
+                
+                /** 
+                 * @see https://github.com/bytespider/jsOAuth/blob/0.2/src/uri.js
+                 * Parse the URl here breaking up and normalising it
+                 * 
+                 * At 5.8kb, the implimentation may be to big for jsOAuth as is,
+                 * however, some simplification may allow it to drop right in
+                 */
 
                 xhr = Request();
                 xhr.onreadystatechange = function () {
