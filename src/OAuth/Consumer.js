@@ -148,6 +148,7 @@
                 }
 
                 query = query.sort().join('&');
+                console.log(query, 'status=jsOAuth%20testing%202');
 
                 if(appendQueryString || method == 'GET') {
                     if (query) {
@@ -155,9 +156,9 @@
                     }
                     query = null;
                 } else {
-                    if (!!headers['Content-Type']) {
+                    //if (!!headers['Content-Type']) {
                         headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                    }
+                    //}
                 }
 
                 xhr.open(method, url, true);
