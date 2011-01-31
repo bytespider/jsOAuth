@@ -20,15 +20,9 @@ information.
 
 ## Usage
 
-<<<<<<< HEAD
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.5.min.js) and include it in your html.
-
-	<script type="text/javascript" src="library/jsOAuth-0.7.5.min.js"></script>
-=======
 Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.5.1.min.js) and include it in your html.
 
 	<script type="text/javascript" src="library/jsOAuth-0.7.5.1.min.js"></script>
->>>>>>> edge
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
