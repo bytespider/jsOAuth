@@ -148,7 +148,6 @@
                 }
 
                 query = query.sort().join('&');
-                console.log(query, 'status=jsOAuth%20testing%202');
 
                 if(appendQueryString || method == 'GET') {
                     if (query) {
@@ -156,9 +155,8 @@
                     }
                     query = null;
                 } else {
-                    //if (!!headers['Content-Type']) {
-                        headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                    //}
+                    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    headers['Content-Length'] = query.length;
                 }
 
                 xhr.open(method, url, true);
@@ -174,50 +172,6 @@
 
             return this;
         },
-
-        authenticate: function (options, success, failure) {
-            var self = this;
-            var accessToken = this.getAccessToken();
-            if (!(accessToken[0] && accessToken[1])) {
-                var args = Array.slice.call(arguments);
-                var reqSuccess = function () {
-                    self.authenticate.apply(self, args);
-                };
-                this.getRequestToken({}, reqSuccess);
-            } else {
-
-                if (this.oauth_verifier) {
-                    success(this);
-                } else {
-                    var url = this.authorizeToken();
-                    window.open(url);
-                }
-            }
-        },
-
-        deauthenticate: function (options, success) {},
-
-        request: '',
-        getAccessToken: '',
-        setAccessToken: '',
-
-        getRequestToken: function (options, success, failure) {
-            this.request({
-                method: 'POST',
-                url: this.requestTokenUrl,
-                success: function (data) {
-                    console.log(data);
-                },
-                failure: function (data) {
-                    console.log(data);
-                }
-            });
-        },
-
-        authorizeToken: function () {
-
-        },
-
 
         /**
          * Wrapper for GET OAuth.request
@@ -256,19 +210,6 @@
                 success(JSON.parse(data.text));
             } , failure);
         }
-
-        /**
-         * Wrapper for JSON pasrsed GET OAuth.request
-         *
-         * @param url {string} vaild http(s) url
-         * @param success {function} callback for a successful request
-         * @param failure {function} callback for a failed request
-         */
-        /*getXML: function (url, success, failure) {
-            this.get(url, function (data) {
-                success(data.xml);
-            } , failure);
-        }*/
     };
 
     OAuth.signatureMethod = {
