@@ -148,17 +148,10 @@
         var bytes = [], i, code, byteA, byteB, byteC, byteD;
         for(i = 0; i < str.length; i++) {
             code = str.charCodeAt(i);
-            byteA = (code >>> 24);
-            byteB = (code >>> 16);
-            byteC = (code >>> 8);
-            byteD = code & 0xFF;
+            
+            byteC = (code & 0xff00) >> 8;
+            byteD = code & 0xff;
 
-            if (byteA > 0) {
-                bytes.push(byteA);
-            }
-            if (byteB > 0) {
-                bytes.push(byteB);
-            }
             if (byteC > 0) {
                 bytes.push(byteC);
             }
@@ -172,7 +165,7 @@
     function wordsToByteArray(words) {
         var bytes = [], i;
         for (i = 0; i < words.length * 32; i += 8) {
-            bytes.push((words[i >>> 5] >>> (24 - i % 32)) & 0xFF);
+            bytes.push((words[i >>> 5] >>> (24 - i % 32)) & 255);
         }
         return bytes;
     }
