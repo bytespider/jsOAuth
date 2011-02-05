@@ -156,7 +156,6 @@
                     query = null;
                 } else {
                     headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                    headers['Content-Length'] = query.length;
                 }
 
                 xhr.open(method, url, true);
