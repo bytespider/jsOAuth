@@ -61,6 +61,11 @@ If you like jsOAuth and want to see new features, [please donate](http://pledgie
 
 ## Building
 
+To start developing, clone this repository and initialize the dependent git submodules by executing the following commands:
+
+    git submodule init
+    git submodule update
+
 To build the entire library type `make` from the command line.
 
 To build just the W3C compatable version, type `make jsoauth` from the command line.
