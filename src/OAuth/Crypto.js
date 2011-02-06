@@ -46,7 +46,7 @@
 
 
         if (m.constructor === String) {
-            m = stringToByteArray(m);
+            m = stringToByteArray(m.encodeUTF8());
         }
 
         l = m.length;
@@ -145,20 +145,22 @@
     }
 
     function stringToByteArray(str) {
-        var bytes = [], i, code, byteA, byteB, byteC, byteD;
+        var bytes = [], code;
+        
         for(i = 0; i < str.length; i++) {
             code = str.charCodeAt(i);
             
-            byteC = (code & 0xff00) >> 8;
-            byteD = code & 0xff;
-
-            if (byteC > 0) {
-                bytes.push(byteC);
-            }
-            if (byteD > 0) {
-                bytes.push(byteD);
+            if (code < 128) {
+            	bytes.push(code);
+            } else if (code < 2048) {
+            	bytes.push(192+(code>>6), 128+(code&63));
+            } else if (code < 65536) {
+            	bytes.push(224+(code>>12), 128+((code>>6)&63), 128+(code&63));
+            } else if (code < 2097152) {
+            	bytes.push(240+(code>>18), 128+((code>>12)&63), 128+((code>>6)&63), 128+(code&63));
             }
         }
+        
         return bytes;
     }
 

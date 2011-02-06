@@ -9,10 +9,11 @@ test('Basics', function () {
 });
 
 test('Character encoding', function () {
-	equals(stringToByteArray('Да!'), [208, 148, 208, 176, 33], 'UTF-16 character');
+	deepEqual(stringToByteArray("ü"), [195, 188], 'UTF-8 character "ü" encodes correctly in byte array');
+	deepEqual(stringToByteArray("ß"), [195, 159], 'UTF-8 character "ß" encodes correctly in byte array');
 });
 
-/*test('Output SHA1', function () {
+test('Output SHA1', function () {
     equals(SHA1(''),        'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'Output test 1');
     equals(SHA1('f'),       '4a0a19218e082a343a1b17e5333409af9d98f0f5', 'Output test 2');
     equals(SHA1('fo'),      '19082866d46a5a57bfeffe585d8362c149676c90', 'Output test 3');
@@ -20,6 +21,9 @@ test('Character encoding', function () {
     equals(SHA1('foob'),    '2ca60ec33da4ccdf3c5b4944a2e831a70d76d7c7', 'Output test 5');
     equals(SHA1('fooba'),   'bf3f6e65daa76dde92612355478885eb52473854', 'Output test 6');
     equals(SHA1('foobar'),  '8843d7f92416211de9ebb963ff4ce28125932878', 'Output test 7');
+    
+    equals(SHA1('ü'),  		'94a759fd37735430753c7b6b80684306d80ea16e', 'Output test 8');
+    equals(SHA1('ß'),  		'00b39d61cc9b61a36437c4de643ec56b831e36d5', 'Output test 9');
 });
 
 test('Output HMAC-SHA1', function(){
@@ -49,4 +53,3 @@ test('Output HMAC-SHA1', function(){
         ), '06b7cde817007313eab69aaae86a9f6431210a21', 'Output test 4'
     )
 });
-*/
