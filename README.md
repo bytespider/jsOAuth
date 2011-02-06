@@ -1,6 +1,6 @@
 # jsOAuth - JavaScript OAuth library
 
-jsOAuth is a javascript library implimenting the OAuth protocol. jsOAuth aims to
+jsOAuth is a javascript library implementing the OAuth protocol. jsOAuth aims to
 form the basis of custom clients such as Twitter and  Yahoo.
 
 Written in JavaScript, jsOAuth aims to be a fully featured open source OAuth library for use
@@ -13,16 +13,16 @@ XMLHttpRequests.
 ### Core
 
   * Single authorisation entry-point
-  * Debug mode for testing localy in Firefox, see index.html for example
+  * Debug mode for testing locally in Firefox, see index.html for example
 
 Released under the MIT. Please see LICENSE in the project root folder for more
 information.
 
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.5.2.min.js) and include it in your html.
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-0.7.5.4.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-0.7.5.2.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-0.7.5.4.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
@@ -50,7 +50,7 @@ done, you can make your authenticated 2-legged request.
         });
     </script>
 
-Hopefuly the syntax will look familier to you, if you've any kind of javscript
+Hopefully the syntax will look familier to you, if you've any kind of javscript
 framework such as jQuery.
 
 **Please let me know if jsOAuth doesn't work for you or if you're application
@@ -61,15 +61,15 @@ If you like jsOAuth and want to see new features, [please donate](http://pledgie
 
 ## Building
 
-To start developing, clone this repository and initialize the dependent git submodules by executing the following commands:
+To start developing, clone this repository and initialise the dependent git submodules by executing the following commands:
 
     git submodule init
     git submodule update
 
 To build the entire library type `make` from the command line.
 
-To build just the W3C compatable version, type `make jsoauth` from the command line.
-To build just CommonJS/Node.JS compatable module type `make commonjs` from the command line.
+To build just the W3C compatible version, type `make jsoauth` from the command line.
+To build just CommonJS/Node.JS compatible module type `make commonjs` from the command line.
 
 All files are compiled into the dist directory.
 
