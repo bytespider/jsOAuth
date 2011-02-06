@@ -335,17 +335,31 @@
      * @param string {string} string to be url encoded
      */
     OAuth.urlEncode = function (string) {
+    	function hex(code) {
+    		return '%' + code.toString(16).toUpperCase();
+    	}
+    
         if (!string) {
             return '';
         }
 
         string = string + '';
-        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\]/,
-            str_len = string.length, i, string_arr = string.split('');
-
+        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
+            str_len = string.length, i, string_arr = string.split(''), c;
+		
         for (i = 0; i < str_len; i++) {
-            if (string_arr[i].match(reserved_chars)) {
-                string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
+            if (c = string_arr[i].match(reserved_chars)) {
+            	c = c[0].charCodeAt(0);
+            
+	            if (c < 128) {
+	            	string_arr[i] = hex(c);
+	            } else if (c < 2048) {
+	            	string_arr[i] = hex(192+(c>>6)) + hex(128+(c&63));
+	            } else if (c < 65536) {
+	            	string_arr[i] = hex(224+(c>>12)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+	            } else if (c < 2097152) {
+	            	string_arr[i] = hex(240+(c>>18)) + hex(128+((c>>12)&63)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+	            }
             }
         }
 

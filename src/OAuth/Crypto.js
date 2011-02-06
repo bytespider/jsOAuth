@@ -46,7 +46,7 @@
 
 
         if (m.constructor === String) {
-            m = stringToByteArray(m);
+            m = stringToByteArray(m.encodeUTF8());
         }
 
         l = m.length;
@@ -145,34 +145,29 @@
     }
 
     function stringToByteArray(str) {
-        var bytes = [], i, code, byteA, byteB, byteC, byteD;
+        var bytes = [], code;
+        
         for(i = 0; i < str.length; i++) {
             code = str.charCodeAt(i);
-            byteA = (code >>> 24);
-            byteB = (code >>> 16);
-            byteC = (code >>> 8);
-            byteD = code & 0xFF;
-
-            if (byteA > 0) {
-                bytes.push(byteA);
-            }
-            if (byteB > 0) {
-                bytes.push(byteB);
-            }
-            if (byteC > 0) {
-                bytes.push(byteC);
-            }
-            if (byteD > 0) {
-                bytes.push(byteD);
+            
+            if (code < 128) {
+            	bytes.push(code);
+            } else if (code < 2048) {
+            	bytes.push(192+(code>>6), 128+(code&63));
+            } else if (code < 65536) {
+            	bytes.push(224+(code>>12), 128+((code>>6)&63), 128+(code&63));
+            } else if (code < 2097152) {
+            	bytes.push(240+(code>>18), 128+((code>>12)&63), 128+((code>>6)&63), 128+(code&63));
             }
         }
+        
         return bytes;
     }
 
     function wordsToByteArray(words) {
         var bytes = [], i;
         for (i = 0; i < words.length * 32; i += 8) {
-            bytes.push((words[i >>> 5] >>> (24 - i % 32)) & 0xFF);
+            bytes.push((words[i >>> 5] >>> (24 - i % 32)) & 255);
         }
         return bytes;
     }
