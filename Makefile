@@ -49,6 +49,8 @@ ${JSOA_DEBUG}: ${SRC_FILES} ${DIST_DIR}
 		${DATE} | \
 		${VER} > ${JSOA_DEBUG}
 
+	@@cat Readme.build | ${VER} > README.md
+
 	@@echo "Build complete."
 	@@echo ""
 
