@@ -14,12 +14,12 @@ test('Output URL Encode', function () {
 asyncTest("OAuth URL query params and data request", function() {
     stop(5000);
     var oauth = OAuth({
-        enablePrivilege: true,
-        consumerKey: 'key',
-        consumerSecret: 'secret'
+		enablePrivilege: true,
+		consumerKey: 'ba9df9055c77f338',
+		consumerSecret: '846ffe1ec3b18989e73fe7fff833'
     });
     oauth.request({
-    	url: 'http://localhost/oauth?id=1000',
+    	url: 'http://oauth-sandbox.sevengoslings.net/two_legged?param1=parameter',
     	data: {
     		status: 'test'
     	},

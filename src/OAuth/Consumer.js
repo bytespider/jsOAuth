@@ -73,7 +73,7 @@
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [], appendQueryString, signatureData = {};
+                    query = [], appendQueryString, signatureData = {}, params;
 
                 method = options.method || 'GET';
                 url = URI(options.url);
@@ -138,37 +138,39 @@
 
                 signatureMethod = oauth.signatureMethod;
                 
+                params = url.query.toObject();
+                for (i in params) {
+                	signatureData[i] = params[i];
+                }
+                
                 for (i in data) {
                 	signatureData[i] = data[i];
                 }
-                
-                for (i in url.query) {
-                	signatureData[i] = url.query[i];
-                }
-                console.log(signatureData);
 
-                signatureString = toSignatureBaseString(method, url, headerParams, data);
+				urlString = url.scheme + '://' + url.host + url.path;
+                signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
                 headerParams.oauth_signature = signature;
 
-                for(i in data) {
+                /*for(i in data) {
                     query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
                 }
 
-                query = query.sort().join('&');
+                query = query.sort().join('&');*/
 
                 if(appendQueryString || method == 'GET') {
-                    if (query) {
-                        url += '?' + query;
-                    }
+	                url.query.setQueryParams(data);
                     query = null;
                 } else {
+                	for(i in data) {
+                	    query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
+                	}
+                	query = query.sort().join('&');
                     headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                    headers['Content-Length'] = query.length || 0;
                 }
-
-                xhr.open(method, url, true);
+				
+                xhr.open(method, url+'', true);
 
                 xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(headerParams));
                 xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
@@ -345,17 +347,31 @@
      * @param {String} string
      */
     OAuth.urlEncode = function (string) {
+    	function hex(code) {
+    		return '%' + code.toString(16).toUpperCase();
+    	}
+    
         if (!string) {
             return '';
         }
 
         string = string + '';
-        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\]/,
-            str_len = string.length, i, string_arr = string.split('');
-
+        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
+            str_len = string.length, i, string_arr = string.split(''), c;
+		
         for (i = 0; i < str_len; i++) {
-            if (string_arr[i].match(reserved_chars)) {
-                string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
+            if (c = string_arr[i].match(reserved_chars)) {
+            	c = c[0].charCodeAt(0);
+            
+	            if (c < 128) {
+	            	string_arr[i] = hex(c);
+	            } else if (c < 2048) {
+	            	string_arr[i] = hex(192+(c>>6)) + hex(128+(c&63));
+	            } else if (c < 65536) {
+	            	string_arr[i] = hex(224+(c>>12)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+	            } else if (c < 2097152) {
+	            	string_arr[i] = hex(240+(c>>18)) + hex(128+((c>>12)&63)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+	            }
             }
         }
 
