@@ -73,10 +73,10 @@
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [], appendQueryString;
+                    query = [], appendQueryString, signatureData = {};
 
                 method = options.method || 'GET';
-                url = options.url;
+                url = URI(options.url);
                 data = options.data || {};
                 headers = options.headers || {};
                 success = options.success || function (data) {};
@@ -137,6 +137,15 @@
                 };
 
                 signatureMethod = oauth.signatureMethod;
+                
+                for (i in data) {
+                	signatureData[i] = data[i];
+                }
+                
+                for (i in url.query) {
+                	signatureData[i] = url.query[i];
+                }
+                console.log(signatureData);
 
                 signatureString = toSignatureBaseString(method, url, headerParams, data);
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
@@ -156,6 +165,7 @@
                     query = null;
                 } else {
                     headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    headers['Content-Length'] = query.length || 0;
                 }
 
                 xhr.open(method, url, true);
@@ -220,10 +230,10 @@
          * @param signature_base {string}  the signature base string
          */
         'HMAC-SHA1': function (consumer_secret, token_secret, signature_base) {
-            var passphrase, signature;
+            var passphrase, signature, encode = OAuth.urlEncode;
 
-            consumer_secret = OAuth.urlEncode(consumer_secret);
-            token_secret = OAuth.urlEncode(token_secret || '');
+            consumer_secret = encode(consumer_secret);
+            token_secret = encode(token_secret || '');
 
             passphrase = consumer_secret + '&' + token_secret;
             signature = HMAC(SHA1.prototype, passphrase, signature_base);
@@ -262,7 +272,7 @@
      *                               for GET this will append a query string
      */
     function toSignatureBaseString(method, url, header_params, query_params) {
-        var arr = [], i;
+        var arr = [], i, encode = OAuth.urlEncode;
 
         for (i in header_params) {
             if (header_params[i] !== undefined && header_params[i] !== '') {
@@ -273,15 +283,15 @@
         for (i in query_params) {
             if (query_params[i] !== undefined && query_params[i] !== '') {
                 if (!header_params[i]) {
-                    arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(query_params[i] + ''));
+                    arr.push(encode(i) + '=' + encode(query_params[i] + ''));
                 }
             }
         }
 
         return [
             method,
-            OAuth.urlEncode(url),
-            OAuth.urlEncode(arr.sort().join('&'))
+            encode(url),
+            encode(arr.sort().join('&'))
         ].join('&');
     }
 
@@ -329,47 +339,33 @@
         return value;
     }
 
-    /**
-     * Url encode a string
-     *
-     * @param string {string} string to be url encoded
+    /** 
+     * rfc3986 compatable encode of a string
+     * 
+     * @param {String} string
      */
     OAuth.urlEncode = function (string) {
-    	function hex(code) {
-    		return '%' + code.toString(16).toUpperCase();
-    	}
-    
         if (!string) {
             return '';
         }
 
         string = string + '';
-        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
-            str_len = string.length, i, string_arr = string.split(''), c;
-		
+        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\]/,
+            str_len = string.length, i, string_arr = string.split('');
+
         for (i = 0; i < str_len; i++) {
-            if (c = string_arr[i].match(reserved_chars)) {
-            	c = c[0].charCodeAt(0);
-            
-	            if (c < 128) {
-	            	string_arr[i] = hex(c);
-	            } else if (c < 2048) {
-	            	string_arr[i] = hex(192+(c>>6)) + hex(128+(c&63));
-	            } else if (c < 65536) {
-	            	string_arr[i] = hex(224+(c>>12)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
-	            } else if (c < 2097152) {
-	            	string_arr[i] = hex(240+(c>>18)) + hex(128+((c>>12)&63)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
-	            }
+            if (string_arr[i].match(reserved_chars)) {
+                string_arr[i] = '%' + (string_arr[i].charCodeAt(0)).toString(16).toUpperCase();
             }
         }
 
         return string_arr.join('');
     };
 
-    /**
-     * Url decode a string
-     *
-     * @param string {string} string to be url decoded
+    /** 
+     * rfc3986 compatable decode of a string
+     * 
+     * @param {String} string
      */
     OAuth.urlDecode = function (string){
         if (!string) {

@@ -11,6 +11,26 @@ test('Output URL Encode', function () {
     equals(OAuth.urlEncode('ü'), '%C3%BC', 'Output test 4');
 });
 
+asyncTest("OAuth URL query params and data request", function() {
+    stop(5000);
+    var oauth = OAuth({
+        enablePrivilege: true,
+        consumerKey: 'key',
+        consumerSecret: 'secret'
+    });
+    oauth.request({
+    	url: 'http://localhost/oauth?id=1000',
+    	data: {
+    		status: 'test'
+    	},
+    	success: function (data) {
+	        equals(data.text, 'SUCCESS! This is a 2-legged call from the `jsOAuth2` consumer which was made by `bytespider`.', 'Request success');
+	        start();
+	    }
+    });
+});
+
+
 asyncTest("OAuth 2-Legged Request", function() {
     stop(5000);
     var oauth = OAuth({

@@ -12,6 +12,8 @@ COMMONJS_TEST_DIR = ${COMMONJS_DIR}/tests
 DEST_DIR = ${DIST_DIR}
 
 SRC_FILES = ${SRC_DIR}/start.js \
+	${SRC_DIR}/OAuth/Collection.js \
+	${SRC_DIR}/OAuth/URI.js \
 	${SRC_DIR}/OAuth/Consumer.js \
 	${SRC_DIR}/OAuth/Request.js \
 	${SRC_DIR}/OAuth/Crypto.js \
