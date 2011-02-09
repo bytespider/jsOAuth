@@ -14,7 +14,7 @@ test('Output URL Encode', function () {
 asyncTest("OAuth URL query params and data request", function() {
     stop(5000);
     var oauth = OAuth({
-		enablePrivilege: true,
+		enablePrivilege: false,
 		consumerKey: 'ba9df9055c77f338',
 		consumerSecret: '846ffe1ec3b18989e73fe7fff833'
     });
@@ -34,7 +34,7 @@ asyncTest("OAuth URL query params and data request", function() {
 asyncTest("OAuth 2-Legged Request", function() {
     stop(5000);
     var oauth = OAuth({
-        enablePrivilege: true,
+        enablePrivilege: false,
         consumerKey: 'ba9df9055c77f338',
         consumerSecret: '846ffe1ec3b18989e73fe7fff833'
     });
@@ -47,7 +47,7 @@ asyncTest("OAuth 2-Legged Request", function() {
 asyncTest("OAuth 3-Legged Request", function() {
     stop(5000);
     var oauth = OAuth({
-        enablePrivilege: true,
+        enablePrivilege: false,
         consumerKey: 'ba9df9055c77f338',
         consumerSecret: '846ffe1ec3b18989e73fe7fff833'
     });
