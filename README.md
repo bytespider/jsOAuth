@@ -63,6 +63,8 @@ If you like jsOAuth and want to see new features, [please donate](http://pledgie
 * [Tutorial: Titanium & jsOAuth - Part 1](http://code.bytespider.eu/post/3032429995/twitter-client-using-titanium-and-jsoauth-part-1)
 * [Tutorial: Titanium & jsOAuth - Part 2](http://code.bytespider.eu/post/3088341182/twitter-client-using-titanium-and-jsoauth-part-2)
 
+If you have a tutorial you think should be included here, please email me with links.
+
 ## Building
 
 To start developing, clone this repository and initialise the dependent git submodules by executing the following commands:
