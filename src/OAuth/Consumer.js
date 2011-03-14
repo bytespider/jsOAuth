@@ -1,5 +1,5 @@
     /** @const */ var OAUTH_VERSION_1_0 = '1.0';
-    /** @const */ var OAUTH_VERSION_2_0 = '2.0';
+    /** @const */ /*var OAUTH_VERSION_2_0 = '2.0';*/
 
     /**
      * OAuth
@@ -220,6 +220,16 @@
             this.get(url, function (data) {
                 success(JSON.parse(data.text));
             } , failure);
+        },
+        
+        parseTokenRequest: function (tokenRequestString) {
+        	var i = 0, arr = tokenRequestString.split('&'), len = arr.length, obj = {};
+        	for (; i < len; ++i) {
+        		var pair = arr[i].split('=');
+        		obj[pair[0]] = pair[1];
+        	}
+        	
+        	return obj;
         }
     };
 
