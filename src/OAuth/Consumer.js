@@ -88,14 +88,6 @@
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
                 
-                /** 
-                 * @see https://github.com/bytespider/jsOAuth/blob/0.2/src/uri.js
-                 * Parse the URl here breaking up and normalising it
-                 * 
-                 * At 5.8kb, the implimentation may be to big for jsOAuth as is,
-                 * however, some simplification may allow it to drop right in
-                 */
-
                 xhr = Request();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
@@ -152,12 +144,6 @@
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
                 headerParams.oauth_signature = signature;
-
-                /*for(i in data) {
-                    query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
-                }
-
-                query = query.sort().join('&');*/
 
                 if(appendQueryString || method == 'GET') {
 	                url.query.setQueryParams(data);
