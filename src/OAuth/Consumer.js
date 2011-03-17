@@ -87,7 +87,7 @@
                     netscape.security.PrivilegeManager
                         .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
                 }
-                
+
                 xhr = Request();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
@@ -109,10 +109,14 @@
                             }
                         }
 
-                        if(xhr.status == 200 || xhr.status === 0) {
-                            success({text: xhr.responseText, requestHeaders: requestHeaders, responseHeaders: responseHeaders});//, xml: xhr.responseXML});
-                        } else if(xhr.status != 200 && xhr.status !== 0) {
-                            failure({text: xhr.responseText, requestHeaders: requestHeaders, responseHeaders: responseHeaders});//, xml: xhr.responseXML});
+                        var responseObject = {text: xhr.responseText, requestHeaders: requestHeaders, responseHeaders: responseHeaders};
+
+                        // 200, 201 and 304 are valid responses
+                        if((xhr.status >= 200 && xhr.status < 400 )|| xhr.status === 0) {
+                            success(responseObject);
+                        // everything what is 400 and above is a failure code
+                        } else if(xhr.status >= 400 && xhr.status !== 0) {
+                            failure(responseObject);
                         }
                     }
                 };
@@ -129,12 +133,12 @@
                 };
 
                 signatureMethod = oauth.signatureMethod;
-                
+
                 params = url.query.toObject();
                 for (i in params) {
                 	signatureData[i] = params[i];
                 }
-                
+
                 for (i in data) {
                 	signatureData[i] = data[i];
                 }
@@ -155,7 +159,7 @@
                 	query = query.sort().join('&');
                     headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 }
-				
+
                 xhr.open(method, url+'', true);
 
                 xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(headerParams));
@@ -207,14 +211,14 @@
                 success(JSON.parse(data.text));
             } , failure);
         },
-        
+
         parseTokenRequest: function (tokenRequestString) {
         	var i = 0, arr = tokenRequestString.split('&'), len = arr.length, obj = {};
         	for (; i < len; ++i) {
         		var pair = arr[i].split('=');
         		obj[pair[0]] = pair[1];
         	}
-        	
+
         	return obj;
         }
     };
@@ -337,16 +341,16 @@
         return value;
     }
 
-    /** 
+    /**
      * rfc3986 compatable encode of a string
-     * 
+     *
      * @param {String} string
      */
     OAuth.urlEncode = function (string) {
     	function hex(code) {
     		return '%' + code.toString(16).toUpperCase();
     	}
-    
+
         if (!string) {
             return '';
         }
@@ -354,11 +358,11 @@
         string = string + '';
         var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
             str_len = string.length, i, string_arr = string.split(''), c;
-		
+
         for (i = 0; i < str_len; i++) {
             if (c = string_arr[i].match(reserved_chars)) {
             	c = c[0].charCodeAt(0);
-            
+
 	            if (c < 128) {
 	            	string_arr[i] = hex(c);
 	            } else if (c < 2048) {
@@ -374,9 +378,9 @@
         return string_arr.join('');
     };
 
-    /** 
+    /**
      * rfc3986 compatable decode of a string
-     * 
+     *
      * @param {String} string
      */
     OAuth.urlDecode = function (string){
