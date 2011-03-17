@@ -48,13 +48,12 @@
                 oauth.accessTokenSecret = tokenArray[1];
             };
 
-            this.getAccessToken = function () {
-                return [oauth.accessTokenKey, oauth.accessTokenSecret];
+            this.getVerifier = function () {
+                return oauth.verifier;
             };
 
-            this.setAccessToken = function (tokenArray) {
-                oauth.accessTokenKey = tokenArray[0];
-                oauth.accessTokenSecret = tokenArray[1];
+            this.setVerifier = function (verifier) {
+                oauth.verifier = verifier;
             };
 
             /**
@@ -230,6 +229,26 @@
         	}
         	
         	return obj;
+        },
+        
+        fetchRequestToken: function (success, failure) {
+        	var url = this.authorizationUrl;
+        	var oauth = this;
+        	this.get(this.requestTokenUrl, function (data) {
+        		var token = oauth.parseTokenRequest(data.text);
+        		oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
+        		success(url + '?' + data.text);
+        	}, failure);
+        },
+        
+        fetchAccessToken: function (success, failure) {
+        	var oauth = this;
+        	this.get(this.accessTokenUrl, function (data) {
+        		var token = oauth.parseTokenRequest(data.text);
+        		oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
+        		
+        		success(data);
+        	}, failure);
         }
     };
 
