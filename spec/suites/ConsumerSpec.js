@@ -24,7 +24,8 @@ asyncTest("OAuth URL query params and data request", function() {
     	},
     	success: function (data) {
 	        start();
-	        equals(data.text, 'SUCCESS! This is a 2-legged call from the `jsOAuth2` consumer which was made by `bytespider`.', 'Request success');
+	        ok(data.text.search('SUCCESS! This is a 2-legged call from the `jsOAuth2` consumer which was made by `bytespider`.'), 'Request success');
+	        //equals(data.text, 'SUCCESS! This is a 2-legged call from the `jsOAuth2` consumer which was made by `bytespider`.', 'Request success');
 	    }
     });
 });
@@ -38,21 +39,23 @@ asyncTest("OAuth 2-Legged Request", function() {
     });
     oauth.get('http://oauth-sandbox.sevengoslings.net/two_legged', function (data) {
         start();
-        equals(data.text, 'SUCCESS! This is a 2-legged call from the `jsOAuth2` consumer which was made by `bytespider`.', 'Request success');
+        ok(data.text.search('SUCCESS! This is a 2-legged call from the `jsOAuth2` consumer which was made by `bytespider`.'), 'Request success');
     });
 });
 
-asyncTest("OAuth 3-Legged Request", function() {
-    var oauth = OAuth({
-        enablePrivilege: false,
-        consumerKey: 'ba9df9055c77f338',
-        consumerSecret: '846ffe1ec3b18989e73fe7fff833',
-        
-        realm: 'http://oauth-sandbox.sevengoslings.net',
-        requestTokenUrl: 'http://oauth-sandbox.sevengoslings.net/request_token',
-        authorizationUrl: 'http://oauth-sandbox.sevengoslings.net/authorize',
-        accessTokenUrl: 'http://oauth-sandbox.sevengoslings.net/access_token'
-    });
+var oauth = OAuth({
+    enablePrivilege: false,
+    consumerKey: 'ba9df9055c77f338',
+    consumerSecret: '846ffe1ec3b18989e73fe7fff833',
+    
+    realm: 'http://oauth-sandbox.sevengoslings.net',
+    requestTokenUrl: 'http://oauth-sandbox.sevengoslings.net/request_token',
+    authorizationUrl: 'http://oauth-sandbox.sevengoslings.net/authorize',
+    accessTokenUrl: 'http://oauth-sandbox.sevengoslings.net/access_token'
+});
+    
+
+asyncTest("OAuth Authorise", function() {
     
     oauth.fetchRequestToken(function (url) {
     	var windowObjectReference = window.open(url, 'authorise');
@@ -74,8 +77,14 @@ asyncTest("OAuth 3-Legged Request", function() {
     	    	ok(true);
 				start();
 				
-            	console.log(data);
             }, function (data) {console.log(data)});
         };
     }, function (data) {console.log(data)});
+});
+
+asyncTest("OAuth 3-Legged Request", function() {
+	oauth.get('http://oauth-sandbox.sevengoslings.net/three_legged', function (data) {
+        start();
+        ok(data.text.search('SUCCESS! This is a 3-legged call from the `jsOAuth2` consumer which was made by `bytespider`.'), 'Request success');
+    });
 });
