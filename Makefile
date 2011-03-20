@@ -35,6 +35,7 @@ JSOA_PRODUCTION_MIN = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
 JSOA_PRODUCTION_UGLY = ${DIST_DIR}/jsOAuth-${VERSION}.min.js
 JSOA_PRODUCTION_COMPILED = ${DIST_DIR}/jsOAuth-${VERSION}.compiled.js
 JSOA_COMMONJS = ${COMMONJS_LIB_DIR}/jsOAuth.js
+JSOA_COMMONJS_ZIP = ${DIST_DIR}/jsOAuth-${VERSION}.CommonJS.zip
 
 all: jsoauth commonjs
 
@@ -103,6 +104,9 @@ ${JSOA_COMMONJS}: ${JSOA_PRODUCTION_MIN}
 	@@cp ${SPEC_DIR}/test-* ${COMMONJS_TEST_DIR}/.
 	@@cp ${SRC_DIR}/package.json ${COMMONJS_DIR}/.
 	@@echo "Build complete."
+	@@echo "Compressing..."
+	@@ditto -ck --sequesterRsrc --keepParent ${COMMONJS_LIB_DIR} ${JSOA_COMMONJS_ZIP}
+	@@echo "Compression complete"
 
 commonjs: ${JSOA_COMMONJS}
 
