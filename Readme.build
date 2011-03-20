@@ -88,6 +88,10 @@ all built distribution files
 
 Please report all issues on the GitHub [issue tracker for jsOauth](http://github.com/bytespider/jsOAuth/issues).
 
+## Testing ##
+To test I use Google Chrome  
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --disable-popup-blocking
+
 ## Authors
 
   * Rob Griffiths (rob AT bytespider DOT eu)
