@@ -1,0 +1,8 @@
+pygments: 	true
+markdown: 	maruku
+navigation:
+  - text: "Getting started"
+    url: "/"
+  - text: "API Reference"
+    url: "/api-reference"
+package_version: 0.10
