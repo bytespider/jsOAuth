@@ -3,7 +3,7 @@ markdown: 	maruku
 url: "bytespider.github.com/jsOAuth-Manual"
 navigation:
   - text: "Getting started"
-    url: "/"
+    url: "index.html"
   - text: "API Reference"
-    url: "/api-reference"
+    url: "api-reference"
 package_version: 0.10
