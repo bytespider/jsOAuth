@@ -1,5 +1,6 @@
 pygments: 	true
 markdown: 	maruku
+url: "0.0.0.0:4000"
 navigation:
   - text: "Getting started"
     url: "/"
