@@ -16,8 +16,6 @@
 		<link rel="stylesheet" href="http://{{ site.url }}/css/style.css?v=2" type="text/css" media="screen, projection, handheld">
 		<link rel="stylesheet" href="http://{{ site.url }}/css/print.css?v=2" type="text/css" media="print">
 		<link rel="icon" href="favicon.ico">
-		
-		<base href="http://{{ site.url }}">
 	</head>
 	<body>
 		<div id="container">
@@ -29,7 +27,7 @@
 					<ul>
 					{% for item in site.navigation %}
 						<li {% if item.text == page.title %} class="active" {% endif %}>
-							<a href="{{ item.url }}"{% if item.title %}title="{{ item.title }}"{% endif %}>{{ item.text }}</a>
+							<a href="http://{{ site.url }}{{ item.url }}"{% if item.title %}title="{{ item.title }}"{% endif %}>{{ item.text }}</a>
 						</li>
 					{% endfor %}
 					</ul>
