@@ -1,6 +1,6 @@
 pygments: 	true
 markdown: 	maruku
-url: "0.0.0.0:4000"
+url: "bytespider.github.com/jsOAuth-Manual"
 navigation:
   - text: "Getting started"
     url: "/"
