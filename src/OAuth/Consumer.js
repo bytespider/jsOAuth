@@ -85,7 +85,7 @@
                 withFile = (function(){
                   var hasFile = false;
                   for(var name in data) {
-                    // Thanks tho the FileAPI any file entry
+                    // Thanks to the FileAPI any file entry
                     // has a fileName property
                     if(typeof data[name].fileName != 'undefined') hasFile = true;
                   }
