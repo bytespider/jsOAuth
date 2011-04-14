@@ -388,7 +388,7 @@
             }
 
             string = string + '';
-            var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
+            var reserved_chars = /[ \r\n!*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
                 str_len = string.length, i, string_arr = string.split(''), c;
 
             for (i = 0; i < str_len; i++) {
