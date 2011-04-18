@@ -24,6 +24,8 @@
             var empty = '';
             var oauth = {
                 enablePrivilege: options.enablePrivilege || false,
+                
+                callbackUrl: options.callbackUrl || 'oob',
 
                 consumerKey: options.consumerKey,
                 consumerSecret: options.consumerSecret,
@@ -134,7 +136,7 @@
                 };
 
                 headerParams = {
-                    'oauth_callback': 'oob',
+                    'oauth_callback': oauth.callbackUrl,
                     'oauth_consumer_key': oauth.consumerKey,
                     'oauth_token': oauth.accessTokenKey,
                     'oauth_signature_method': oauth.signatureMethod,
