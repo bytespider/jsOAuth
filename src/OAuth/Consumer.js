@@ -24,6 +24,8 @@
             var empty = '';
             var oauth = {
                 enablePrivilege: options.enablePrivilege || false,
+                
+                callbackUrl: options.callbackUrl || 'oob',
 
                 consumerKey: options.consumerKey,
                 consumerSecret: options.consumerSecret,
@@ -72,7 +74,7 @@
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [], appendQueryString, signatureData = {}, params;
+                    query = [], appendQueryString, signatureData = {}, params, withFile;
 
                 method = options.method || 'GET';
                 url = URI(options.url);
@@ -80,6 +82,19 @@
                 headers = options.headers || {};
                 success = options.success || function (data) {};
                 failure = options.failure || function () {};
+
+                // According to the spec
+                withFile = (function(){
+                  var hasFile = false;
+                  for(var name in data) {
+                    // Thanks to the FileAPI any file entry
+                    // has a fileName property
+                    if(typeof data[name].fileName != 'undefined') hasFile = true;
+                  }
+
+                  return hasFile;
+                })();
+
                 appendQueryString = options.appendQueryString ? options.appendQueryString : false;
 
                 if (oauth.enablePrivilege) {
@@ -121,7 +136,7 @@
                 };
 
                 headerParams = {
-                    'oauth_callback': 'oob',
+                    'oauth_callback': oauth.callbackUrl,
                     'oauth_consumer_key': oauth.consumerKey,
                     'oauth_token': oauth.accessTokenKey,
                     'oauth_signature_method': oauth.signatureMethod,
@@ -138,11 +153,18 @@
                 	signatureData[i] = params[i];
                 }
 
-                for (i in data) {
-                	signatureData[i] = data[i];
+                // According to the OAuth spec
+                // if data is transfered using
+                // multipart the POST data doesn't
+                // have to be signed:
+                // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
+                if(!withFile) {
+                  for (i in data) {
+                    signatureData[i] = data[i];
+                  }
                 }
 
-				urlString = url.scheme + '://' + url.host + url.path;
+                urlString = url.scheme + '://' + url.host + url.path;
                 signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
@@ -151,12 +173,20 @@
                 if(appendQueryString || method == 'GET') {
 	                url.query.setQueryParams(data);
                     query = null;
-                } else {
+                } else if(! withFile){
                 	for(i in data) {
-                	    query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
+                    query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
                 	}
                 	query = query.sort().join('&');
                     headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                } else if(withFile) {
+                  // When using FormData multipart content type
+                  // is used by default and required header
+                  // is set to multipart/form-data etc
+                  query = new FormData();
+                  for(i in data) {
+                    query.append(i, data[i]);
+                  }
                 }
 
                 xhr.open(method, url+'', true);
@@ -220,7 +250,7 @@
 
         	return obj;
         },
-        
+
         fetchRequestToken: function (success, failure) {
         	var url = this.authorizationUrl;
         	var oauth = this;
@@ -230,13 +260,13 @@
         		success(url + '?' + data.text);
         	}, failure);
         },
-        
+
         fetchAccessToken: function (success, failure) {
         	var oauth = this;
         	this.get(this.accessTokenUrl, function (data) {
         		var token = oauth.parseTokenRequest(data.text);
         		oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
-        		
+
         		success(data);
         	}, failure);
         }
