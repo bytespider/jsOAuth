@@ -19,6 +19,7 @@
         requestTokenUrl: '',
         authorizationUrl: '',
         accessTokenUrl: '',
+        callbackUrl: '',
 
         init: function (options) {
             var empty = '';
@@ -31,6 +32,7 @@
                 consumerSecret: options.consumerSecret,
                 accessTokenKey: options.accessTokenKey || empty,
                 accessTokenSecret: options.accessTokenSecret || empty,
+                callbackUrl: options.callbackUrl || 'oob',
                 verifier: '',
 
                 signatureMethod: options.signatureMethod || 'HMAC-SHA1'
@@ -40,6 +42,7 @@
             this.requestTokenUrl = options.requestTokenUrl || empty;
             this.authorizationUrl = options.authorizationUrl || empty;
             this.accessTokenUrl = options.accessTokenUrl || empty;
+            this.callbackUrl = options.callbackUrl || 'oob';
 
             this.getAccessToken = function () {
                 return [oauth.accessTokenKey, oauth.accessTokenSecret];
@@ -167,7 +170,6 @@
                 urlString = url.scheme + '://' + url.host + url.path;
                 signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
-
                 headerParams.oauth_signature = signature;
 
                 if(appendQueryString || method == 'GET') {
@@ -263,6 +265,7 @@
 
         fetchAccessToken: function (success, failure) {
         	var oauth = this;
+        	this.setAccessToken([this.getAccessToken()[0], '']);
         	this.get(this.accessTokenUrl, function (data) {
         		var token = oauth.parseTokenRequest(data.text);
         		oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
@@ -324,7 +327,6 @@
      */
     function toSignatureBaseString(method, url, header_params, query_params) {
         var arr = [], i, encode = OAuth.urlEncode;
-
         for (i in header_params) {
             if (header_params[i] !== undefined && header_params[i] !== '') {
                 arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(header_params[i]+''));
@@ -332,7 +334,7 @@
         }
 
         for (i in query_params) {
-            if (query_params[i] !== undefined && query_params[i] !== '') {
+            if (query_params[i] !== undefined) {
                 if (!header_params[i]) {
                     arr.push(encode(i) + '=' + encode(query_params[i] + ''));
                 }
@@ -395,37 +397,49 @@
      *
      * @param {String} string
      */
-    OAuth.urlEncode = function (string) {
-    	function hex(code) {
-    		return '%' + code.toString(16).toUpperCase();
-    	}
-
-        if (!string) {
-            return '';
-        }
-
-        string = string + '';
-        var reserved_chars = /[ !*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
-            str_len = string.length, i, string_arr = string.split(''), c;
-
-        for (i = 0; i < str_len; i++) {
-            if (c = string_arr[i].match(reserved_chars)) {
-            	c = c[0].charCodeAt(0);
-
-	            if (c < 128) {
-	            	string_arr[i] = hex(c);
-	            } else if (c < 2048) {
-	            	string_arr[i] = hex(192+(c>>6)) + hex(128+(c&63));
-	            } else if (c < 65536) {
-	            	string_arr[i] = hex(224+(c>>12)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
-	            } else if (c < 2097152) {
-	            	string_arr[i] = hex(240+(c>>18)) + hex(128+((c>>12)&63)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
-	            }
+    if (typeof(encodeURIComponent) !== 'undefined') {
+        OAuth.urlEncode = function (string) {
+        	var tmp =  encodeURIComponent(string);
+            tmp = tmp.replace('!','%21');
+            tmp = tmp.replace('*','%2A');
+            tmp = tmp.replace('(','%28');
+            tmp = tmp.replace(')','%29');
+            tmp = tmp.replace("'",'%27');
+            return tmp;
+        };
+    } else {
+        OAuth.urlEncode = function (string) {
+            function hex(code) {
+                   return '%' + code.toString(16).toUpperCase();
             }
-        }
 
-        return string_arr.join('');
-    };
+            if (!string) {
+                return '';
+            }
+
+            string = string + '';
+            var reserved_chars = /[ \r\n!*"'();:@&=+$,\/?%#\[\]<>{}|`^\\\u0080-\uffff]/,
+                str_len = string.length, i, string_arr = string.split(''), c;
+
+            for (i = 0; i < str_len; i++) {
+                if (c = string_arr[i].match(reserved_chars)) {
+                   c = c[0].charCodeAt(0);
+
+                       if (c < 128) {
+                           string_arr[i] = hex(c);
+                       } else if (c < 2048) {
+                           string_arr[i] = hex(192+(c>>6)) + hex(128+(c&63));
+                       } else if (c < 65536) {
+                           string_arr[i] = hex(224+(c>>12)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+                       } else if (c < 2097152) {
+                           string_arr[i] = hex(240+(c>>18)) + hex(128+((c>>12)&63)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+                       }
+                }
+            }
+
+            return string_arr.join('');
+        };
+    }
 
     /**
      * rfc3986 compatable decode of a string
