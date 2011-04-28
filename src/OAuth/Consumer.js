@@ -124,6 +124,7 @@
                 };
 
                 headerParams = {
+                    'oauth_callback': oauth.callbackUrl,
                     'oauth_consumer_key': oauth.consumerKey,
                     'oauth_token': oauth.accessTokenKey,
                     'oauth_signature_method': oauth.signatureMethod,
@@ -147,7 +148,6 @@
 				urlString = url.scheme + '://' + url.host + url.path;
                 signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
-
                 headerParams.oauth_signature = signature;
 
                 if(appendQueryString || method == 'GET') {
@@ -235,6 +235,7 @@
         
         fetchAccessToken: function (success, failure) {
         	var oauth = this;
+        	this.setAccessToken([this.getAccessToken()[0], '']);
         	this.get(this.accessTokenUrl, function (data) {
         		var token = oauth.parseTokenRequest(data.text);
         		oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
@@ -296,7 +297,6 @@
      */
     function toSignatureBaseString(method, url, header_params, query_params) {
         var arr = [], i, encode = OAuth.urlEncode;
-
         for (i in header_params) {
             if (header_params[i] !== undefined && header_params[i] !== '') {
                 arr.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(header_params[i]+''));
@@ -304,7 +304,7 @@
         }
 
         for (i in query_params) {
-            if (query_params[i] !== undefined && query_params[i] !== '') {
+            if (query_params[i] !== undefined) {
                 if (!header_params[i]) {
                     arr.push(encode(i) + '=' + encode(query_params[i] + ''));
                 }
