@@ -150,7 +150,7 @@
 
                 params = url.query.toObject();
                 for (i in params) {
-                	signatureData[i] = params[i];
+                    signatureData[i] = params[i];
                 }
 
                 // According to the OAuth spec
@@ -171,13 +171,13 @@
                 headerParams.oauth_signature = signature;
 
                 if(appendQueryString || method == 'GET') {
-	                url.query.setQueryParams(data);
+                    url.query.setQueryParams(data);
                     query = null;
                 } else if(! withFile){
-                	for(i in data) {
+                    for(i in data) {
                     query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
-                	}
-                	query = query.sort().join('&');
+                    }
+                    query = query.sort().join('&');
                     headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 } else if(withFile) {
                   // When using FormData multipart content type
@@ -242,33 +242,33 @@
         },
 
         parseTokenRequest: function (tokenRequestString) {
-        	var i = 0, arr = tokenRequestString.split('&'), len = arr.length, obj = {};
-        	for (; i < len; ++i) {
-        		var pair = arr[i].split('=');
-        		obj[pair[0]] = pair[1];
-        	}
+            var i = 0, arr = tokenRequestString.split('&'), len = arr.length, obj = {};
+            for (; i < len; ++i) {
+                var pair = arr[i].split('=');
+                obj[pair[0]] = pair[1];
+            }
 
-        	return obj;
+            return obj;
         },
 
         fetchRequestToken: function (success, failure) {
-        	var url = this.authorizationUrl;
-        	var oauth = this;
-        	this.get(this.requestTokenUrl, function (data) {
-        		var token = oauth.parseTokenRequest(data.text);
-        		oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
-        		success(url + '?' + data.text);
-        	}, failure);
+            var url = this.authorizationUrl;
+            var oauth = this;
+            this.get(this.requestTokenUrl, function (data) {
+                var token = oauth.parseTokenRequest(data.text);
+                oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
+                success(url + '?' + data.text);
+            }, failure);
         },
 
         fetchAccessToken: function (success, failure) {
-        	var oauth = this;
-        	this.get(this.accessTokenUrl, function (data) {
-        		var token = oauth.parseTokenRequest(data.text);
-        		oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
+            var oauth = this;
+            this.get(this.accessTokenUrl, function (data) {
+                var token = oauth.parseTokenRequest(data.text);
+                oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
 
-        		success(data);
-        	}, failure);
+                success(data);
+            }, failure);
         }
     };
 
@@ -396,9 +396,9 @@
      * @param {String} string
      */
     OAuth.urlEncode = function (string) {
-    	function hex(code) {
-    		return '%' + code.toString(16).toUpperCase();
-    	}
+        function hex(code) {
+            return '%' + code.toString(16).toUpperCase();
+        }
 
         if (!string) {
             return '';
@@ -410,17 +410,17 @@
 
         for (i = 0; i < str_len; i++) {
             if (c = string_arr[i].match(reserved_chars)) {
-            	c = c[0].charCodeAt(0);
+                c = c[0].charCodeAt(0);
 
-	            if (c < 128) {
-	            	string_arr[i] = hex(c);
-	            } else if (c < 2048) {
-	            	string_arr[i] = hex(192+(c>>6)) + hex(128+(c&63));
-	            } else if (c < 65536) {
-	            	string_arr[i] = hex(224+(c>>12)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
-	            } else if (c < 2097152) {
-	            	string_arr[i] = hex(240+(c>>18)) + hex(128+((c>>12)&63)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
-	            }
+                if (c < 128) {
+                    string_arr[i] = hex(c);
+                } else if (c < 2048) {
+                    string_arr[i] = hex(192+(c>>6)) + hex(128+(c&63));
+                } else if (c < 65536) {
+                    string_arr[i] = hex(224+(c>>12)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+                } else if (c < 2097152) {
+                    string_arr[i] = hex(240+(c>>18)) + hex(128+((c>>12)&63)) + hex(128+((c>>6)&63)) + hex(128+(c&63));
+                }
             }
         }
 
