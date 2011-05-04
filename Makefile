@@ -104,6 +104,8 @@ ${JSOA_COMMONJS}: ${JSOA_PRODUCTION_MIN}
 	@@cp ${SPEC_DIR}/test-* ${COMMONJS_TEST_DIR}/.
 	@@cp ${SRC_DIR}/package.json ${COMMONJS_DIR}/.
 	@@echo "Build complete."
+
+commonjs-compress: ${JSOA_COMMONJS}
 	@@echo "Compressing..."
 	@@ditto -ck --sequesterRsrc --keepParent ${COMMONJS_LIB_DIR} ${JSOA_COMMONJS_ZIP}
 	@@echo "Compression complete"
