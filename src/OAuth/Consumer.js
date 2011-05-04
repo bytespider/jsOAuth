@@ -397,7 +397,11 @@
      */
     OAuth.urlEncode = function (string) {
         function hex(code) {
-            return '%' + code.toString(16).toUpperCase();
+            var hex = code.toString(16).toUpperCase();
+            if (hex.length < 2) {
+                hex = 0 + hex;
+            }
+            return '%' + hex;
         }
 
         if (!string) {
