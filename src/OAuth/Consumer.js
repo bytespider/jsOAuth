@@ -158,7 +158,7 @@
                 // multipart the POST data doesn't
                 // have to be signed:
                 // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
-                if(!withFile) {
+                if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
                   for (i in data) {
                     signatureData[i] = data[i];
                   }
@@ -173,12 +173,22 @@
                 if(appendQueryString || method == 'GET') {
                     url.query.setQueryParams(data);
                     query = null;
-                } else if(! withFile){
-                    for(i in data) {
-                    query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
+                } else if(!withFile){
+                    if (typeof data == 'string') {
+                        query = data;
+                        if (!('Content-Type' in headers)) {
+                            headers['Content-Type'] = 'text/plain';
+                        }
+                    } else {
+                        for(i in data) {
+                            query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
+                        }
+                        query = query.sort().join('&');
+                        if (!('Content-Type' in headers)) {
+                            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                        }
                     }
-                    query = query.sort().join('&');
-                    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    
                 } else if(withFile) {
                   // When using FormData multipart content type
                   // is used by default and required header
