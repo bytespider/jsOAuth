@@ -20,9 +20,9 @@ information.
 
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.1.min.js) and include it in your html.
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.2.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-1.1.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-1.2.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
@@ -40,7 +40,7 @@ Setting it up is simple.
     </script>
 
 *Note: **EnablePrivilege** lets you test jsOAuth in Firefox*
-You can test in chrome using the following commandline `/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --allow-file-access-from-files --allow-file-access --log-level 3`
+You can test in chrome using the following commandline `/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --allow-file-access-from-files --allow-file-access spec/runner.html`
 
 You'll need to replace the consumer key and secret with your own. Once that is
 done, you can make your authenticated 2-legged request.
