@@ -4,7 +4,7 @@ article, aside, figure, footer, header, hgroup, menu, nav, section {
 html {
 	background:#E7E7E7;
 	color:#4C4C4C;
-	font-family:'MerriweatherRegular',Georgia,sans-serif;
+	font-family:Georgia,sans-serif;
 	background-image:url(http://image.static.bytespider.eu/images/noise.png);
 	text-rendering:optimizeLegibility;
 }
