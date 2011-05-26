@@ -2,8 +2,7 @@
 !.gitignore
 *~
 *.[oa]
-dist/
+*.sublime-project
 *.komodoproject
-/spec/ti/jsOAuth Test Suite/build/iphone/build/build.log
-spec/ti
+dist/
 src/index.html
