@@ -65,6 +65,7 @@ If you like jsOAuth and want to see new features, [please donate](http://pledgie
 * [Tutorial: Titanium & jsOAuth - Part 2](http://code.bytespider.eu/post/3088341182/twitter-client-using-titanium-and-jsoauth-part-2)
 * [Tutorial: OAuth and PIN based authorization in Javascript](http://log.coffeesounds.com/oauth-and-pin-based-authorization-in-javascri)
 * [Snippet: A simple example of PIN-based oauth flow with Twitter and jsOAuth by @funkatron](https://gist.github.com/979955)
+* [Snippet: How to upload files using jsOAuth and FormData by @lukaszkorecki](https://gist.github.com/1038408)
 * [Application: Mikrob.chrome by @lukaszkorecki](https://github.com/lukaszkorecki/Mikrob.chrome/blob/master/lib/oauth_request.js)
 
 If you have a tutorial you think should be included here, please email me with links.
