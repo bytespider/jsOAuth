@@ -20,9 +20,9 @@ information.
 
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.2.min.js) and include it in your html.
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-1.2.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-1.3.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
@@ -51,10 +51,10 @@ done, you can make your authenticated 2-legged request.
         });
     </script>
 
-Hopefully the syntax will look familier to you, if you've any kind of javscript
+Hopefully the syntax will look familier to you, if you've used any kind of javscript
 framework such as jQuery.
 
-**Please let me know if jsOAuth doesn't work for you or if you're application
+**Please let me know if jsOAuth doesn't work for you or if your application
 requires something jsOAuth doesn't currently support. I'm always happy to hear your
 suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOAuth%20suggestion/feedback)**
 
@@ -94,7 +94,7 @@ Please report all issues on the GitHub [issue tracker for jsOauth](http://github
 ## Testing ##
 To test I use Google Chrome
 
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --disable-popup-blocking
+`/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --allow-file-access-from-files --allow-file-access spec/runner.html`
 
 ## Authors
 
