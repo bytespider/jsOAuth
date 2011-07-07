@@ -24,7 +24,7 @@
             var empty = '';
             var oauth = {
                 enablePrivilege: options.enablePrivilege || false,
-                
+
                 callbackUrl: options.callbackUrl || 'oob',
 
                 consumerKey: options.consumerKey,
@@ -166,11 +166,24 @@
 
                 urlString = url.scheme + '://' + url.host + url.path;
                 signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
+
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
                 headerParams.oauth_signature = signature;
 
+                if (this.realm)
+                {
+                    headerParams['realm'] = this.realm;
+                }
+
                 if(appendQueryString || method == 'GET') {
+                    /*for (var i in headerParams)
+                    {
+                        if (headerParams[i] != undefined && headerParams[i] != '') {
+                            data[i] = headerParams[i];
+                        }
+                    }*/
+
                     url.query.setQueryParams(data);
                     query = null;
                 } else if(!withFile){
@@ -188,7 +201,7 @@
                             headers['Content-Type'] = 'application/x-www-form-urlencoded';
                         }
                     }
-                    
+
                 } else if(withFile) {
                   // When using FormData multipart content type
                   // is used by default and required header
