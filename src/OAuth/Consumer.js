@@ -275,6 +275,8 @@
         },
 
         fetchRequestToken: function (success, failure) {
+            this.setAccessToken([null, null]);
+
             var url = this.authorizationUrl;
             var oauth = this;
             this.get(this.requestTokenUrl, function (data) {
