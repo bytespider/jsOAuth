@@ -61,6 +61,7 @@ suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOA
 If you like jsOAuth and want to see new features, [please donate](http://pledgie.com/campaigns/14219/).
 
 ## Further reading and tutorials
+* [Example: Boilerplate for PIN based authentication in javascript](https://gist.github.com/1071227)
 * [Tutorial: Titanium & jsOAuth - Part 1](http://code.bytespider.eu/post/3032429995/twitter-client-using-titanium-and-jsoauth-part-1)
 * [Tutorial: Titanium & jsOAuth - Part 2](http://code.bytespider.eu/post/3088341182/twitter-client-using-titanium-and-jsoauth-part-2)
 * [Tutorial: OAuth and PIN based authorization in Javascript](http://log.coffeesounds.com/oauth-and-pin-based-authorization-in-javascri)
