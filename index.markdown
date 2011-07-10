@@ -30,7 +30,10 @@ a something goes wrong.
 * [Tutorial: OAuth and PIN based authorization in Javascript](http://log.coffeesounds.com/oauth-and-pin-based-authorization-in-javascri)
 * [Snippet: A simple example of PIN-based oauth flow with Twitter and jsOAuth by @funkatron](https://gist.github.com/979955)
 * [Snippet: How to upload files using jsOAuth and FormData by @lukaszkorecki](https://gist.github.com/1038408)
-* [Application: Mikrob.chrome by @lukaszkorecki](https://github.com/lukaszkorecki/Mikrob.chrome/blob/master/lib/oauth_request.js)
 
-If you have a tutorial you'd live to see here, please contact Rob Griffiths with 
+##Applications##
+* [Application: Mikrob.chrome by @lukaszkorecki](https://github.com/lukaszkorecki/Mikrob.chrome/blob/master/lib/oauth_request.js)
+* [Safari Extension: Shortly by Zhusee](https://github.com/ZZHC/Shortly/tree/v2.0beta1/Shortly.safariextension/oauth)
+
+If you have a tutorial you'd like to see here, please contact Rob Griffiths with 
 details.
