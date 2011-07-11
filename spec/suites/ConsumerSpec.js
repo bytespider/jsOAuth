@@ -3,6 +3,24 @@ test('Basics', function () {
     ok(window.OAuth !== undefined, 'Global object exists');
 });
 
+test('toHeaderString', function () {
+    var params, realm_param, realm_key, realm_val;
+    
+    params = {
+        realm: 'http://www.example.com',
+		consumerKey: 'consumerkey',
+		consumerSecret: 'consumersecret'
+    };
+    
+    realm_param = toHeaderString(params).match(/^(realm)="(.+?)"/);
+    realm_key = realm_param[1];
+    realm_val = realm_param[2];
+
+    notStrictEqual(realm_param, null, "'realm' is first parameter");
+    equal(realm_val, 'http://www.example.com', "'realm' value is not encoded");
+
+});
+
 test('Output URL Encode', function () {
     equals(OAuth.urlEncode(''), '', 'Output test 1');
     equals(OAuth.urlEncode("\r\n $ & < > ? ; # : = , \" ' ~ + %"), '%0D%0A%20%24%20%26%20%3C%20%3E%20%3F%20%3B%20%23%20%3A%20%3D%20%2C%20%22%20%27%20~%20%2B%20%25', 'Output test 2');
