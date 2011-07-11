@@ -339,7 +339,7 @@
         }
 
         arr.sort();
-        arr.unshift(realm)
+        arr.unshift(realm);
 
         return arr.join(', ');
     }

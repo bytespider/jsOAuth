@@ -8,8 +8,8 @@ test('toHeaderString', function () {
     
     params = {
         realm: 'http://www.example.com',
-		consumerKey: 'consumerkey',
-		consumerSecret: 'consumersecret'
+        consumerKey: 'consumerkey',
+        consumerSecret: 'consumersecret'
     };
     
     realm_param = toHeaderString(params).match(/^(realm)="(.+?)"/);
