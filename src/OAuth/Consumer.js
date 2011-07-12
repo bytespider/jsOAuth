@@ -31,7 +31,7 @@
                 consumerSecret: options.consumerSecret,
                 accessTokenKey: options.accessTokenKey || empty,
                 accessTokenSecret: options.accessTokenSecret || empty,
-                verifier: '',
+                verifier: empty,
 
                 signatureMethod: options.signatureMethod || 'HMAC-SHA1'
             };
@@ -45,7 +45,18 @@
                 return [oauth.accessTokenKey, oauth.accessTokenSecret];
             };
 
-            this.setAccessToken = function (tokenArray) {
+            this.getAccessTokenKey = function () {
+                return oauth.accessTokenKey;
+            };
+
+            this.getAccessTokenSecret = function () {
+                return oauth.accessTokenSecret;
+            };
+
+            this.setAccessToken = function (tokenArray, tokenSecret) {
+                if (tokenSecret) {
+                    tokenArray = [tokenArray, tokenSecret];
+                }
                 oauth.accessTokenKey = tokenArray[0];
                 oauth.accessTokenSecret = tokenArray[1];
             };
@@ -56,6 +67,10 @@
 
             this.setVerifier = function (verifier) {
                 oauth.verifier = verifier;
+            };
+
+            this.setCallbackUrl = function (url) {
+                oauth.callbackUrl = url;
             };
 
             /**
@@ -148,20 +163,19 @@
 
                 signatureMethod = oauth.signatureMethod;
 
-                params = url.query.toObject();
-                for (i in params) {
-                    signatureData[i] = params[i];
-                }
-
                 // According to the OAuth spec
                 // if data is transfered using
                 // multipart the POST data doesn't
                 // have to be signed:
                 // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
                 if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
-                  for (i in data) {
-                    signatureData[i] = data[i];
-                  }
+                    params = url.query.toObject();
+                    for (i in params) {
+                        signatureData[i] = params[i];
+                    }
+                    for (i in data) {
+                        signatureData[i] = data[i];
+                    }
                 }
 
                 urlString = url.scheme + '://' + url.host + url.path;
@@ -177,13 +191,6 @@
                 }
 
                 if(appendQueryString || method == 'GET') {
-                    /*for (var i in headerParams)
-                    {
-                        if (headerParams[i] != undefined && headerParams[i] != '') {
-                            data[i] = headerParams[i];
-                        }
-                    }*/
-
                     url.query.setQueryParams(data);
                     query = null;
                 } else if(!withFile){
@@ -264,18 +271,31 @@
             } , failure);
         },
 
+        /**
+         * Wrapper to parse a JSON string and pass it to the callback
+         *
+         * @param url {string} vaild http(s) url
+         * @param success {function} callback for a successful request
+         * @param failure {function} callback for a failed request
+         */
+        postJSON: function (url, data, success, failure) {
+            this.post(url, JSON.stringify(data), function (data) {
+                success(JSON.parse(data.text));
+            } , failure);
+        },
+
         parseTokenRequest: function (tokenRequestString) {
             var i = 0, arr = tokenRequestString.split('&'), len = arr.length, obj = {};
             for (; i < len; ++i) {
                 var pair = arr[i].split('=');
-                obj[pair[0]] = pair[1];
+                obj[OAuth.urlDecode(pair[0])] = OAuth.urlDecode(pair[1]);
             }
 
             return obj;
         },
 
         fetchRequestToken: function (success, failure) {
-            this.setAccessToken([null, null]);
+            //this.setAccessToken("", "");
 
             var url = this.authorizationUrl;
             var oauth = this;
@@ -291,6 +311,9 @@
             this.get(this.accessTokenUrl, function (data) {
                 var token = oauth.parseTokenRequest(data.text);
                 oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
+
+                // clean up a few un-needed things
+                oauth.setVerifier("");
 
                 success(data);
             }, failure);
