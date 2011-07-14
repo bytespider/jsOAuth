@@ -8,3 +8,4 @@ var exports = exports || this;
 exports.OAuth = (function (global) {
 
     /** signed.applets.codebase_principal_support to enable support in Firefox **/
+
