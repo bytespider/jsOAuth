@@ -136,6 +136,31 @@ function failure(data) {
 oauth.getJSON('http://www.example.com/person/1', success, failure);
 {% endhighlight %}
 
+##postJSON##
+Performs a POST request and parses JSON. The post data is stringified using JSON.stringify, then posted as the request body. Requires a JSON library
+
+###Parameters###
+1. url <span class="type">string</span>
+2. data <span class="type">object</span>
+3. success <span class="type">function</span>
+4. failure <span class="type">function</span>
+
+###Usage###
+{% highlight javascript linenos %}
+function success(data_object) {
+	alert('Name: ' + data_object.name);
+}
+
+function failure(data) {
+	alert('Something bad happened! :(');
+}
+		
+oauth.postJSON('http://www.example.com/person/1', {
+	'name': 'Luke Skywalker',
+	'age': '18'
+}, success, failure);
+{% endhighlight %}
+
 ##request##
 Performs a request based on the configuration you give. More flexible than the 
 previous request methods as you can specify additional headers.
@@ -262,14 +287,30 @@ Gets the stored access token
 var accessToken = oauth.getAccessToken();
 {% endhighlight %}
 
+##getAccessTokenKey##
+Gets the stored access token key
+
+###Usage###
+{% highlight javascript linenos %}
+var accessTokenKey = oauth.getAccessTokenKey();
+{% endhighlight %}
+
+##getAccessTokenSecret##
+Gets the stored access token secret
+
+###Usage###
+{% highlight javascript linenos %}
+var accessTokenSecret = oauth.getAccessTokenSecret();
+{% endhighlight %}
+
 ##setAccessToken##
 Sets an access token for signing requests
 
 ###Parameters###
-1. tokenArray <span class="type">array</span>
-The first element in the array is the key, the second is the secret
+1. tokenKey <span class="type">string</span>
+2. tokenSecret <span class="type">string</span>
 
 ###Usage###
 {% highlight javascript linenos %}
-oauth.setAccessToken(['MY-ACCESS-KEY', 'MY-ACCESS-SECRET']);
+oauth.setAccessToken('MY-ACCESS-KEY', 'MY-ACCESS-SECRET');
 {% endhighlight %}
