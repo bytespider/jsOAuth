@@ -6,4 +6,4 @@ navigation:
     url: "/"
   - text: "API Reference"
     url: "/api-reference"
-package_version: 1.3
+package_version: 1.3.1
