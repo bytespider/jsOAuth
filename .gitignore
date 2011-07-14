@@ -6,3 +6,4 @@
 *.komodoproject
 dist/
 src/index.html
+chrome/
