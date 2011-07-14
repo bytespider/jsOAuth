@@ -349,15 +349,22 @@
      *                           for GET this will append a query string
      */
     function toHeaderString(params) {
-        var arr = [], i;
+        var arr = [], i, realm;
 
         for (i in params) {
             if (params[i] && params[i] !== undefined && params[i] !== '') {
-                arr.push(i + '="' + OAuth.urlEncode(params[i]+'') + '"');
+                if (i === 'realm') {
+                    realm = i + '="' + params[i] + '"';
+                } else {
+                    arr.push(i + '="' + OAuth.urlEncode(params[i]+'') + '"');
+                }
             }
         }
 
-        return arr.sort().join(', ');
+        arr.sort();
+        arr.unshift(realm);
+
+        return arr.join(', ');
     }
 
     /**

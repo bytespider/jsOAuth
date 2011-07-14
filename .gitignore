@@ -4,6 +4,7 @@
 *.[oa]
 *.sublime-project
 *.komodoproject
+*.esproj
 dist/
 src/index.html
 chrome/
