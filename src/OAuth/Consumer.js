@@ -1,5 +1,5 @@
+
     /** @const */ var OAUTH_VERSION_1_0 = '1.0';
-    /** @const */ /*var OAUTH_VERSION_2_0 = '2.0';*/
 
     /**
      * OAuth
@@ -95,26 +95,26 @@
                 url = URI(options.url);
                 data = options.data || {};
                 headers = options.headers || {};
-                success = options.success || function (data) {};
+                success = options.success || function () {};
                 failure = options.failure || function () {};
 
                 // According to the spec
                 withFile = (function(){
-                  var hasFile = false;
-                  for(var name in data) {
-                    // Thanks to the FileAPI any file entry
-                    // has a fileName property
-                    if(typeof data[name].fileName != 'undefined') hasFile = true;
-                  }
+                    var hasFile = false;
+                    for(var name in data) {
+                        // Thanks to the FileAPI any file entry
+                        // has a fileName property
+                        if(typeof data[name].fileName != 'undefined') hasFile = true;
+                    }
 
-                  return hasFile;
+                    return hasFile;
                 })();
 
                 appendQueryString = options.appendQueryString ? options.appendQueryString : false;
 
                 if (oauth.enablePrivilege) {
                     netscape.security.PrivilegeManager
-                        .enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+                        .enablePrivilege('UniversalBrowserRead UniversalBrowserWrite');
                 }
 
                 xhr = Request();
@@ -140,8 +140,8 @@
 
                         var responseObject = {text: xhr.responseText, requestHeaders: requestHeaders, responseHeaders: responseHeaders};
 
-                        // 200, 201 and 304 are valid responses
-                        if((xhr.status >= 200 && xhr.status < 400 )|| xhr.status === 0) {
+                        // we are powerless against 3xx redirects
+                        if((xhr.status >= 200 && xhr.status <= 226) || xhr.status == 304 || xhr.status === 0) {
                             success(responseObject);
                         // everything what is 400 and above is a failure code
                         } else if(xhr.status >= 400 && xhr.status !== 0) {
@@ -210,13 +210,13 @@
                     }
 
                 } else if(withFile) {
-                  // When using FormData multipart content type
-                  // is used by default and required header
-                  // is set to multipart/form-data etc
-                  query = new FormData();
-                  for(i in data) {
-                    query.append(i, data[i]);
-                  }
+                    // When using FormData multipart content type
+                    // is used by default and required header
+                    // is set to multipart/form-data etc
+                    query = new FormData();
+                    for(i in data) {
+                        query.append(i, data[i]);
+                    }
                 }
 
                 xhr.open(method, url+'', true);
@@ -268,7 +268,7 @@
         getJSON: function (url, success, failure) {
             this.get(url, function (data) {
                 success(JSON.parse(data.text));
-            } , failure);
+            }, failure);
         },
 
         /**
@@ -295,10 +295,10 @@
         },
 
         fetchRequestToken: function (success, failure) {
-            //this.setAccessToken("", "");
-
-            var url = this.authorizationUrl;
             var oauth = this;
+            oauth.setAccessToken('', '');
+
+            var url = oauth.authorizationUrl;
             this.get(this.requestTokenUrl, function (data) {
                 var token = oauth.parseTokenRequest(data.text);
                 oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
@@ -313,7 +313,7 @@
                 oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
 
                 // clean up a few un-needed things
-                oauth.setVerifier("");
+                oauth.setVerifier('');
 
                 success(data);
             }, failure);
