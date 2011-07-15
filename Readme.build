@@ -40,7 +40,8 @@ Setting it up is simple.
     </script>
 
 *Note: **EnablePrivilege** lets you test jsOAuth in Firefox 3, Firefox >= 5 doesn't work*  
-You can test in chrome using the following commandline `/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --allow-file-access-from-files --allow-file-access --user-data-dir=~/chrome-test/ spec/runner.html`
+You can test in chrome using the following commandline on OSX `/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --allow-file-access-from-files --allow-file-access --user-data-dir=~/chrome-test/ spec/runner.html`  
+On Ubuntu try `/opt/google/chrome/google-chrome --disable-web-security --allow-file-access-from-files --allow-file-access --user-data-dir=~/chrome-test/ spec/runner.html`
 
 You'll need to replace the consumer key and secret with your own. Once that is
 done, you can make your authenticated 2-legged request.
