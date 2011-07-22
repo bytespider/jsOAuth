@@ -73,6 +73,9 @@ If you like jsOAuth and want to see new features, [please donate](http://pledgie
 * [Application: Mikrob.chrome by @lukaszkorecki](https://github.com/lukaszkorecki/Mikrob.chrome/blob/master/lib/oauth_request.js)
 * [Safari Extension: Shortly by Zhusee](https://github.com/ZZHC/Shortly/tree/v2.0beta1/Shortly.safariextension/oauth)
 
+##Libraries##
+* [RequestPack](https://github.com/lukaszkorecki/RequestPack)
+
 If you have a tutorial you think should be included here, please email me with links.
 
 ## Building
