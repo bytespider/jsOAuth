@@ -113,8 +113,7 @@
                 appendQueryString = options.appendQueryString ? options.appendQueryString : false;
 
                 if (oauth.enablePrivilege) {
-                    netscape.security.PrivilegeManager
-                        .enablePrivilege('UniversalBrowserRead UniversalBrowserWrite');
+                    netscape.security.PrivilegeManager.enablePrivilege('UniversalBrowserRead UniversalBrowserWrite');
                 }
 
                 xhr = Request();

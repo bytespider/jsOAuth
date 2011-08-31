@@ -5,10 +5,10 @@
 
     function stringToByteArray(str) {
         var bytes = [], code, i;
-        
+
         for(i = 0; i < str.length; i++) {
             code = str.charCodeAt(i);
-            
+
             if (code < 128) {
                 bytes.push(code);
             } else if (code < 2048) {
@@ -19,7 +19,7 @@
                 bytes.push(240+(code>>18), 128+((code>>12)&63), 128+((code>>6)&63), 128+(code&63));
             }
         }
-        
+
         return bytes;
     }
 

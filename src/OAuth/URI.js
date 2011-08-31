@@ -7,7 +7,7 @@
     function URI(url) {
         var args = arguments, args_callee = args.callee,
             parsed_uri, scheme, host, port, path, query, anchor,
-            parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/
+            parser = /^([^:\/?#]+?:\/\/)*([^\/:?#]*)?(:[^\/?#]*)*([^?#]*)(\?[^#]*)?(#(.*))*/,
             uri = this;
 
         if (!(this instanceof args_callee)) {
