@@ -29,6 +29,9 @@ The following config parameters can be set.
 			<td>consumerSecret</td><td>string</td><td>true</td><td>&nbsp;</td><td>&nbsp;</td>
 		</tr>
 		<tr>
+			<td>callbackUrl</td><td>string</td><td>&nbsp;</td><td>oob</td><td><p>Sets the callback url for authorisation. OOB is used for PIN based auth</p></td>
+		</tr>
+		<tr>
 			<td>accessTokenKey</td><td>string</td><td>&nbsp;</td><td>&nbsp;</td><td><p>Some services give you an access token so you can skip the OAuth dance</p></td>
 		</tr>
 		<tr>
