@@ -6,7 +6,8 @@ form the basis of custom clients such as Twitter and  Yahoo.
 Written in JavaScript, jsOAuth aims to be a fully featured open source OAuth library for use
 in Adobe AIR, Appcelerator Titanium and PhoneGAP.
 In fact, anywhere that javascript can be used and has cross-domain
-XMLHttpRequests.
+XMLHttpRequests. *For security reasons jsOAuth doesn't run in the browser. Browsers are only 
+mentioned here for running the test suite.* If you need jsOAuth in the browser, write an extension.
 
 ## Features
 
@@ -22,7 +23,7 @@ information.
 
 Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.1.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-1.3.1.min.js"></script>
+    <script type="text/javascript" src="library/jsOAuth-1.3.1.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
