@@ -19,6 +19,7 @@ this is un-compressed, un-minified and human readable, ideal for debugging when
 a something goes wrong.
 
 ###Current Release###
+- [Github repository](https://github.com/bytespider/jsOAuth)
 - [Production Edition](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-{{ site.package_version }}.min.js)
 - [Development Edition](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-{{ site.package_version }}.js)
 - [CommonJS / Node.js Module](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-{{ site.package_version }}.CommonJS.zip)
