@@ -137,7 +137,16 @@
                             }
                         }
 
-                        var responseObject = {text: xhr.responseText, xml: xhr.responseXML || undefined, requestHeaders: requestHeaders, responseHeaders: responseHeaders};
+                        var includeXML = false;
+                        if ('Content-Type' in responseHeaders)
+                        {
+                            if (responseHeaders['Content-Type'] == 'text/xml')
+                            {
+                                includeXML = true;
+                            }
+
+                        }
+                        var responseObject = {text: xhr.responseText, xml: (includeXML ? xhr.responseXML : ''), requestHeaders: requestHeaders, responseHeaders: responseHeaders};
 
                         // we are powerless against 3xx redirects
                         if((xhr.status >= 200 && xhr.status <= 226) || xhr.status == 304 || xhr.status === 0) {
