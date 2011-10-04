@@ -1,3 +1,3 @@
 
     return OAuth;
-})(this);
+})(exports);
