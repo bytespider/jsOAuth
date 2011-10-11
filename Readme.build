@@ -108,4 +108,4 @@ To test I use Google Chrome
 
 ## Authors
 
-  * Rob Griffiths (rob AT bytespider DOT eu)
+  * Rob Griffiths (rob AT bytespider DOT eu) [@bytespider](https://twitter.com/bytespider)
