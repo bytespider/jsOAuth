@@ -4,8 +4,8 @@
  *  Copyright (c) 2010, 2011 Rob Griffiths (http://bytespider.eu)
  *  jsOAuth is freely distributable under the terms of an MIT-style license.
  */
-var exports = exports || this;
-exports.OAuth = (function (global) {
+
+!function (global, undefined) {
 
     /** signed.applets.codebase_principal_support to enable support in Firefox **/
 
