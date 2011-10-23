@@ -2,25 +2,32 @@
 <html>
 <head>
   <title>Test Runner</title>
-  
+
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  
+
   <link rel="stylesheet" type="text/css" href="lib/qunit/qunit/qunit.css">
   <script type="text/javascript" src="lib/qunit/qunit/qunit.js" charset="utf-8"></script>
 
   <!-- include source files here... -->
+  <!--
   <script type="text/javascript" src="../src/OAuth/Collection.js" charset="utf-8"></script>
   <script type="text/javascript" src="../src/OAuth/URI.js" charset="utf-8"></script>
   <script type="text/javascript" src="../src/OAuth/Consumer.js" charset="utf-8"></script>
   <script type="text/javascript" src="../src/OAuth/Request.js" charset="utf-8"></script>
   <script type="text/javascript" src="../src/OAuth/Crypto.js" charset="utf-8"></script>
   <script type="text/javascript" src="../src/OAuth/Base64.js" charset="utf-8"></script>
-
+  -->
+  <script type="text/javascript" src="../src/OAuth/Request/Request.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../src/OAuth/Request/Transport/W3C.js" charset="utf-8"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <!-- include spec files here... -->
+  <!--
   <script type="text/javascript" src="suites/BaseSpec.js" charset="utf-8"></script>
   <script type="text/javascript" src="suites/Base64Spec.js" charset="utf-8"></script>
   <script type="text/javascript" src="suites/CryptoSpec.js" charset="utf-8"></script>
   <script type="text/javascript" src="suites/ConsumerSpec.js" charset="utf-8"></script>
+  -->
+  <script type="text/javascript" src="suites/OAuthRequestSpec.js" charset="utf-8"></script>
 
   <script type="text/javascript">
     var global = window;
