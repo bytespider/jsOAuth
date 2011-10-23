@@ -1,5 +1,6 @@
 
-
-OAuthRequest.TitaniumTransport = function () {
-    return Titanium.Network.createHTTPClient();
+OAuthRequest.Transports = OAuthRequest.Transports || {};
+OAuthRequest.Transports.Titanium = {
+    test: !!Titanium && !!Titanium.Network.HTTPClient,
+    factory: function () { return new Titanium.Network.HTTPClient; }
 };

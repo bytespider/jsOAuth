@@ -1,5 +1,6 @@
 
-
-OAuthRequest.CommonJSTransport = function () {
-    return new require("xhr").XMLHttpRequest();
+OAuthRequest.Transports = OAuthRequest.Transports || {};
+OAuthRequest.Transports.CommonJS = {
+    test: !!require("xhr").XMLHttpRequest,
+    factory: function () { return new require("xhr").XMLHttpRequest; }
 };
