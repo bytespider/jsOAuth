@@ -13,6 +13,12 @@ function OAuthRequestFactory() {
     }
 };
 
+OAuthRequest.UNSENT = 0;
+OAuthRequest.OPENED = 1;
+OAuthRequest.HEADERS_RECEIVED = 2;
+OAuthRequest.LOADING = 3;
+OAuthRequest.DONE = 4;
+
 OAuthRequest.prototype = {
     constructor: OAuthRequest,
     set onreadystatechange(handler) {
