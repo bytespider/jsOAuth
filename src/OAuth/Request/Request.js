@@ -194,6 +194,30 @@ function getNonce(key_length)
 }
 
 /**
+ * Get a string of the parameters for the OAuth Authorization header
+ *
+ * @param params {object} A key value paired object of data
+ *                           example: {'q':'foobar'}
+ *                           for GET this will append a query string
+ */
+function toHeaderString(params, realm) {
+    var arr = [], i;
+
+    for (i in params) {
+        if (typeof params[i] == 'string' && params[i] !== '') {
+            arr.push(i + '="' + urlEncode(params[i]) + '"');
+        }
+    }
+
+    arr.sort();
+    if (realm) {
+        arr.unshift(realm);
+    }
+
+    return arr.join(', ');
+}
+
+/**
  * Generate a signature base string for the request
  *
  * @param method {string} ['GET', 'POST', 'PUT', ...]
