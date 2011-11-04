@@ -110,7 +110,7 @@ OAuthRequest.prototype = {
         this.request.getResponseHeader(header);
     },
     getAllResponseHeaders: function () {
-        this.request.getAllResponseHeaders();
+        return this.request.getAllResponseHeaders();
     },
     get responseText () {
         return this.request.responseText;
