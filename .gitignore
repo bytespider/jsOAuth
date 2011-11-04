@@ -7,6 +7,6 @@
 *.esproj
 dist/
 src/index.html
-chrome/
+chrome-test/
 spec/env.js
 jsOAuth.sublime-workspace
