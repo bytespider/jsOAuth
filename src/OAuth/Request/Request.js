@@ -54,16 +54,44 @@ OAuthRequest.prototype = {
     },
     send: function (data) {
         var xhr = this.request;
-        var headerParams = {
+        var header_params = {
                 'oauth_callback': this.callbackUrl,
                 'oauth_consumer_key': this.consumerKey,
                 'oauth_token': this.accessTokenKey,
                 'oauth_signature_method': this.signatureMethod,
                 'oauth_timestamp': getTimestamp(),
                 'oauth_nonce': getNonce(),
-                'oauth_verifier': oauth.verifier,
-                'oauth_version': OAUTH_VERSION_1_0
-            };
+                'oauth_verifier': this.verifier,
+                'oauth_version': '1.0'
+            }
+            signature_data = {};
+
+        var content_type = xhr.headers['Content-Type'] || 'application/x-www-form-urlencoded';
+        if (content_type == 'application/x-www-form-urlencoded')
+        {
+            var query = xhr.url.query;
+            var data = Querystring.parse(data);
+            for (var i in query)
+            {
+                if (query.hasOwnProperty(i))
+                {
+                    signature_data[i] = query[i];
+                }
+            }
+            for (var i in data)
+            {
+                if (query.hasOwnProperty(i))
+                {
+                    signature_data[i] = data[i];
+                }
+            }
+        }
+
+        var url = xhr.url.protocol + '//' + xhr.url.host + xhr.url.path;
+        var signature_string = toSignatureBaseString(xhr.method, url, header_params, signature_data);
+        var signature = OAuth.signatureMethod[this.signatureMethod](this.consumerSecret, this.accessTokenSecret, signature_string);
+
+        xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(header_params, this.realm));
 
         xhr.send(data);
     },
