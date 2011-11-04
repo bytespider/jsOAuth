@@ -108,12 +108,13 @@ OAuthRequest.prototype = {
     },
 
     // OAuthRequest specifics
-    consumerKey: "",
-    consumerSecret: "",
-    accessTokenKey: "",
-    accessTokenSecret: "",
-    callbackUrl: "",
-    signatureMethod: "HMAC-SHA1"
+    consumerKey: '',
+    consumerSecret: '',
+    accessTokenKey: '',
+    accessTokenSecret: '',
+    realm: '',
+    callbackUrl: '',
+    signatureMethod: 'HMAC-SHA1'
 };
 
 /**
@@ -177,15 +178,15 @@ function toSignatureBaseString(method, url, header_params, query_params) {
     var arr = [], i;
 
     for (i in header_params) {
-        if (header_params[i] !== undefined && header_params[i] !== "") {
-            arr.push(urlEncode(i) + "=" + urlEncode(header_params[i]));
+        if (header_params[i] !== undefined && header_params[i] !== '') {
+            arr.push(urlEncode(i) + '=' + urlEncode(header_params[i]));
         }
     }
 
     for (i in query_params) {
-        if (query_params[i] !== undefined && query_params[i] !== "") {
+        if (query_params[i] !== undefined && query_params[i] !== '') {
             if (!header_params[i]) {
-                arr.push(urlEncode(i) + "=" + urlEncode(query_params[i]));
+                arr.push(urlEncode(i) + '=' + urlEncode(query_params[i]));
             }
         }
     }
