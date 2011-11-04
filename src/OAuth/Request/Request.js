@@ -1,6 +1,7 @@
 
 function OAuthRequest() {
     this.request = OAuthRequestFactory();
+    this.request.headers = {};
 }
 
 function OAuthRequestFactory() {
