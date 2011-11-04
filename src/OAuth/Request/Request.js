@@ -41,8 +41,8 @@ OAuthRequest.prototype = {
     open: function (method, url, async, user, password) {
         var xhr = this.request;
 
-        xhr.method = method;
-        xhr.url = url;
+        xhr.method = method.toUpperCase();
+        xhr.url = Url.parse(url, true);
         xhr.async = async;
         xhr.user = password;
 
