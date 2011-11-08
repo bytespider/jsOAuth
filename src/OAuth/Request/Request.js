@@ -132,12 +132,25 @@ OAuthRequest.prototype = {
     LOADING: 3,
     DONE: 4,
 
+    // Events
+
+    /**
+     * Adds an event listener
+     */
     addEventListener: function (type, handler, useCapture) {
         this.request.addEventListener(type, handler, useCapture);
     },
+
+    /**
+     * Removes an event listener
+     */
     removeEventListener: function (type, handler, useCapture) {
         this.request.removeEventListener(type, handler, useCapture);
     },
+
+    /**
+     * Dispatches an event
+     */
     dispatchEvent: function (event) {
         this.request.dispatchEvent(event);
     },
