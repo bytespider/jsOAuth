@@ -5,25 +5,31 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 
-    <link href="lib/jasmine-core/jasmine.css" rel="stylesheet"/>
-    <script type="text/javascript" src="lib/jasmine-core/jasmine.js"></script>
+    <link href="lib/jasmine-1.1.0/jasmine.css" rel="stylesheet"/>
+    <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine.js"></script>
+    <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine-html.js"></script>
 
     <script type="text/javascript">
         var require = {
+            deps: ["url", "querystring", "request", "transport/w3c"],
             baseUrl: "../src/OAuth/Request",
-            paths: {
-                'suites': '../spec/suites'
-            },
-            callback: function () {
-                require(['suites/UrlSpec.js']);
-                require(['suites/OAuthRequestSpec.js']);
+            callback: function (Url, Querystring, OAuthRequest) {
+                window.Url = Url;
+                window.Querystring = Querystring;
+                window.OAuthRequest = OAuthRequest;
             }
         };
     </script>
 
     <script type="text/javascript" src="../src/OAuth/Request/require.js" charset="utf-8"></script>
+
+    <!-- Specs -->
+    <script type="text/javascript" src="suites/UrlSpec.js" charset="utf-8"></script>
+    <script type="text/javascript" src="suites/OAuthRequestSpec.js" charset="utf-8"></script>
+    <!-- End Specs -->
+
     <script src="env.js"></script>
 
     <script type="text/javascript">
@@ -31,12 +37,12 @@
             var jasmineEnv = jasmine.getEnv();
             jasmineEnv.updateInterval = 1000;
 
-            var htmlReporter = new jasmine.HtmlReporter();
+            var trivialReporter = new jasmine.TrivialReporter();
 
-            jasmineEnv.addReporter(htmlReporter);
+            jasmineEnv.addReporter(trivialReporter);
 
             jasmineEnv.specFilter = function(spec) {
-                return htmlReporter.specFilter(spec);
+                return trivialReporter.specFilter(spec);
             };
 
             var currentWindowOnload = window.onload;
