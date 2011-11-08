@@ -137,7 +137,16 @@
                             }
                         }
 
-                        var responseObject = {text: xhr.responseText, requestHeaders: requestHeaders, responseHeaders: responseHeaders};
+                        var includeXML = false;
+                        if ('Content-Type' in responseHeaders)
+                        {
+                            if (responseHeaders['Content-Type'] == 'text/xml')
+                            {
+                                includeXML = true;
+                            }
+
+                        }
+                        var responseObject = {text: xhr.responseText, xml: (includeXML ? xhr.responseXML : ''), requestHeaders: requestHeaders, responseHeaders: responseHeaders};
 
                         // we are powerless against 3xx redirects
                         if((xhr.status >= 200 && xhr.status <= 226) || xhr.status == 304 || xhr.status === 0) {
@@ -283,12 +292,25 @@
             } , failure);
         },
 
-        parseTokenRequest: function (tokenRequestString) {
-            var i = 0, arr = tokenRequestString.split('&'), len = arr.length, obj = {};
-            for (; i < len; ++i) {
-                var pair = arr[i].split('=');
-                obj[OAuth.urlDecode(pair[0])] = OAuth.urlDecode(pair[1]);
+        parseTokenRequest: function (tokenRequest, content_type) {
+
+            switch(content_type)
+            {
+                case "text/xml":
+                    var token = tokenRequest.xml.getElementsByTagName('token');
+                    var secret = tokenRequest.xml.getElementsByTagName('secret');
+
+                    obj[OAuth.urlDecode(token[0])] = OAuth.urlDecode(secret[0]);
+                    break;
+
+                default:
+                    var i = 0, arr = tokenRequest.text.split('&'), len = arr.length, obj = {};
+                    for (; i < len; ++i) {
+                        var pair = arr[i].split('=');
+                        obj[OAuth.urlDecode(pair[0])] = OAuth.urlDecode(pair[1]);
+                    }
             }
+
 
             return obj;
         },
@@ -299,7 +321,7 @@
 
             var url = oauth.authorizationUrl;
             this.get(this.requestTokenUrl, function (data) {
-                var token = oauth.parseTokenRequest(data.text);
+                var token = oauth.parseTokenRequest(data, data.responseHeaders['Content-Type'] || undefined);
                 oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
                 success(url + '?' + data.text);
             }, failure);
@@ -308,7 +330,7 @@
         fetchAccessToken: function (success, failure) {
             var oauth = this;
             this.get(this.accessTokenUrl, function (data) {
-                var token = oauth.parseTokenRequest(data.text);
+                var token = oauth.parseTokenRequest(data, data.responseHeaders['Content-Type'] || undefined);
                 oauth.setAccessToken([token.oauth_token, token.oauth_token_secret]);
 
                 // clean up a few un-needed things
