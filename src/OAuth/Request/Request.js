@@ -1,3 +1,4 @@
+var Url = require('url');
 
 function OAuthRequest() {
     this.request = OAuthRequestFactory();
