@@ -1,5 +1,5 @@
-var exports; // define it if it doesnt exist
-!function (global) {
+define(['querystring'], function (querystring) {
+
     function Url(scheme, username, password, hostname, port, pathname, query_string, fragment)
     {
         /* Set up some defaults */
@@ -30,14 +30,7 @@ var exports; // define it if it doesnt exist
         }
 
         /* Parse the query string */
-        var queryRegex = /\?(([a-zA-Z0-9]|[a-fA-F0-9]{2})*)(=([a-zA-Z0-9]*))?/g;
-        var query = {};
-        query_string.replace(queryRegex, function (str, $1, $2, $3, $4) {
-            query[$1] = $4;
-            return str;
-        });
-
-        this.query = query;
+        this.query = querystring.parse(query_string);
         this.href = this.toString();
     }
 
@@ -75,22 +68,7 @@ var exports; // define it if it doesnt exist
 
             url.push(this.path);
 
-            var queryArray = [];
-            var queryString = "";
-
-            for (var i in this.query)
-            {
-                if (this.query[i] !== "")
-                {
-                    queryArray.push(i + "=" + this.query[i]);
-                }
-                else
-                {
-                    queryArray.push(i);
-                }
-            }
-
-            queryString = queryArray.join("&");
+            queryString = querystring.stringify(this.query);
 
             if (queryString !== "")
             {
@@ -108,7 +86,7 @@ var exports; // define it if it doesnt exist
 
     Url.parse = function (url)
     {
-        var regex = /(([a-zA-Z][a-zA-Z0-9+\-\.]+):\/\/)?((([a-zA-Z0-9\-\._~]*)(:([a-zA-Z0-9\-\._~]*))?@)?)([a-zA-Z0-9+\-\._*]*)(:([0-9]*))?(\/(([a-zA-Z\+\-\.\/]|(%[0-9]{2}))*))?(\?(([a-zA-Z0-9]|%[0-9]{2})*(=[a-zA-Z0-9]*)?&?)*)?(#([a-zA-Z0-9]*))?/;
+        var regex = /(([a-zA-Z][a-zA-Z0-9+\-\.]+):\/\/)?((([a-zA-Z0-9\-\._~]*)(:([a-zA-Z0-9\-\._~]*))?@)?)([a-zA-Z0-9+\-\._*]*)(:([0-9]*))?(\/(([a-zA-Z0-9\+\-\.\/_]|(%[0-9]{2}))*))?(\?(([a-zA-Z0-9]|%[0-9]{2})*(=[a-zA-Z0-9]*)?&?)*)?(#([a-zA-Z0-9]*))?/;
         var matches = url.match(regex);
 
         var scheme = (matches[2] || "").toLowerCase();
@@ -124,5 +102,7 @@ var exports; // define it if it doesnt exist
         return location;
     }
 
-    global.Url = Url;
-}(exports || this);
+    return {
+        parse: Url.parse
+    };
+});

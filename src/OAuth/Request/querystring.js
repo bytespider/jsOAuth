@@ -8,19 +8,40 @@ var exports; // define it if it doesnt exist
     {
         sep = sep || '&';
         eq = eq || '=';
+
+        var queryArray = [];
+
+        for (var i in obj)
+        {
+            if (obj.hasOwnProperty(i))
+            {
+                if (this.query[i] !== "")
+                {
+                    queryArray.push(i + eq + this.query[i]);
+                }
+                else
+                {
+                    queryArray.push(i);
+                }
+            }
+        }
+
+        return queryArray.join(sep);
     }
 
-    Querystring.parse = function (obj, sep, eq)
+    Querystring.parse = function (str, sep, eq)
     {
         sep = sep || '&';
         eq = eq || '=';
 
         var queryRegex = /\?([a-zA-Z0-9]*)(=([a-zA-Z0-9]*))?/g;
-        var query = {};
-        query_string.replace(queryRegex, function (str, $1, $2, $3) {
-            query[$1] = $3;
+        var obj = {};
+        str.replace(queryRegex, function (str, $1, $2, $3) {
+            obj[$1] = $3;
             return str;
         });
+
+        return query;
     }
 
     Querystring.escape = function (str)
