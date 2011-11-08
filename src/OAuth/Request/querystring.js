@@ -1,5 +1,4 @@
-var exports; // define it if it doesnt exist
-!function (global) {
+define(function (querystring) {
     function Querystring()
     {
     }
@@ -41,7 +40,7 @@ var exports; // define it if it doesnt exist
             return str;
         });
 
-        return query;
+        return obj;
     }
 
     Querystring.escape = function (str)
@@ -56,8 +55,5 @@ var exports; // define it if it doesnt exist
         });
     }
 
-    global.stringify = Querystring.stringify;
-    global.parse = Querystring.parse;
-    global.escape = Querystring.escape;
-    global.unescape = Querystring.unescape;
-}(exports || this);
+    return Querystring;
+});
