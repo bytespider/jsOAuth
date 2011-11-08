@@ -50,10 +50,12 @@ OAuthRequest.prototype = {
 
         xhr.open(xhr.method, xhr.url, xhr.async, xhr.user, xhr.password);
     },
+
     setRequestHeader: function (header, value) {
         this.request.headers[header] = value;
         this.request.setRequestHeader(header, value);
     },
+
     send: function (data) {
         var xhr = this.request;
         var header_params = {
@@ -111,18 +113,23 @@ OAuthRequest.prototype = {
     get status() {
         return this.request.status;
     },
+
     get statusText() {
         return this.request.statusText;
     },
+
     getResponseHeader: function (header) {
         this.request.getResponseHeader(header);
     },
+
     getAllResponseHeaders: function () {
         return this.request.getAllResponseHeaders();
     },
+
     get responseText () {
         return this.request.responseText;
     },
+
     get responseXML () {
         return this.request.responseXML;
     },
@@ -243,10 +250,9 @@ function getNonce(key_length)
  */
 function toHeaderString(params, realm) {
     var arr = [], i;
-
     for (i in params) {
-        if (typeof params[i] == 'string' && params[i] !== '') {
-            arr.push(i + '="' + urlEncode(params[i]) + '"');
+        if (typeof params[i] != 'object' && params[i] !== '' && params[i] !== undefined) {
+            arr.push(i + '="' + encode(params[i]) + '"');
         }
     }
 
@@ -273,22 +279,20 @@ function toSignatureBaseString(method, url, header_params, query_params) {
 
     for (i in header_params) {
         if (header_params[i] !== undefined && header_params[i] !== '') {
-            arr.push(urlEncode(i) + '=' + urlEncode(header_params[i]));
+            arr.push(encode(i) + '=' + encode(header_params[i]));
         }
     }
 
     for (i in query_params) {
         if (query_params[i] !== undefined && query_params[i] !== '') {
-            if (!header_params[i]) {
-                arr.push(urlEncode(i) + '=' + urlEncode(query_params[i]));
-            }
+            arr.push(encode(i) + '=' + encode(query_params[i]));
         }
     }
 
     return [
         method,
-        urlEncode(url),
-        urlEncode(arr.sort().join('&'))
+        encode(url),
+        encode(arr.sort().join('&'))
     ].join('&');
 }
 
@@ -297,17 +301,13 @@ function toSignatureBaseString(method, url, header_params, query_params) {
  *
  * @param {String} string
  */
-function urlEncode(string) {
+function encode(string) {
     function hex(code) {
         var hex = code.toString(16).toUpperCase();
         if (hex.length < 2) {
             hex = 0 + hex;
         }
         return '%' + hex;
-    }
-
-    if (!string) {
-        return '';
     }
 
     string = string + '';
@@ -338,11 +338,7 @@ function urlEncode(string) {
  *
  * @param {String} string
  */
-function urlDecode(string){
-    if (!string) {
-        return '';
-    }
-
+function decode(string){
     return string.replace(/%[a-fA-F0-9]{2}/ig, function (match) {
         return String.fromCharCode(parseInt(match.replace('%', ''), 16));
     });
