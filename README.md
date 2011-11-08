@@ -21,9 +21,9 @@ information.
 
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.1.min.js) and include it in your html.
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.2.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-1.3.1.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-1.3.2.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
