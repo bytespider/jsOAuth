@@ -21,6 +21,27 @@ test('toHeaderString', function () {
 
 });
 
+test('toSignatureBaseString', function () {
+    
+    /**
+     * Generate a signature base string for the request
+     *
+     * @param method {string} ['GET', 'POST', 'PUT', ...]
+     * @param url {string} A valid http(s) url
+     * @param header_params A key value paired object of additional headers
+     * @param query_params {object} A key value paired object of data
+     *                               example: {'q':'foobar'}
+     *                               for GET this will append a query string
+    function toSignatureBaseString(method, url, header_params, query_params) {
+    */
+
+                        
+    var s = toSignatureBaseString("GET", "http://www.example.com", {"h1":"v1", "h1-2":"v2"}, {"q1":"v1", "q1-2":"v2"});
+        
+    equals(s, "GET&http%3A%2F%2Fwww.example.com&h1%3Dv1%26h1-2%3Dv2%26q1%3Dv1%26q1-2%3Dv2");
+});
+
+
 test('Output URL Encode', function () {
     equals(OAuth.urlEncode(''), '', 'Output test 1');
     equals(OAuth.urlEncode("\r\n $ & < > ? ; # : = , \" ' ~ + %"), '%0D%0A%20%24%20%26%20%3C%20%3E%20%3F%20%3B%20%23%20%3A%20%3D%20%2C%20%22%20%27%20~%20%2B%20%25', 'Output test 2');
