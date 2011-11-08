@@ -165,6 +165,27 @@ OAuthRequest.prototype = {
     signatureMethod: 'HMAC-SHA1'
 };
 
+OAuthRequest.signatureMethod = {
+    /**
+     * Sign the request
+     *
+     * @param consumer_secret {string} the consumer secret
+     * @param token_secret {string}  the token secret
+     * @param signature_base {string}  the signature base string
+     */
+    'HMAC-SHA1': function (consumer_secret, token_secret, signature_base) {
+        var passphrase, signature, encode = Querystring.escape;
+
+        consumer_secret = encode(consumer_secret);
+        token_secret = encode(token_secret || '');
+
+        passphrase = consumer_secret + '&' + token_secret;
+        signature = HMAC(SHA1.prototype, passphrase, signature_base);
+
+        return btoa(signature);
+    }
+};
+
 /**
  * Generate a timestamp for the request
  */
