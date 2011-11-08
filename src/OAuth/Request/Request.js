@@ -71,7 +71,6 @@ OAuthRequest.prototype = {
         if (content_type == 'application/x-www-form-urlencoded')
         {
             var query = xhr.url.query;
-            var data = Querystring.parse(data);
             for (var i in query)
             {
                 if (query.hasOwnProperty(i))
@@ -79,23 +78,30 @@ OAuthRequest.prototype = {
                     signature_data[i] = query[i];
                 }
             }
-            for (var i in data)
+
+            if (data)
             {
-                if (query.hasOwnProperty(i))
+                var data = Querystring.parse(data);
+                for (var i in data)
                 {
-                    signature_data[i] = data[i];
+                    if (query.hasOwnProperty(i))
+                    {
+                        signature_data[i] = data[i];
+                    }
                 }
             }
         }
 
         var url = xhr.url.protocol + '//' + xhr.url.host + xhr.url.path;
         var signature_string = toSignatureBaseString(xhr.method, url, header_params, signature_data);
-        var signature = OAuth.signatureMethod[this.signatureMethod](this.consumerSecret, this.accessTokenSecret, signature_string);
+        var signature = OAuthRequest.signatureMethod[this.signatureMethod](this.consumerSecret, this.accessTokenSecret, signature_string);
+        header_params['oauth_signature'] = signature;
 
         xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(header_params, this.realm));
 
         xhr.send(data);
     },
+
     abort: function () {
         this.request.abort();
     },
