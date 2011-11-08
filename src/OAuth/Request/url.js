@@ -102,7 +102,5 @@ define(['querystring'], function (querystring) {
         return location;
     }
 
-    return {
-        parse: Url.parse
-    };
+    return Url;
 });
