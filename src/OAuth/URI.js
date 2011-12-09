@@ -140,7 +140,7 @@
                 }
             }
         } else {
-            for (i = 0; i < arg_length; i += 2) {
+            for (i = 0; i < args_length; i += 2) {
                 // treat each arg as key, then value
                 querystring[args[i]] = args[i+1];
             }
