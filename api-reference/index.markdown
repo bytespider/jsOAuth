@@ -53,7 +53,7 @@ The following config parameters can be set.
 			<td>accessTokenUrl</td><td>string</td><td>Required for 3-legged requests</td><td>&nbsp;</td><td>&nbsp;</td>
 		</tr>
 		<tr>
-			<td>enablePrivilege</td><td>boolean</td><td>&nbsp;</td><td>false</td><td>Allows you to put Firefox into a Cross domain requests enabled mode<sup>*</sup></td>
+			<td><strike>enablePrivilege</strike></td><td>boolean</td><td>&nbsp;</td><td>false</td><td><strong>Deprecated</strong> Allows you to put Firefox into a Cross domain requests enabled mode<sup>*</sup></td>
 		</tr>
 	</tbody>
 </table>
