@@ -25,6 +25,7 @@
             var oauth = {
                 enablePrivilege: options.enablePrivilege || false,
 
+                proxyUrl: options.proxyUrl,
                 callbackUrl: options.callbackUrl || 'oob',
 
                 consumerKey: options.consumerKey,
@@ -196,6 +197,10 @@
                 if (this.realm)
                 {
                     headerParams['realm'] = this.realm;
+                }
+                
+                if (oauth.proxyUrl) {
+                    url = URI(oauth.proxyUrl + url.path);                   
                 }
 
                 if(appendQueryString || method == 'GET') {
