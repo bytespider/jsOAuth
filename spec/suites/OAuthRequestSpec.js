@@ -31,7 +31,7 @@ describe('OAuth XMLHttpRequest', function () {
 
         waitsFor(function () {
             return done;
-        }, "Requet never completed", 10000);
+        }, "Request never completed", 10000);
 
         xhr.send(null);
     });
@@ -56,8 +56,8 @@ describe('OAuth XMLHttpRequest', function () {
 
         jQuery.ajaxSettings.xhr =  function () {
             var xhr =  new OAuthRequest;
-            xhr.consumerKey = consumerKey;
-            xhr.consumerSecret = consumerSecret;
+            xhr.applicationKey = applicationKey;
+            xhr.applicationSecret = applicationSecret;
             xhr.accessTokenKey = accessTokenKey;
             xhr.accessTokenSecret = accessTokenSecret;
 
@@ -66,11 +66,43 @@ describe('OAuth XMLHttpRequest', function () {
 
         waitsFor(function () {
             return done;
-        }, "Requet never completed", 10000);
+        }, "Request never completed", 10000);
 
         $.ajax("http://api.twitter.com/1/statuses/home_timeline.json", {success: function (data, textStatus, jqXHR) {
             done = true;
         }});
     });
 
+});
+
+describe('OAuth2.0 XMLHttpRequest', function () {
+    it('Should exist', function () {
+        var OAuthRequest = window.OAuthRequest;
+
+        expect(OAuthRequest).toBeDefined();
+
+        var xhr = new OAuthRequest;
+        expect(xhr).toBeInstanceOf(OAuthRequest);
+    });
+
+    var xhr = new OAuthRequest(),
+            done = true;
+
+        jQuery.ajaxSettings.xhr =  function () {
+            var xhr =  new OAuthRequest;
+            xhr.applicationKey = applicationKey;
+            xhr.applicationSecret = applicationSecret;
+            xhr.accessTokenKey = accessTokenKey;
+            xhr.accessTokenSecret = accessTokenSecret;
+
+            return xhr;
+        };
+
+        waitsFor(function () {
+            return done;
+        }, "Request never completed", 10000);
+
+        $.ajax("https://graph.facebook.com/oauth/access_token?client_id=" + applicationKey + "&client_secret=" + applicationSecret + "&grant_type=client_credentials", {success: function (data, textStatus, jqXHR) {
+            done = true;
+        }});
 });
