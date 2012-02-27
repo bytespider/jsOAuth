@@ -60,7 +60,7 @@ define(["url"], function (Url) {
             var xhr = this.request;
             var header_params = {
                     'oauth_callback': this.callbackUrl,
-                    'oauth_consumer_key': this.consumerKey,
+                    'oauth_consumer_key': this.applicationKey,
                     'oauth_token': this.accessTokenKey,
                     'oauth_signature_method': this.signatureMethod,
                     'oauth_timestamp': getTimestamp(),
@@ -97,7 +97,7 @@ define(["url"], function (Url) {
 
             var url = xhr.url.protocol + '//' + xhr.url.host + xhr.url.path;
             var signature_string = toSignatureBaseString(xhr.method, url, header_params, signature_data);
-            var signature = OAuthRequest.signatureMethod[this.signatureMethod](this.consumerSecret, this.accessTokenSecret, signature_string);
+            var signature = OAuthRequest.signatureMethod[this.signatureMethod](this.applicationSecret, this.accessTokenSecret, signature_string);
             header_params['oauth_signature'] = signature;
 
             xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(header_params, this.realm));
@@ -164,8 +164,8 @@ define(["url"], function (Url) {
         },
 
         // OAuthRequest specifics
-        consumerKey: '',
-        consumerSecret: '',
+        applicationKey: '',
+        applicationSecret: '',
         accessTokenKey: '',
         accessTokenSecret: '',
         realm: '',
@@ -181,13 +181,13 @@ define(["url"], function (Url) {
          * @param token_secret {string}  the token secret
          * @param signature_base {string}  the signature base string
          */
-        'HMAC-SHA1': function (consumer_secret, token_secret, signature_base) {
+        'HMAC-SHA1': function (application_secret, token_secret, signature_base) {
             var passphrase, signature, encode = Querystring.escape;
 
-            consumer_secret = encode(consumer_secret);
+            application_secret = encode(application_secret);
             token_secret = encode(token_secret || '');
 
-            passphrase = consumer_secret + '&' + token_secret;
+            passphrase = application_secret + '&' + token_secret;
             signature = HMAC(SHA1.prototype, passphrase, signature_base);
 
             return btoa(signature);
