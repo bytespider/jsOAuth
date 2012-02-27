@@ -1,5 +1,20 @@
 {
-  "name": "js-oauth",	
-  "description": "A javascript library implimenting the OAuth protocol",
-  "author": "Rob Griffiths (rob@bytespider.eu)"
+    "name": "jsoauth",
+    "description": "A javascript library implimenting the OAuth protocol",
+    "author": "Rob Griffiths (rob@bytespider.eu)",
+    "version": "2.0",
+    "homepage": "https://github.com/bytespider/jsOAuth",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/bytespider/jsOAuth.git"
+    },
+    "bugs": {
+        "url" : "https://github.com/bytespider/jsOAuth/issues"
+    },
+    "licenses": [
+        {
+          "type": "MIT",
+          "url": "https://github.com/bytespider/jsOAuth/blob/master/LICENCE"
+        }
+    ],
 }
