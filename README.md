@@ -20,6 +20,7 @@ information.
 ##Documentation
 Find the API reference and tutorials on the [Documentation site](http://bytespider.github.com/jsOAuth/).
 For recipes on ways to get things working with jsOAuth, try the [recipes page](https://github.com/bytespider/jsOAuth/wiki/Recipes).
+If you need more help or discussion, try the [Google jsOAuth Group](https://groups.google.com/group/jsoauth).
 
 ## Usage
 
