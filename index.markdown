@@ -24,6 +24,9 @@ a something goes wrong.
 - [Development Edition](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-{{ site.package_version }}.js)
 - [CommonJS / Node.js Module](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-{{ site.package_version }}.CommonJS.zip)
 
+##Getting help###
+If you need more help or discussion, try the [Google jsOAuth Group](https://groups.google.com/group/jsoauth).
+
 ##Tutorials##
 * [Example: Boilerplate for PIN based authentication in javascript](https://gist.github.com/1071227)
 * [Tutorial: Titanium & jsOAuth - Part 1](http://code.bytespider.eu/post/3032429995/twitter-client-using-titanium-and-jsoauth-part-1)
