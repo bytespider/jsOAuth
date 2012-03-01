@@ -13,6 +13,10 @@ mentioned here for running the test suite.** If you need jsOAuth in the browser,
 Released under the MIT. Please see LICENSE in the project root folder for more
 information.
 
+
+[Please fill in this short developer questionnaire](https://docs.google.com/spreadsheet/embeddedform?formkey=dDItRWVfMmoxU3U4bVpocE9LbFpiT3c6MQ)
+
+
 ##Documentation
 Find the API reference and tutorials on the [Documentation site](http://bytespider.github.com/jsOAuth/).
 For recipes on ways to get things working with jsOAuth, try the [recipes page](https://github.com/bytespider/jsOAuth/wiki/Recipes).
