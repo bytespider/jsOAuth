@@ -25,6 +25,7 @@
             var oauth = {
                 enablePrivilege: options.enablePrivilege || false,
 
+                proxyUrl: options.proxyUrl,
                 callbackUrl: options.callbackUrl || 'oob',
 
                 consumerKey: options.consumerKey,
@@ -197,6 +198,10 @@
                 {
                     headerParams['realm'] = this.realm;
                 }
+                
+                if (oauth.proxyUrl) {
+                    url = URI(oauth.proxyUrl + url.path);                   
+                }
 
                 if(appendQueryString || method == 'GET') {
                     url.query.setQueryParams(data);
@@ -287,9 +292,18 @@
          * @param failure {function} callback for a failed request
          */
         postJSON: function (url, data, success, failure) {
-            this.post(url, JSON.stringify(data), function (data) {
-                success(JSON.parse(data.text));
-            } , failure);
+            this.request({
+                'method': 'POST',
+                'url': url,
+                'data': JSON.stringify(data),
+                'success': function (data) {
+                    success(JSON.parse(data.text));
+                },
+                'failure': failure,
+                'headers': {
+                    'Content-Type': 'application/json'
+                }
+            });
         },
 
         parseTokenRequest: function (tokenRequest, content_type) {
@@ -426,14 +440,14 @@
             if (a[1] < b[1]) {
               return -1;
             } else if (a[1] > b[1]) {
-              return 1;              
+              return 1;
             } else {
               return 0;
             }
           }
         }).map(function(el) {
           return el.join("=");
-        });    
+        });
 
         return [
             method,

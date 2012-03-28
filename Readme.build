@@ -9,15 +9,14 @@ In fact, anywhere that javascript can be used and has cross-domain
 XMLHttpRequests. **For security reasons jsOAuth doesn't run in the browser. Browsers are only 
 mentioned here for running the test suite.** If you need jsOAuth in the browser, write an extension.
 
-## Features
-
-### Core
-
-  * Single authorisation entry-point
-  * Debug mode for testing locally in Firefox, see index.html for example
 
 Released under the MIT. Please see LICENSE in the project root folder for more
 information.
+
+##Documentation
+Find the API reference and tutorials on the [Documentation site](http://bytespider.github.com/jsOAuth/).
+For recipes on ways to get things working with jsOAuth, try the [recipes page](https://github.com/bytespider/jsOAuth/wiki/Recipes).
+If you need more help or discussion, try the [Google jsOAuth Group](https://groups.google.com/group/jsoauth).
 
 ## Usage
 

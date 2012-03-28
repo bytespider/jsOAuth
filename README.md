@@ -9,21 +9,24 @@ In fact, anywhere that javascript can be used and has cross-domain
 XMLHttpRequests. **For security reasons jsOAuth doesn't run in the browser. Browsers are only 
 mentioned here for running the test suite.** If you need jsOAuth in the browser, write an extension.
 
-## Features
-
-### Core
-
-  * Single authorisation entry-point
-  * Debug mode for testing locally in Firefox, see index.html for example
 
 Released under the MIT. Please see LICENSE in the project root folder for more
 information.
 
+
+[Please fill in this short developer questionnaire](https://docs.google.com/spreadsheet/embeddedform?formkey=dDItRWVfMmoxU3U4bVpocE9LbFpiT3c6MQ)
+
+
+##Documentation
+Find the API reference and tutorials on the [Documentation site](http://bytespider.github.com/jsOAuth/).
+For recipes on ways to get things working with jsOAuth, try the [recipes page](https://github.com/bytespider/jsOAuth/wiki/Recipes).
+If you need more help or discussion, try the [Google jsOAuth Group](https://groups.google.com/group/jsoauth).
+
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.2.min.js) and include it in your html.
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.3.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-1.3.2.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-1.3.3.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
