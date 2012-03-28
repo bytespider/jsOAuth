@@ -1,62 +1,60 @@
 config.init({
     pkg: "<json:package.json>",
     meta: {
-        banner: "/*! <%= pkg.name %> version <%= pkg.version %>" +
-                " * Copyright (c) 2010, <%= template.today('yyyy') %> <%= pkg.author.name %>" +
-                " * <%= pkg.name %> is licensed under the terms of <%= _.pluck(pkg.licenses, 'type').join(', ') %>" +
-                " */"
+        banner:                         "/*! <%= pkg.name %> version <%= pkg.version %>" +
+                                        " * Copyright (c) 2010, <%= template.today('yyyy') %> <%= pkg.author.name %>" +
+                                        " * <%= pkg.name %> is licensed under the terms of <%= _.pluck(pkg.licenses, 'type').join(', '') %>" +
+                                        " */"
     },
     concat: {
-        "dist/oauth.js": ["<banner>", "<file_strip_banner:src/OAuth/Request/*.js>"]
+        "dist/w3c/oauth.js":            ["<banner>", "<file_strip_banner:src/OAuth/Request/*.js>"],
+        "dist/titanium/oauth.js":       ["<banner>", "<file_strip_banner:src/OAuth/Request/*.js>"]
     },
     min: {
-        "dist/oauth.min.js": ["<banner>", "dist/oauth.js"]
+        "dist/w3c/oauth.min.js":        ["<banner>", "dist/w3c/oauth.js"],
+        "dist/titanium/oauth.min.js":   ["<banner>", "dist/titanium/oauth.js"]
     },
     test: {
-        files: ['spec/**/*.js']
+        w3c:                            ["spec/**/*.js"],
+        titanium:                       ["spec/**/*.js"],
+        commonjs:                       ["spec/suites/UrlSpec.js", "spec/suites/CryptographySpec.js", "spec/suites/OAuthRequestSpec.js"]
     },
     lint: {
-        files: ["grunt.js", "src/**/*.js", "spec/**/*.js"]
+        all:                            ["grunt.js", "src/**/*.js", "spec/**/*.js"],
+        commonjs:                       ["grunt.js", "src/OAuth/Request/**/*.js", "<config:test.commonjs>"]
     },
     watch: {
-        files: "<config:lint.files>",
-        tasks: 'lint test'
+        files:                          "<config:lint.commonjs>",
+        tasks:                          "lint:commonjs test:commonjs"
     },
     jshint: {
         options: {
-            curly: true,
-            eqeqeq: true,
-            immed: true,
-            latedef: true,
-            newcap: true,
-            noarg: true,
-            sub: true,
-            undef: true,
-            boss: true,
-            eqnull: true,
-            browser: true
+            curly:                      true,
+            eqeqeq:                     true,
+            immed:                      true,
+            latedef:                    true,
+            newcap:                     true,
+            noarg:                      true,
+            sub:                        true,
+            undef:                      true,
+            boss:                       true,
+            eqnull:                     true,
+            browser:                    true,
+            es5:                        true
+        },
+        globals: {
+            require:                    true,
+            module:                     true,
+            exports:                    true,
+            task:                       true,
+            config:                     true
         }
     },
-    uglify: {},
-    commonjs: {
-        files: "<config:lint.files>",
-        jshint: {
-            globals: {
-                exports: true,
-                module: true
-            }
-        }
-    }
+    uglify: {}
 });
 
-task.registerTask('default', 'lint test concat min');
-task.registerTask('commonjs', "Build commonjs module", function (prop) {
-    var options = config('jshint.options', 'commonjs.jshint.options');
-    var globals = config('jshint.globals', 'commonjs.jshint.globals');
+task.registerTask("default",            "lint test concat min");
 
-    // Display flags and globals.
-    verbose.writeflags(options, 'Options');
-    verbose.writeflags(globals, 'Globals');
-
-    console.log(options, globals);
-});
+task.registerTask("w3c",                "lint test:w3c concat:dist/w3c/oauth.js min:dist/w3c/oauth.min.js");
+task.registerTask("titanium",           "lint test:titanium concat:dist/titanium/oauth.js min:dist/titanium/oauth.min.js");
+task.registerTask("commonjs",           "lint:commonjs test:commonjs");

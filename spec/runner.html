@@ -7,9 +7,8 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 
-    <link href="lib/jasmine-1.1.0/jasmine.css" rel="stylesheet"/>
-    <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine.js"></script>
-    <script type="text/javascript" src="lib/jasmine-1.1.0/jasmine-html.js"></script>
+    <link   href="lib/nodeunit/nodeunit.css" rel="stylesheet"/>
+    <script src="lib/nodeunit/nodeunit.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         var require = {
@@ -23,8 +22,6 @@
         };
     </script>
 
-    <script type="text/javascript" src="../src/OAuth/Request/require.js" charset="utf-8"></script>
-
     <!-- Specs -->
     <script type="text/javascript" src="suites/UrlSpec.js" charset="utf-8"></script>
     <script type="text/javascript" src="suites/OAuthRequestSpec.js" charset="utf-8"></script>
@@ -33,35 +30,32 @@
     <script src="env.js"></script>
 
     <script type="text/javascript">
-        (function() {
-            var jasmineEnv = jasmine.getEnv();
-            jasmineEnv.updateInterval = 1000;
-
-            var trivialReporter = new jasmine.TrivialReporter();
-
-            jasmineEnv.addReporter(trivialReporter);
-
-            jasmineEnv.specFilter = function(spec) {
-                return trivialReporter.specFilter(spec);
-            };
-
-            var currentWindowOnload = window.onload;
-
-            window.onload = function() {
-                if (currentWindowOnload) {
-                    currentWindowOnload();
-                }
-                execJasmine();
-            };
-
-            function execJasmine() {
-                jasmineEnv.execute();
-            }
-
-        })();
+        nodeunit.run({
+            'UrlSpec': suite1,
+            'OAuthRequestSpec': suite2
+        });
     </script>
 
   </head>
   <body>
+  </body>
+</html>
+
+<html>
+  <head>
+    <title>Example Test Suite</title>
+    <link rel="stylesheet" href="nodeunit.css" type="text/css" />
+    <script src="nodeunit.js"></script>
+    <script src="suite1.js"></script>
+    <script src="suite2.js"></script>
+  </head>
+  <body>
+    <h1 id="nodeunit-header>Example Test Suite</h1>
+    <script>
+      nodeunit.run({
+        'Suite One': suite1,
+        'Suite Two': suite2
+      });
+    </script>
   </body>
 </html>

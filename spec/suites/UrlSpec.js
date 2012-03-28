@@ -1,4 +1,6 @@
-describe('Url parsing', function () {
+var Url = require("../../src/OAuth/Request/url");
+
+exports.testUrlParsing = function (test) {
     var parse_tests = {
         'HTTP://www.example.com/' : 'http://www.example.com/',
         'http://www.ExAmPlE.com/' : 'http://www.example.com/',
@@ -23,18 +25,19 @@ describe('Url parsing', function () {
 
         //While this may seem counter-intuitive, a browser will parse
         //<a href='www.google.com'> as a path.
-        'www.example.com' : 'http://www.example.com',
+        'www.example.com' : 'http://www.example.com'
     };
 
-    for (var u in parse_tests) {
-        it(u, function () {
-            var Url = window.Url;
-            var test = u;
+    test.expect(parse_tests.length);
 
-            var actual = Url.parse(test).toString(),
-            expected = parse_tests[test];
+    var u;
+    for (u in parse_tests)
+    {
+        var actual = Url.parse(u).toString();
+        var expected = parse_tests[u];
 
-            expect(expected).toEqual(actual);
-        });
+        test.strictEqual(actual, expected, u);
     }
-});
+
+    test.done();
+};

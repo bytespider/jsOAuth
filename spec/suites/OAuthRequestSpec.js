@@ -1,82 +1,65 @@
-beforeEach(function() {
-    this.addMatchers({
-        toBeInstanceOf: function(type) {
-            return this.actual instanceof type;
+var OAuthRequest = require("../../src/OAuth/Request/Request");
+
+function isInstanceOf(value, expected) { return value instanceof expected; }
+function isDefined(value) { return value != null; }
+
+exports.basic = function (test) {
+    test.expect(2);
+    test.ok(isDefined(OAuthRequest), "OAuthRequest is defined");
+
+    var xhr = new OAuthRequest();
+    var console;
+    if (console !== undefined) {
+        console.log(xhr);
+    }
+    test.ok(isInstanceOf(xhr, OAuthRequest), "xhr is an instance of OAuthRequest");
+
+    test.done();
+};
+
+exports.request = function (test) {
+    test.expect(1);
+
+    var xhr = new OAuthRequest();
+    xhr.open("GET", "http://www.google.co.uk", true);
+
+    xhr.addEventListener("readystatechange", function (event) {
+        if (this.readyState === this.DONE && this.status >= 200)
+        {
+            test.ok(true, "Request completed");
+            test.done();
         }
-    })
-});
-
-describe('OAuth XMLHttpRequest', function () {
-    it('Should exist', function () {
-        var OAuthRequest = window.OAuthRequest;
-
-        expect(OAuthRequest).toBeDefined();
-
-        var xhr = new OAuthRequest;
-        expect(xhr).toBeInstanceOf(OAuthRequest);
     });
 
-    it("Should request a page", function() {
-        var xhr = new OAuthRequest(),
-            done = false;
+    xhr.send(null);
+};
 
-        xhr.open('GET', 'http://www.google.co.uk', true);
+exports.signedRequest = function (test) {
+    test.expect(1);
+    var env = require("../env");
+    var xhr = new OAuthRequest();
 
-        xhr.addEventListener('readystatechange', function (event) {
-            if (this.readyState == this.DONE && this.status >= 200)
-            {
-                done = true;
-            }
-        });
+    xhr.applicationKey = env.twitter.applicationKey;
+    xhr.applicationSecret = env.twitter.applicationSecret;
+    xhr.accessTokenKey = env.twitter.accessTokenKey;
+    xhr.accessTokenSecret = env.twitter.accessTokenSecret;
 
-        waitsFor(function () {
-            return done;
-        }, "Request never completed", 10000);
+    xhr.open("GET", "http://api.twitter.com/1/statuses/home_timeline.json", true);
 
-        xhr.send(null);
+    xhr.addEventListener("readystatechange", function (event) {
+        if (this.readyState === this.DONE && this.status >= 200)
+        {
+            test.ok(true, "Request completed");
+            test.done();
+        }
     });
 
-    it("Should request a page using jQuery.ajax", function() {
-        var xhr = new OAuthRequest(),
-            done = false;
+    xhr.send(null);
+};
 
-        waitsFor(function () {
-            return done;
-        }, "Requet never completed", 10000);
-
-        jQuery.ajaxSettings.xhr =  function () { return new OAuthRequest };
-        $.ajax("http://www.google.co.uk", {success: function (data, textStatus, jqXHR) {
-            done = true;
-        }});
-    });
-
-    it("Should request the authenticated users's timeine", function() {
-        var xhr = new OAuthRequest(),
-            done = true;
-
-        jQuery.ajaxSettings.xhr =  function () {
-            var xhr =  new OAuthRequest;
-            xhr.applicationKey = applicationKey;
-            xhr.applicationSecret = applicationSecret;
-            xhr.accessTokenKey = accessTokenKey;
-            xhr.accessTokenSecret = accessTokenSecret;
-
-            return xhr;
-        };
-
-        waitsFor(function () {
-            return done;
-        }, "Request never completed", 10000);
-
-        $.ajax("http://api.twitter.com/1/statuses/home_timeline.json", {success: function (data, textStatus, jqXHR) {
-            done = true;
-        }});
-    });
-
-});
-
-describe('OAuth2.0 XMLHttpRequest', function () {
-    it('Should exist', function () {
+/*
+describe("OAuth2.0 XMLHttpRequest", function () {
+    it("Should exist", function () {
         var OAuthRequest = window.OAuthRequest;
 
         expect(OAuthRequest).toBeDefined();
@@ -106,3 +89,4 @@ describe('OAuth2.0 XMLHttpRequest', function () {
             done = true;
         }});
 });
+*/

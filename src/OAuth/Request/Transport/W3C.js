@@ -1,7 +1,4 @@
-define(["request"], function (OAuthRequest) {
-    OAuthRequest.Transports = OAuthRequest.Transports || {};
-    OAuthRequest.Transports.W3C = {
-        test: !!XMLHttpRequest,
-        factory: function () { return new XMLHttpRequest; }
-    };
-});
+module.exports = {
+    test: function () { return window !== undefined && !!window.XMLHttpRequest; },
+    factory: function () { return new window.XMLHttpRequest(); }
+};
