@@ -8,4 +8,4 @@ navigation:
     url: "/api-reference"
   - text: "Index"
     url: "/index"
-package_version: 1.3.3
+package_version: 1.3.4
