@@ -172,16 +172,18 @@
 
                 signatureMethod = oauth.signatureMethod;
 
+                // Handle GET params first
+                params = url.query.toObject();
+                for (i in params) {
+                    signatureData[i] = params[i];
+                }
+
                 // According to the OAuth spec
                 // if data is transfered using
                 // multipart the POST data doesn't
                 // have to be signed:
                 // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
                 if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
-                    params = url.query.toObject();
-                    for (i in params) {
-                        signatureData[i] = params[i];
-                    }
                     for (i in data) {
                         signatureData[i] = data[i];
                     }
@@ -198,9 +200,9 @@
                 {
                     headerParams['realm'] = this.realm;
                 }
-                
+
                 if (oauth.proxyUrl) {
-                    url = URI(oauth.proxyUrl + url.path);                   
+                    url = URI(oauth.proxyUrl + url.path);
                 }
 
                 if(appendQueryString || method == 'GET') {
