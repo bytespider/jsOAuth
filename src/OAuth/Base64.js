@@ -34,4 +34,4 @@
 
         return output;
     };
-})(this);
+})(exports);
