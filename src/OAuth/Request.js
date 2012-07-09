@@ -17,7 +17,6 @@
                     XHR = new global.XMLHttpRequest();
                 } else {
                     throw "No valid request transport found.";
-                    return null;
                 }
             }
         } else if (typeof global.XMLHttpRequest !== "undefined") {
@@ -25,7 +24,6 @@
             XHR = new global.XMLHttpRequest();
         } else {
             throw "No valid request transport found.";
-            return null;
         }
 
         return XHR;
