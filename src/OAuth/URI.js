@@ -82,7 +82,7 @@
         if (obj != undefined) {
             for (i in obj) {
                 if (obj.hasOwnProperty(i)) {
-                    querystring[i] = decode(obj[i]);
+                    querystring[i] = obj[i];
                 }
             }
         }
@@ -136,7 +136,9 @@
                 for (i = 0, query_array_length = query_array.length; i < query_array_length; i++) {
                     // split on '=' to get key, value
                     key_value = query_array[i].split('=');
-                    querystring[key_value[0]] = decode(key_value[1]);
+                    if (key_value[0] != "") {
+                        querystring[key_value[0]] = decode(key_value[1]);
+                    }
                 }
             }
         } else {
