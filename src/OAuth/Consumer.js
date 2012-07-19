@@ -90,7 +90,7 @@
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [], appendQueryString, signatureData = {}, params, withFile;
+                    query = [], appendQueryString, signatureData = {}, params, withFile, urlString;
 
                 method = options.method || 'GET';
                 url = URI(options.url);
