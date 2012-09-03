@@ -48,6 +48,105 @@
 				return oauth.timeStampFormat;
 			}
 
+			this.getHeaderParams = function (options) {
+				if (typeof options == "undefined")
+					var options = {};
+				var url, headers, data, urlString, method, signature, signatureString, signatureMethod, urlString, appendQueryString, signatureData = {}, withFile = false;
+				
+				method = options.method || 'GET';
+				url = options.url ? URI(options.url) : '';
+				data = options.data || {};
+				headers = options.headers || {};
+				appendQueryString = options.appendQueryString ? options.appendQueryString : false;
+				
+				headerParams = {
+                    'oauth_callback': oauth.callbackUrl,
+                    'oauth_consumer_key': oauth.consumerKey,
+                    'oauth_token': oauth.accessTokenKey,
+                    'oauth_signature_method': oauth.signatureMethod,
+                    'oauth_timestamp': this.getTimestamp(),
+                    'oauth_nonce': getNonce(),
+                    'oauth_verifier': oauth.verifier,
+                    'oauth_version': OAUTH_VERSION_1_0
+                };
+
+				this.setHeaderParams(headerParams);
+                signatureMethod = oauth.signatureMethod;
+
+                // Handle GET params first
+                params = url.query.toObject();
+                for (i in params) {
+                    signatureData[i] = params[i];
+                }
+
+                // According to the OAuth spec
+                // if data is transfered using
+                // multipart the POST data doesn't
+                // have to be signed:
+                // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
+                if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
+                    for (i in data) {
+                        signatureData[i] = data[i];
+                    }
+                }
+
+                urlString = url.scheme + '://' + url.host + url.path;
+				
+                signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
+
+                signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
+
+                headerParams.oauth_signature = signature;
+
+                if (this.realm)
+                {
+                    headerParams['realm'] = this.realm;
+                }
+
+                if (oauth.proxyUrl) {
+                    url = URI(oauth.proxyUrl + url.path);
+                }
+
+                if(appendQueryString || method == 'GET') {
+                    url.query.setQueryParams(data);
+                    query = null;
+                } else if(!withFile){
+                    if (typeof data == 'string') {
+                        query = data;
+                        if (!('Content-Type' in headers)) {
+                            headers['Content-Type'] = 'text/plain';
+                        }
+                    } else {
+                        for(i in data) {
+                            query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
+                        }
+                        query = query.sort().join('&');
+                        if (!('Content-Type' in headers)) {
+                            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                        }
+                    }
+
+                } else if(withFile) {
+                    // When using FormData multipart content type
+                    // is used by default and required header
+                    // is set to multipart/form-data etc
+                    query = new FormData();
+                    for(i in data) {
+                        query.append(i, data[i]);
+                    }
+                }
+				
+				return oauth.headerParams;
+			}
+			
+			this.getHeaderString = function (url){
+				return toHeaderString(this.getHeaderParams({url:url}));
+			}
+			
+			this.setHeaderParams = function (headerParams) {
+				oauth.headerParams = headerParams;
+			}
+			
             this.getAccessToken = function () {
                 return [oauth.accessTokenKey, oauth.accessTokenSecret];
             };
@@ -165,80 +264,7 @@
                     }
                 };
 
-                headerParams = {
-                    'oauth_callback': oauth.callbackUrl,
-                    'oauth_consumer_key': oauth.consumerKey,
-                    'oauth_token': oauth.accessTokenKey,
-                    'oauth_signature_method': oauth.signatureMethod,
-                    'oauth_timestamp': this.getTimestamp(),
-                    'oauth_nonce': getNonce(),
-                    'oauth_verifier': oauth.verifier,
-                    'oauth_version': OAUTH_VERSION_1_0
-                };
-
-                signatureMethod = oauth.signatureMethod;
-
-                // Handle GET params first
-                params = url.query.toObject();
-                for (i in params) {
-                    signatureData[i] = params[i];
-                }
-
-                // According to the OAuth spec
-                // if data is transfered using
-                // multipart the POST data doesn't
-                // have to be signed:
-                // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
-                if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
-                    for (i in data) {
-                        signatureData[i] = data[i];
-                    }
-                }
-
-                urlString = url.scheme + '://' + url.host + url.path;
-                signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
-
-                signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
-
-                headerParams.oauth_signature = signature;
-
-                if (this.realm)
-                {
-                    headerParams['realm'] = this.realm;
-                }
-
-                if (oauth.proxyUrl) {
-                    url = URI(oauth.proxyUrl + url.path);
-                }
-
-                if(appendQueryString || method == 'GET') {
-                    url.query.setQueryParams(data);
-                    query = null;
-                } else if(!withFile){
-                    if (typeof data == 'string') {
-                        query = data;
-                        if (!('Content-Type' in headers)) {
-                            headers['Content-Type'] = 'text/plain';
-                        }
-                    } else {
-                        for(i in data) {
-                            query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
-                        }
-                        query = query.sort().join('&');
-                        if (!('Content-Type' in headers)) {
-                            headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                        }
-                    }
-
-                } else if(withFile) {
-                    // When using FormData multipart content type
-                    // is used by default and required header
-                    // is set to multipart/form-data etc
-                    query = new FormData();
-                    for(i in data) {
-                        query.append(i, data[i]);
-                    }
-                }
+				headerParams = this.getHeaderParams(options);
 
                 xhr.open(method, url+'', true);
 
@@ -367,7 +393,7 @@
 	     */
 	    getTimestamp: function() {
 			var oauth = this;
-			console.log(oauth.getTimeStampFormat());
+
 			if (oauth.getTimeStampFormat() == 's')
 				return parseInt(+new Date() / 1000, 10)/1000; // use short form of getting a timestamp
 			else
