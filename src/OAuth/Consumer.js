@@ -34,13 +34,19 @@
                 accessTokenSecret: options.accessTokenSecret || empty,
                 verifier: empty,
 
-                signatureMethod: options.signatureMethod || 'HMAC-SHA1'
+                signatureMethod: options.signatureMethod || 'HMAC-SHA1',
+				timeStampFormat: options.timeStampFormat || 'ms'
             };
 
             this.realm = options.realm || empty;
             this.requestTokenUrl = options.requestTokenUrl || empty;
             this.authorizationUrl = options.authorizationUrl || empty;
             this.accessTokenUrl = options.accessTokenUrl || empty;
+			this.headerParams = {};
+
+			this.getTimeStampFormat= function () {
+				return oauth.timeStampFormat;
+			}
 
             this.getAccessToken = function () {
                 return [oauth.accessTokenKey, oauth.accessTokenSecret];
@@ -164,7 +170,7 @@
                     'oauth_consumer_key': oauth.consumerKey,
                     'oauth_token': oauth.accessTokenKey,
                     'oauth_signature_method': oauth.signatureMethod,
-                    'oauth_timestamp': getTimestamp(),
+                    'oauth_timestamp': this.getTimestamp(),
                     'oauth_nonce': getNonce(),
                     'oauth_verifier': oauth.verifier,
                     'oauth_version': OAUTH_VERSION_1_0
@@ -354,7 +360,19 @@
 
                 success(data);
             }, failure);
-        }
+        },
+
+		/**
+	     * Generate a timestamp for the request
+	     */
+	    getTimestamp: function() {
+			var oauth = this;
+			console.log(oauth.getTimeStampFormat());
+			if (oauth.getTimeStampFormat() == 's')
+				return parseInt(+new Date() / 1000, 10)/1000; // use short form of getting a timestamp
+			else
+				return parseInt(+new Date() / 1000, 10); // use short form of getting a timestamp
+	    }
     };
 
     OAuth.signatureMethod = {
@@ -458,13 +476,7 @@
         ].join('&');
     }
 
-    /**
-     * Generate a timestamp for the request
-     */
-    function getTimestamp() {
-        return parseInt(+new Date() / 1000, 10); // use short form of getting a timestamp
-    }
-
+    
     /**
      * Generate a nonce for the request
      *
