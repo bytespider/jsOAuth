@@ -395,7 +395,7 @@
 			var oauth = this;
 
 			if (oauth.getTimeStampFormat() == 's')
-				return parseInt(+new Date() / 1000, 10)/1000; // use short form of getting a timestamp
+				return parseInt(+new Date() / 100000, 10); // use short form of getting a timestamp
 			else
 				return parseInt(+new Date() / 1000, 10); // use short form of getting a timestamp
 	    }
