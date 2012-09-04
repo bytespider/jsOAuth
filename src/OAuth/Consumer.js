@@ -35,31 +35,32 @@
                 verifier: empty,
 
                 signatureMethod: options.signatureMethod || 'HMAC-SHA1',
-				timeStampFormat: options.timeStampFormat || 'ms'
+                timeStampFormat: options.timeStampFormat || 'ms'
             };
 
             this.realm = options.realm || empty;
             this.requestTokenUrl = options.requestTokenUrl || empty;
             this.authorizationUrl = options.authorizationUrl || empty;
             this.accessTokenUrl = options.accessTokenUrl || empty;
-			this.headerParams = {};
+            this.headerParams = {};
 
-			this.getTimeStampFormat= function () {
-				return oauth.timeStampFormat;
-			}
+            this.getTimeStampFormat= function () {
+                return oauth.timeStampFormat;
+            }
 
-			this.getHeaderParams = function (options) {
-				if (typeof options == "undefined")
-					var options = {};
-				var url, headers, data, urlString, method, signature, signatureString, signatureMethod, urlString, appendQueryString, signatureData = {}, withFile = false;
-				
-				method = options.method || 'GET';
-				url = options.url ? URI(options.url) : '';
-				data = options.data || {};
-				headers = options.headers || {};
-				appendQueryString = options.appendQueryString ? options.appendQueryString : false;
-				
-				headerParams = {
+            //pulled this out of this.request to be accessible from not-closure context
+            this.getHeaderParams = function (options) {
+                if (typeof options == "undefined")
+                    var options = {};
+                var url, headers, data, urlString, method, signature, signatureString, signatureMethod, urlString, appendQueryString, signatureData = {}, withFile = false;
+
+                method = options.method || 'GET';
+                url = options.url ? URI(options.url) : '';
+                data = options.data || {};
+                headers = options.headers || {};
+                appendQueryString = options.appendQueryString ? options.appendQueryString : false;
+                
+                headerParams = {
                     'oauth_callback': oauth.callbackUrl,
                     'oauth_consumer_key': oauth.consumerKey,
                     'oauth_token': oauth.accessTokenKey,
@@ -70,9 +71,9 @@
                     'oauth_version': OAUTH_VERSION_1_0
                 };
 
-				this.setHeaderParams(headerParams);
+                this.setHeaderParams(headerParams);
                 signatureMethod = oauth.signatureMethod;
-
+                
                 // Handle GET params first
                 params = url.query.toObject();
                 for (i in params) {
@@ -91,7 +92,7 @@
                 }
 
                 urlString = url.scheme + '://' + url.host + url.path;
-				
+                
                 signatureString = toSignatureBaseString(method, urlString, headerParams, signatureData);
 
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
@@ -135,18 +136,19 @@
                         query.append(i, data[i]);
                     }
                 }
-				
-				return oauth.headerParams;
-			}
-			
-			this.getHeaderString = function (url){
-				return toHeaderString(this.getHeaderParams({url:url}));
-			}
-			
-			this.setHeaderParams = function (headerParams) {
-				oauth.headerParams = headerParams;
-			}
-			
+                
+                return oauth.headerParams;
+            }
+
+            //transforms params to string
+            this.getHeaderString = function (url){
+                return toHeaderString(this.getHeaderParams({url:url}));
+            }
+            
+            this.setHeaderParams = function (headerParams) {
+                oauth.headerParams = headerParams;
+            }
+
             this.getAccessToken = function () {
                 return [oauth.accessTokenKey, oauth.accessTokenSecret];
             };
@@ -264,7 +266,7 @@
                     }
                 };
 
-				headerParams = this.getHeaderParams(options);
+                headerParams = this.getHeaderParams(options);
 
                 xhr.open(method, url+'', true);
 
@@ -388,17 +390,21 @@
             }, failure);
         },
 
-		/**
-	     * Generate a timestamp for the request
-	     */
-	    getTimestamp: function() {
-			var oauth = this;
+        /**
+        * Generate a timestamp for the request
+        *
+        * moved function into prototype to have oauth.getTimeStampFormat() of instance avalable
+        */
+        getTimestamp: function() {
+            var oauth = this;
 
-			if (oauth.getTimeStampFormat() == 's')
-				return parseInt(+new Date() / 100000, 10); // use short form of getting a timestamp
-			else
-				return parseInt(+new Date() / 1000, 10); // use short form of getting a timestamp
-	    }
+            switch (oauth.getTimeStampFormat()){
+                case ('ms'):
+                    return parseInt(+new Date() / 1000, 10); // use short form of getting a milliseconds-timestamp
+                default:
+                    return parseInt(+new Date() / 100000, 10); // use short form of getting a seconds-timestamp
+            }
+        }
     };
 
     OAuth.signatureMethod = {
