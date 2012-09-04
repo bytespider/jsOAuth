@@ -105,7 +105,7 @@
                     for(var name in data) {
                         // Thanks to the FileAPI any file entry
                         // has a fileName property
-                        if(typeof data[name].fileName != 'undefined') hasFile = true;
+                        if(data[name] instanceof  File || typeof data[name].fileName != 'undefined') hasFile = true;
                     }
 
                     return hasFile;
