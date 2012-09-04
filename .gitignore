@@ -8,3 +8,4 @@
 dist/
 src/index.html
 chrome/
+node_modules
