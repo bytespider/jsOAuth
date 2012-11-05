@@ -1,4 +1,3 @@
-
     /** @const */ var OAUTH_VERSION_1_0 = '1.0';
 
     /**
@@ -402,7 +401,7 @@
             arr.unshift(realm);
         }
 
-        return arr.join(', ');
+        return arr.join(',');
     }
 
     /**
