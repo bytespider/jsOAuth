@@ -1,4 +1,5 @@
 # jsOAuth - JavaScript OAuth library
+[![endorse](http://api.coderwall.com/bytespider/endorsecount.png)](http://coderwall.com/bytespider)  
 
 jsOAuth is a javascript library implementing the OAuth protocol. jsOAuth aims to
 form the basis of custom clients such as Twitter and  Yahoo.
