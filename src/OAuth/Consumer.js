@@ -26,6 +26,7 @@
                 enablePrivilege: options.enablePrivilege || false,
 
                 proxy: options.proxy,
+                proxyUrl: options.proxyUrl,
                 callbackUrl: options.callbackUrl || 'oob',
 
                 consumerKey: options.consumerKey,
@@ -201,7 +202,15 @@
                 }
 
                 if (oauth.proxy) {
-                    url = URI(oauth.proxy(url.path, url.query));
+                    if (typeof oauth.proxy == 'function') {
+                        url = URI(oauth.proxy(url.path, url.query));
+                    } else if(url.query != '') {
+                        url = URI(oauth.proxy + url.path + '?' + url.query);
+                    } else {
+                        url = URI(oauth.proxy + url.path);
+                    }
+                } else if (oauth.proxyUrl) {
+                    url = URI(oauth.proxyUrl + url.path);
                 }
 
                 if(appendQueryString || method == 'GET') {
