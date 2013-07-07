@@ -5,13 +5,13 @@ test('Basics', function () {
 
 test('toHeaderString', function () {
     var params, realm_param, realm_key, realm_val;
-    
+
     params = {
         realm: 'http://www.example.com',
         consumerKey: 'consumerkey',
         consumerSecret: 'consumersecret'
     };
-    
+
     realm_param = toHeaderString(params).match(/^(realm)="(.+?)"/);
     realm_key = realm_param[1];
     realm_val = realm_param[2];
@@ -22,7 +22,7 @@ test('toHeaderString', function () {
 });
 
 test('toSignatureBaseString', function () {
-    
+
     /**
      * Generate a signature base string for the request
      *
@@ -35,17 +35,17 @@ test('toSignatureBaseString', function () {
     function toSignatureBaseString(method, url, header_params, query_params) {
     */
 
-                        
+
     var s = toSignatureBaseString("GET", "http://www.example.com", {"h1":"v1", "h1-2":"v2"}, {"q1":"v1", "q1-2":"v2"});
-        
+
     equals(s, "GET&http%3A%2F%2Fwww.example.com&h1%3Dv1%26h1-2%3Dv2%26q1%3Dv1%26q1-2%3Dv2");
 });
 
 
 test('Output URL Encode', function () {
     equals(OAuth.urlEncode(''), '', 'Output test 1');
-    equals(OAuth.urlEncode("\r\n $ & < > ? ; # : = , \" ' ~ + %"), '%0D%0A%20%24%20%26%20%3C%20%3E%20%3F%20%3B%20%23%20%3A%20%3D%20%2C%20%22%20%27%20~%20%2B%20%25', 'Output test 2');
-    
+    equals(OAuth.urlEncode("\t\r\n $ & < > ? ; # : = , \" ' ~ + %"), '%09%0D%0A%20%24%20%26%20%3C%20%3E%20%3F%20%3B%20%23%20%3A%20%3D%20%2C%20%22%20%27%20~%20%2B%20%25', 'Output test 2');
+
     equals(OAuth.urlEncode('ß'), '%C3%9F', 'Output test 3');
     equals(OAuth.urlEncode('ü'), '%C3%BC', 'Output test 4');
 });
@@ -86,16 +86,16 @@ var oauth = OAuth({
     enablePrivilege: false,
     consumerKey: 'ba9df9055c77f338',
     consumerSecret: '846ffe1ec3b18989e73fe7fff833',
-    
+
     realm: 'http://oauth-sandbox.sevengoslings.net',
     requestTokenUrl: 'http://oauth-sandbox.sevengoslings.net/request_token',
     authorizationUrl: 'http://oauth-sandbox.sevengoslings.net/authorize',
     accessTokenUrl: 'http://oauth-sandbox.sevengoslings.net/access_token'
 });
-    
+
 
 asyncTest("OAuth Authorise", function() {
-    
+
     oauth.fetchRequestToken(function (url) {
     	var windowObjectReference = window.open(url, 'authorise');
 
@@ -106,16 +106,16 @@ asyncTest("OAuth Authorise", function() {
 
 
         document.body.appendChild(mask);
-        
+
 		var button = document.getElementById('start-app-button');
         button.onclick = function() {
             var code = document.getElementById('verification').value;
             oauth.setVerifier(code);
-            
+
             oauth.fetchAccessToken(function(data){
     	    	ok(true);
 				start();
-				
+
             }, function (data) {console.log(data)});
         };
     }, function (data) {console.log(data)});
