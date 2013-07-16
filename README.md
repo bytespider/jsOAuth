@@ -1,5 +1,4 @@
 # jsOAuth - JavaScript OAuth library
-[![endorse](http://api.coderwall.com/bytespider/endorsecount.png)](http://coderwall.com/bytespider)  
 
 jsOAuth is a javascript library implementing the OAuth protocol. jsOAuth aims to
 form the basis of custom clients such as Twitter and  Yahoo.
@@ -21,9 +20,9 @@ If you need more help or discussion, try the [Google jsOAuth Group](https://grou
 
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.6.min.js) and include it in your html.
+Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.7.min.js) and include it in your html.
 
-	<script type="text/javascript" src="library/jsOAuth-1.3.6.min.js"></script>
+	<script type="text/javascript" src="library/jsOAuth-1.3.7.min.js"></script>
 
 This gives you a global OAuth object for you to set up and make requests with.
 Setting it up is simple.
