@@ -20,7 +20,7 @@ If you need more help or discussion, try the [Google jsOAuth Group](https://grou
 
 ## Usage
 
-Download the [minified library](https://github.com/downloads/bytespider/jsOAuth/jsOAuth-1.3.7.min.js) and include it in your html.
+Download the minified library from the [distribution directory](https://github.com/bytespider/jsOAuth/tree/master/dist) and include it in your html.
 
 	<script type="text/javascript" src="library/jsOAuth-1.3.7.min.js"></script>
 
