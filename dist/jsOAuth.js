@@ -52,11 +52,11 @@ exports.OAuth = (function (global) {
 
             return arr;
         },
-        shift: function(){throw 'not implimented';},
-        unshift: function(){throw 'not implimented';},
-        push: function(){throw 'not implimented';},
-        pop: function(){throw 'not implimented';},
-        sort: function(){throw 'not implimented';},
+        shift: function(){throw 'not implemented';},
+        unshift: function(){throw 'not implemented';},
+        push: function(){throw 'not implemented';},
+        pop: function(){throw 'not implemented';},
+        sort: function(){throw 'not implemented';},
 
         ksort: function(func){
             var self = this, keys = self.keys(), i, value, key;
