@@ -1,0 +1,8 @@
+{
+  "name": "js-oauth",	
+  "description": "A javascript library implimenting the OAuth protocol",
+  "author": "Rob Griffiths (rob@bytespider.eu)",
+  "dependencies": [
+    "xhr": "0.3.7"
+  ]
+}
