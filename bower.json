@@ -1,0 +1,11 @@
+{
+	"name" : "silverorange-jsOAuth",
+	"main" : [
+		"dist/jsOAuth.js"
+	],
+	"ignore" : [
+		"build/",
+		"spec/",
+		"src"
+	]
+}
