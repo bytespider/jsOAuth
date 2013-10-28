@@ -72,7 +72,7 @@
      * @param {Object} obj
      */
     function QueryString(arr) {
-        QueryString.superclass.construct.call(this, arr);
+        QueryString.superclass.constructor.call(this, arr);
     }
 
     // QueryString is a type of param list, so inherit
