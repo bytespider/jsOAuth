@@ -88,7 +88,8 @@
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [], appendQueryString, signatureData = new ParamList(), params, withFile, urlString;
+                    query = [], appendQueryString, signatureData = new ParamList(), params, withFile, urlString,
+                    contentType;
 
                 method = options.method || 'GET';
                 url = URI(options.url);
@@ -120,7 +121,7 @@
                     if (xhr.readyState === 4) {
                         var regex = /^(.*?):\s*(.*?)\r?$/mg,
                             requestHeaders = headers,
-                            responseHeaders = {},
+                            responseHeaders = new ParamList(),
                             responseHeadersString = '',
                             match;
 
@@ -129,23 +130,30 @@
                             while((match = regex.exec(responseHeadersString))) {
                                 responseHeaders[match[1]] = match[2];
                             }
-                        } else if(!!xhr.getResponseHeaders) {
+                        } else if (!!xhr.getResponseHeaders) {
                             responseHeadersString = xhr.getResponseHeaders();
                             for (var i = 0, len = responseHeadersString.length; i < len; ++i) {
-                                responseHeaders[responseHeadersString[i][0]] = responseHeadersString[i][1];
+                                responseHeaders.push(
+                                    new Param(
+                                        responseHeadersString[i][0],
+                                        responseHeadersString[i][1]
+                                    )
+                                );
                             }
                         }
 
                         var includeXML = false;
-                        if ('Content-Type' in responseHeaders)
-                        {
-                            if (responseHeaders['Content-Type'] == 'text/xml')
-                            {
-                                includeXML = true;
-                            }
-
+                        var contentType = responseHeaders.getByNameInsensitive('Content-Type').getFirst();
+                        if (contentType && contentType.value === 'text/xml') {
+                            includeXML = true;
                         }
-                        var responseObject = {text: xhr.responseText, xml: (includeXML ? xhr.responseXML : ''), requestHeaders: requestHeaders, responseHeaders: responseHeaders};
+
+                        var responseObject = {
+                            text: xhr.responseText,
+                            xml: (includeXML ? xhr.responseXML : ''),
+                            requestHeaders: requestHeaders,
+                            responseHeaders: responseHeaders
+                        };
 
                         // we are powerless against 3xx redirects
                         if((xhr.status >= 200 && xhr.status <= 226) || xhr.status == 304 || xhr.status === 0) {
@@ -178,7 +186,8 @@
                 // multipart the POST data doesn't
                 // have to be signed:
                 // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
-                if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
+                contentType = headers.getByNameInsensitive('Content-Type').getFirst();
+                if ((!contentType || contentType.value.toLowerCase() === 'application/x-www-form-urlencoded') && !withFile) {
                     signatureData.concat(data);
                 }
 
@@ -189,8 +198,7 @@
 
                 headerParams.push(new Param('oauth_signature', signature));
 
-                if (this.realm)
-                {
+                if (this.realm) {
                     headerParams.push(new Param('realm', this.realm));
                 }
 
@@ -218,8 +226,8 @@
                         }
                     } else {*/
                         query = data.copy().sort().join('&');
-                        if (!('Content-Type' in headers)) {
-                            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                        if (!contentType) {
+                            headers.push(new Param('Content-Type', 'application/x-www-form-urlencoded'));
                         }
 /*                    }*/
 
@@ -237,9 +245,10 @@
 
                 xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(headerParams));
                 xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-                for (i in headers) {
-                    xhr.setRequestHeader(i, headers[i]);
-                }
+
+                headers.each(function(i, param) {
+                    xhr.setRequestHeader(param.name, param.value);
+                });
 
                 xhr.send(query);
             };
@@ -385,25 +394,27 @@
     function toHeaderString(params) {
         var list = new ParamList(), i, realm, encode = OAuth.urlEncode, arr = [];
 
-        for (i = 0; i < params.values.length; i++) {
-            if (params.values[i].name === 'realm') {
-                realm = encode(params.values[i].name) + '="' + encode(params.values[i].value) + '"'
-            } else {
-                list.push(
-                    new Param(
-                        params.values[i].name,
-                        params.values[i].value
-                    )
-                );
+        params.each(function(i, param) {
+            if (param.value !== '') {
+                if (param.name.toLowerCase() === 'realm') {
+                    realm = encode(param.name) + '="' + encode(param.value) + '"'
+                } else {
+                    list.push(
+                        new Param(
+                            param.name,
+                            param.value
+                        )
+                    );
+                }
             }
-        }
+        });
 
         list.sort();
 
         // encode sorted list
-        for (i = 0; i < list.length; i++) {
-            arr.push(encode(list[i].name) + '="' + encode(list[i].value) + '"');
-        }
+        list.each(function(i, param) {
+            arr.push(encode(param.name) + '="' + encode(param.value) + '"');
+        });
 
         // add realm to start
         if (realm) {
@@ -422,7 +433,7 @@
      * @param query_params {ParamList} List of POST data or query parameters.
      */
     function toSignatureBaseString(method, url, header_params, query_params) {
-        var list = new ParamList(), i, encode = OAuth.urlEncode;
+        var list = new ParamList(), i, encode = OAuth.urlEncode, noEmpty = new ParamList();
 
         list.concat(header_params);
         list.concat(query_params);
@@ -430,10 +441,16 @@
         list.removeByName('oauth_signature');
         list.sort();
 
+        list.each(function(i, param) {
+            if (param.value !== '') {
+                noEmpty.push(param);
+            }
+        });
+
         return [
             method,
             encode(url),
-            encode(list.join('&'))
+            encode(noEmpty.join('&'))
         ].join('&');
     }
 
