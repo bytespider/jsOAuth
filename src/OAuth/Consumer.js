@@ -389,9 +389,11 @@
             if (params.values[i].name === 'realm') {
                 realm = encode(params.values[i].name) + '="' + encode(params.values[i].value) + '"'
             } else {
-                list.push(new Param(
-                    params.values[i].name,
-                    params.values[i].value
+                list.push(
+                    new Param(
+                        params.values[i].name,
+                        params.values[i].value
+                    )
                 );
             }
         }
