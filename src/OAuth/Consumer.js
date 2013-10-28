@@ -236,9 +236,9 @@
                     // is used by default and required header
                     // is set to multipart/form-data etc
                     query = new FormData();
-                    for (i = 0; i < data.values.length; i++) {
-                        query.append(data.values[i].name, data.values[i].value);
-                    }
+                    data.each(function(i, param) {
+                        query.append(param.name, param.value);
+                    });
                 }
 
                 xhr.open(method, url+'', true);
