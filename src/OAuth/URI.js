@@ -95,8 +95,10 @@
                     for (i = 0; i < query.length; i++) {
                         if (query[i] instanceof Array && query[i].length === 2) {
                             querystring.push(
-                                new Param(query[i][0]),
-                                new Param(query[i][1])
+                                new Param(
+                                    query[i][0],
+                                    query[i][1]
+                                )
                             );
                         }
                     }
@@ -105,8 +107,10 @@
                     for (i in query) {
                         if (query.hasOwnProperty(i)) {
                             querystring.push(
-                                new Param(i),
-                                new Param(query[i])
+                                new Param(
+                                    i,
+                                    query[i]
+                                )
                             );
                         }
                     }
@@ -120,8 +124,10 @@
                     key_value = query_array[i].split('=');
                     if (key_value[0] !== '') {
                         querystring.push(
-                            new Param(decode(key_value[0])),
-                            new Param(decode(key_value[1]))
+                            new Param(
+                                decode(key_value[0]),
+                                decode(key_value[1])
+                            )
                         );
                     }
                 }
@@ -130,8 +136,10 @@
             for (i = 0; i < args_length; i += 2) {
                 // treat each arg as key, then value
                 querystring.push(
-                    new Param(args[i]),
-                    new Param(args[i + 1])
+                    new Param(
+                        args[i],
+                        args[i + 1]
+                    )
                 );
             }
         }
