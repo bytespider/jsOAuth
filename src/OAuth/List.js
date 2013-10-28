@@ -24,7 +24,7 @@
             return this;
         },
         copy: function() {
-            var list = new List();
+            var list = new this.constructor();
 
             this.each(function(i, value) {
                 if (typeof value.copy === 'function') {
