@@ -8,6 +8,9 @@
             string = string || '';
             return this.values.join(string);
         },
+        length: function() {
+            return this.values.length;
+        },
         concat: function(obj) {
             var self = this;
 
@@ -21,18 +24,14 @@
             return this;
         },
         copy: function() {
-            var i, value;
-
             var list = new List();
 
-            for (i = 0; i < this.values.length; i++) {
-                if (typeof this.values[i].copy === 'function') {
-                    value = this.values[i].copy();
-                } else {
-                    value = this.values[i];
+            this.each(function(i, value) {
+                if (typeof value.copy === 'function') {
+                    value = value.copy();
                 }
                 list.push(value);
-            }
+            });
 
             return list;
         },
@@ -40,11 +39,11 @@
             return this.values.shift();
         },
         unshift: function() {
-            this.values.unshift(arguments);
+            this.values.unshift.apply(this.values, arguments);
             return this;
         },
         push: function() {
-            this.values.push(arguments);
+            this.values.push.apply(this.values, arguments);
             return this;
         },
         pop: function() {
@@ -52,6 +51,22 @@
         },
         sort: function() {
             this.values.sort();
+            return this;
+        },
+        getFirst: function() {
+            var value = null;
+
+            if (this.length() > 0) {
+                value = this.values[0];
+            }
+
+            return value;
+        },
+        each: function(callback) {
+            var i;
+            for (i = 0; i < this.length(); i++) {
+                callback(i, this.values[i]);
+            }
             return this;
         }
     };

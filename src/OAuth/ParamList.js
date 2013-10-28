@@ -1,5 +1,5 @@
     function ParamList(arr) {
-        ParamList.superclass.construct.call(this, arr);
+        ParamList.superclass.constructor.call(this, arr);
 
         var args = arguments, args_callee = args.callee, i, paramlist = this;
 
@@ -27,6 +27,30 @@
     ParamList.superclass = List.prototype;
     ParamList.prototype.constructor = ParamList;
 
+    ParamList.prototype.getByNameInsensitive = function(name) {
+        var list = new ParamList();
+
+        this.each(function(i, param) {
+            if (param.name.toLowerCase() === name.toLowerCase()) {
+                list.push(param);
+            }
+        });
+
+        return list;
+    };
+
+    ParamList.prototype.getByName = function(name) {
+        var list = new ParamList();
+
+        this.each(function(i, param) {
+            if (param.name === name) {
+                list.push(param);
+            }
+        });
+
+        return list;
+    };
+
     ParamList.prototype.sort = function() {
         // byte-order sorting of names and then values
         this.values.sort(function(a, b) {
@@ -48,7 +72,7 @@
         return this;
     };
 
-    ParamList.prototye.removeByName = function(name) {
+    ParamList.prototype.removeByName = function(name) {
         var i, length = this.values.length;
         for (i = 0; i < length; i++) {
             if (this.values[i].name === name) {
@@ -61,13 +85,13 @@
     };
 
     ParamList.prototype.toString = function () {
-        var i, q_arr = [], ret = '', encode = OAuth.urlEncode;
+        var q_arr = [], ret = '';
 
         this.sort();
 
-        for (i = 0; i < this.values.length; i++) {
-            q_arr.push(this.values[i] + '');
-        }
+        this.each(function(i, param) {
+            q_arr.push(param + '');
+        });
 
         if (q_arr.length > 0) {
             ret = q_arr.join('&');
@@ -77,9 +101,11 @@
     };
 
     ParamList.prototype.toArray = function() {
-        var q_arr = [], i;
-        for (i = 0; i < this.values.length; i++) {
-            q_arr.push([ this.values[i].name, this.values[i].value ]);
-        }
+        var q_arr = [];
+
+        this.each(function(i, param) {
+            q_arr.push([ param.name, param.value ]);
+        });
+
         return q_arr;
     };
