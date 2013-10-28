@@ -102,6 +102,8 @@
                             );
                         }
                     }
+                } else if (query instanceof ParamList) {
+                    querystring = query.copy();
                 } else {
                     // iterate object
                     for (i in query) {
