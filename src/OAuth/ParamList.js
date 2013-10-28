@@ -8,9 +8,9 @@
         }
 
         if (arr instanceof ParamList) {
-            for (i = 0; i < arr.values.length; i++) {
-                paramlist.push(arr.values[i]);
-            }
+            arr.each(function(i, param) {
+                paramlist.push(param);
+            });
         } else if (arr instanceof Array) {
             for (i = 0; i < arr.length; i++) {
                 if (arr[i] instanceof Array && arr[i].length === 2) {
