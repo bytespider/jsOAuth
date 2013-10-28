@@ -1,9 +1,9 @@
     function List() {
-        var self = this;
-        self.values = [];
+        this.values = [];
     }
 
     List.prototype = {
+        constructor: List,
         join: function(string) {
             string = string || '';
             return this.values.join(string);

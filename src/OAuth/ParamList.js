@@ -1,4 +1,6 @@
     function ParamList(arr) {
+        ParamList.superclass.construct.call(this, arr);
+
         var args = arguments, args_callee = args.callee, i, paramlist = this;
 
         if (!(this instanceof args_callee)) {
@@ -22,6 +24,8 @@
 
     // ParamList is a type of list So inherit
     ParamList.prototype = new List();
+    ParamList.superclass = List.prototype;
+    ParamList.prototype.constructor = ParamList;
 
     ParamList.prototype.sort = function() {
         // byte-order sorting of names and then values
