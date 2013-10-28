@@ -45,7 +45,19 @@
             return 0;
         });
 
-        return self;
+        return this;
+    };
+
+    ParamList.prototye.removeByName = function(name) {
+        var i, length = this.values.length;
+        for (i = 0; i < length; i++) {
+            if (this.values[i].name === name) {
+                this.values.splice(i, 1);
+                i--;
+                length--;
+            }
+        }
+        return this;
     };
 
     ParamList.prototype.toString = function () {

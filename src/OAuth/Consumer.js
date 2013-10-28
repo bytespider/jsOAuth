@@ -80,22 +80,20 @@
              * @param options {object}
              *      method {string} ['GET', 'POST', 'PUT', ...]
              *      url {string} A valid http(s) url
-             *      data {object} A key value paired object of data
-             *                      example: {'q':'foobar'}
-             *                      for GET this will append a query string
-             *      headers {object} A key value paired object of additional headers
+             *      data {ParamList} A list of of data. For GET this will append a query string.
+             *      headers {ParamList} A list of additional headers.
              *      success {function} callback for a sucessful request
              *      failure {function} callback for a failed request
              */
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [], appendQueryString, signatureData = {}, params, withFile, urlString;
+                    query = [], appendQueryString, signatureData = new ParamList(), params, withFile, urlString;
 
                 method = options.method || 'GET';
                 url = URI(options.url);
-                data = options.data || {};
-                headers = options.headers || {};
+                data = (options.data) ? new ParamList(options.data) : new ParamList();
+                headers = (options.headers) ? new ParamList(options.headers) : new ParamList();
                 success = options.success || function () {};
                 failure = options.failure || function () {};
 
@@ -159,24 +157,21 @@
                     }
                 };
 
-                headerParams = {
-                    'oauth_callback': oauth.callbackUrl,
-                    'oauth_consumer_key': oauth.consumerKey,
-                    'oauth_token': oauth.accessTokenKey,
-                    'oauth_signature_method': oauth.signatureMethod,
-                    'oauth_timestamp': getTimestamp(),
-                    'oauth_nonce': getNonce(),
-                    'oauth_verifier': oauth.verifier,
-                    'oauth_version': OAUTH_VERSION_1_0
-                };
+                headerParams = new ParamList([
+                    [ 'oauth_callback', oauth.callbackUrl ],
+                    [ 'oauth_consumer_key', oauth.consumerKey ],
+                    [ 'oauth_token', oauth.accessTokenKey ],
+                    [ 'oauth_signature_method', oauth.signatureMethod ],
+                    [ 'oauth_timestamp', getTimestamp() ],
+                    [ 'oauth_nonce', getNonce() ],
+                    [ 'oauth_verifier', oauth.verifier ],
+                    [ 'oauth_version', OAUTH_VERSION_1_0 ]
+                ]);
 
                 signatureMethod = oauth.signatureMethod;
 
                 // Handle GET params first
-                params = url.query.toObject();
-                for (i in params) {
-                    signatureData[i] = params[i];
-                }
+                signatureData.concat(url.query);
 
                 // According to the OAuth spec
                 // if data is transfered using
@@ -184,9 +179,7 @@
                 // have to be signed:
                 // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
                 if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
-                    for (i in data) {
-                        signatureData[i] = data[i];
-                    }
+                    signatureData.concat(data);
                 }
 
                 urlString = url.scheme + '://' + url.host + url.path;
@@ -194,11 +187,11 @@
 
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
-                headerParams.oauth_signature = signature;
+                headerParams.push(new Param('oauth_signature', signature));
 
                 if (this.realm)
                 {
-                    headerParams['realm'] = this.realm;
+                    headerParams.push(new Param('realm', this.realm));
                 }
 
                 if (oauth.proxy) {
@@ -213,32 +206,30 @@
                     url = URI(oauth.proxyUrl + url.path);
                 }
 
-                if(appendQueryString || method == 'GET') {
+                if(appendQueryString || method === 'GET') {
                     url.query.setQueryParams(data);
                     query = null;
                 } else if(!withFile){
-                    if (typeof data == 'string') {
+                    // TODO: hmmmmm......  handle POST
+/*                    if (typeof data === 'string') {
                         query = data;
                         if (!('Content-Type' in headers)) {
                             headers['Content-Type'] = 'text/plain';
                         }
-                    } else {
-                        for(i in data) {
-                            query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
-                        }
-                        query = query.sort().join('&');
+                    } else {*/
+                        query = data.copy().sort().join('&');
                         if (!('Content-Type' in headers)) {
                             headers['Content-Type'] = 'application/x-www-form-urlencoded';
                         }
-                    }
+/*                    }*/
 
                 } else if(withFile) {
                     // When using FormData multipart content type
                     // is used by default and required header
                     // is set to multipart/form-data etc
                     query = new FormData();
-                    for(i in data) {
-                        query.append(i, data[i]);
+                    for (i = 0; i < data.values.length; i++) {
+                        query.append(data.values[i].name, data.values[i].value);
                     }
                 }
 
@@ -389,24 +380,30 @@
     /**
      * Get a string of the parameters for the OAuth Authorization header
      *
-     * @param params {object} A key value paired object of data
-     *                           example: {'q':'foobar'}
-     *                           for GET this will append a query string
+     * @param params {ParamList} A list of data.
      */
     function toHeaderString(params) {
-        var arr = [], i, realm;
+        var list = new ParamList(), i, realm, encode = OAuth.urlEncode, arr = [];
 
-        for (i in params) {
-            if (params[i] && params[i] !== undefined && params[i] !== '') {
-                if (i === 'realm') {
-                    realm = i + '="' + params[i] + '"';
-                } else {
-                    arr.push(i + '="' + OAuth.urlEncode(params[i]+'') + '"');
-                }
+        for (i = 0; i < params.values.length; i++) {
+            if (params.values[i].name === 'realm') {
+                realm = encode(params.values[i].name) + '="' + encode(params.values[i].value) + '"'
+            } else {
+                list.push(new Param(
+                    params.values[i].name,
+                    params.values[i].value
+                );
             }
         }
 
-        arr.sort();
+        list.sort();
+
+        // encode sorted list
+        for (i = 0; i < list.length; i++) {
+            arr.push(encode(list[i].name) + '="' + encode(list[i].value) + '"');
+        }
+
+        // add realm to start
         if (realm) {
             arr.unshift(realm);
         }
@@ -419,50 +416,22 @@
      *
      * @param method {string} ['GET', 'POST', 'PUT', ...]
      * @param url {string} A valid http(s) url
-     * @param header_params A key value paired object of additional headers
-     * @param query_params {object} A key value paired object of data
-     *                               example: {'q':'foobar'}
-     *                               for GET this will append a query string
+     * @param header_params {ParamList} List of additional headers
+     * @param query_params {ParamList} List of POST data or query parameters.
      */
     function toSignatureBaseString(method, url, header_params, query_params) {
-        var arr = [], i, encode = OAuth.urlEncode;
+        var list = new ParamList(), i, encode = OAuth.urlEncode;
 
-        for (i in header_params) {
-            if (header_params[i] !== undefined && header_params[i] !== '') {
-                arr.push([OAuth.urlEncode(i), OAuth.urlEncode(header_params[i]+'')]);
-            }
-        }
+        list.concat(header_params);
+        list.concat(query_params);
 
-        for (i in query_params) {
-            if (query_params[i] !== undefined && query_params[i] !== '') {
-                if (!header_params[i]) {
-                    arr.push([encode(i), encode(query_params[i] + '')]);
-                }
-            }
-        }
-
-        arr = arr.sort(function(a, b) {
-          if (a[0] < b[0]) {
-            return -1;
-          } else if (a[0] > b[0]) {
-            return 1;
-          } else {
-            if (a[1] < b[1]) {
-              return -1;
-            } else if (a[1] > b[1]) {
-              return 1;
-            } else {
-              return 0;
-            }
-          }
-        }).map(function(el) {
-          return el.join("=");
-        });
+        list.removeByName('oauth_signature');
+        list.sort();
 
         return [
             method,
             encode(url),
-            encode(arr.join('&'))
+            encode(list.join('&'))
         ].join('&');
     }
 
