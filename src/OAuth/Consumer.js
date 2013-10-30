@@ -102,14 +102,16 @@
                 withFile = (function(){
                     var hasFile = false;
 
-                    data.forEach(function(param) {
-                        // Thanks to the FileAPI any file entry
-                        // has a fileName property
-                        if (param.value instanceof File || typeof param.value.fileName !== 'undefined') {
-                            hasFile = true;
-                            return true;
-                        }
-                    });
+                    if (data instanceof List) {
+                        data.forEach(function(param) {
+                            // Thanks to the FileAPI any file entry
+                            // has a fileName property
+                            if (param.value instanceof File || typeof param.value.fileName !== 'undefined') {
+                                hasFile = true;
+                                return true;
+                            }
+                        });
+                    }
 
                     return hasFile;
                 })();
@@ -132,7 +134,7 @@
                         if (!!xhr.getAllResponseHeaders) {
                             responseHeadersString = xhr.getAllResponseHeaders();
                             while((match = regex.exec(responseHeadersString))) {
-                                responseHeaders[match[1]] = match[2];
+                                responseHeaders.push(new Param(match[1], match[2]));
                             }
                         } else if (!!xhr.getResponseHeaders) {
                             responseHeadersString = xhr.getResponseHeaders();
@@ -218,24 +220,22 @@
                     url = URI(oauth.proxyUrl + url.path);
                 }
 
-                if(appendQueryString || method === 'GET') {
+                if (appendQueryString || method === 'GET') {
                     url.query.setQueryParams(data);
                     query = null;
-                } else if(!withFile){
-                    // TODO: hmmmmm......  handle POST
-/*                    if (typeof data === 'string') {
+                } else if (!withFile){
+                    if (typeof data === 'string') {
                         query = data;
-                        if (!('Content-Type' in headers)) {
-                            headers['Content-Type'] = 'text/plain';
+                        if (!contentType) {
+                            headers.push(new Param('Content-Type', 'text/plain'));
                         }
-                    } else {*/
+                    } else {
                         query = data.copy().sort().join('&');
                         if (!contentType) {
                             headers.push(new Param('Content-Type', 'application/x-www-form-urlencoded'));
                         }
-/*                    }*/
-
-                } else if(withFile) {
+                    }
+                } else if (withFile) {
                     // When using FormData multipart content type
                     // is used by default and required header
                     // is set to multipart/form-data etc
@@ -314,13 +314,14 @@
                     success(JSON.parse(data.text));
                 },
                 'failure': failure,
-                'headers': {
-                    'Content-Type': 'application/json'
-                }
+                'headers': [
+                    [ 'Content-Type', 'application/json' ]
+                ]
             });
         },
 
         parseTokenRequest: function (tokenRequest, content_type) {
+            var obj;
 
             switch(content_type)
             {
@@ -328,15 +329,23 @@
                     var token = tokenRequest.xml.getElementsByTagName('token');
                     var secret = tokenRequest.xml.getElementsByTagName('secret');
 
-                    obj[OAuth.urlDecode(token[0])] = OAuth.urlDecode(secret[0]);
+                    obj = {
+                        'oauth_token' : OAuth.urlDecode(token[0]),
+                        'oauth_token_secret' : OAuth.urlDecode(secret[0])
+                    };
+
                     break;
 
                 default:
-                    var i = 0, arr = tokenRequest.text.split('&'), len = arr.length, obj = {};
+                    var i = 0, arr = tokenRequest.text.split('&'), len = arr.length;
+
+                    obj = {};
                     for (; i < len; ++i) {
                         var pair = arr[i].split('=');
                         obj[OAuth.urlDecode(pair[0])] = OAuth.urlDecode(pair[1]);
                     }
+
+                    break;
             }
 
 
