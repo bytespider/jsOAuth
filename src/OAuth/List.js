@@ -1,71 +1,55 @@
-    function List() {
-        this.values = [];
-    }
+    function List() {}
 
-    List.prototype = {
-        constructor: List,
-        join: function(string) {
-            string = string || '';
-            return this.values.join(string);
-        },
-        length: function() {
-            return this.values.length;
-        },
-        concat: function(obj) {
-            var self = this;
+    List.prototype = [];
+    List.superclass = Array.prototype;
+    List.prototype.constructor = List;
 
-            if (obj instanceof List) {
-                obj = obj.values;
-            } else if (!(obj instanceof Array)) {
-                throw 'Can only concat lists or arrays.';
+    List.prototype.copy = function() {
+        var list = new this.constructor();
+
+        this.forEach(function(value, i) {
+            if (typeof value.copy === 'function') {
+                value = value.copy();
             }
+            list.push(value);
+        });
 
-            this.values = this.values.concat(obj);
-            return this;
-        },
-        copy: function() {
-            var list = new this.constructor();
+        return list;
+    };
 
-            this.each(function(i, value) {
-                if (typeof value.copy === 'function') {
-                    value = value.copy();
+    List.prototype.concat = function() {
+        var list = this.copy(), i, j, len;
+
+        for (var i = 0; i < arguments.length; i++) {
+            if (arguments[i] instanceof Array) {
+                for (j = 0, len = arguments[i].length; j < len; j++) {
+                    list.push(arguments[i][j]);
                 }
-                list.push(value);
-            });
-
-            return list;
-        },
-        shift: function() {
-            return this.values.shift();
-        },
-        unshift: function() {
-            this.values.unshift.apply(this.values, arguments);
-            return this;
-        },
-        push: function() {
-            this.values.push.apply(this.values, arguments);
-            return this;
-        },
-        pop: function() {
-            return this.values.pop();
-        },
-        sort: function() {
-            this.values.sort();
-            return this;
-        },
-        getFirst: function() {
-            var value = null;
-
-            if (this.length() > 0) {
-                value = this.values[0];
+            } else {
+                list.push(arguments[i]);
             }
+        }
 
-            return value;
-        },
-        each: function(callback) {
-            var i;
-            for (i = 0; i < this.length(); i++) {
-                callback(i, this.values[i]);
+        return list;
+    };
+
+    List.prototype.getFirst = function() {
+        var value = null;
+
+        if (this.length > 0) {
+            value = this[0];
+        }
+
+        return value;
+    };
+
+    if (typeof List.prototype.forEach !== 'function') {
+        List.prototype.forEach = function(callback, scope) {
+            var i, len;
+            for (i = 0, len = this.length; i < len; ++i) {
+                if (i in this) {
+                    callback.call(scope, this[i], i, this);
+                }
             }
             return this;
         }

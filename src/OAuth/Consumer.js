@@ -102,7 +102,7 @@
                 withFile = (function(){
                     var hasFile = false;
 
-                    data.each(function(i, param)) {
+                    data.forEach(function(param) {
                         // Thanks to the FileAPI any file entry
                         // has a fileName property
                         if (param.value instanceof File || typeof param.value.fileName !== 'undefined') {
@@ -183,7 +183,7 @@
                 signatureMethod = oauth.signatureMethod;
 
                 // Handle GET params first
-                signatureData.concat(url.query);
+                signatureData = signatureData.concat(url.query);
 
                 // According to the OAuth spec
                 // if data is transfered using
@@ -192,7 +192,7 @@
                 // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
                 contentType = headers.getByNameInsensitive('Content-Type').getFirst();
                 if ((!contentType || contentType.value.toLowerCase() === 'application/x-www-form-urlencoded') && !withFile) {
-                    signatureData.concat(data);
+                    signatureData = signatureData.concat(data);
                 }
 
                 urlString = url.scheme + '://' + url.host + url.path;
@@ -240,7 +240,7 @@
                     // is used by default and required header
                     // is set to multipart/form-data etc
                     query = new FormData();
-                    data.each(function(i, param) {
+                    data.forEach(function(param) {
                         query.append(param.name, param.value);
                     });
                 }
@@ -250,7 +250,7 @@
                 xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(headerParams));
                 xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 
-                headers.each(function(i, param) {
+                headers.forEach(function(param) {
                     xhr.setRequestHeader(param.name, param.value);
                 });
 
@@ -398,7 +398,7 @@
     function toHeaderString(params) {
         var list = new ParamList(), i, realm, encode = OAuth.urlEncode, arr = [];
 
-        params.each(function(i, param) {
+        params.forEach(function(param) {
             if (param.value !== '') {
                 if (param.name.toLowerCase() === 'realm') {
                     realm = encode(param.name) + '="' + encode(param.value) + '"'
@@ -413,10 +413,8 @@
             }
         });
 
-        list.sort();
-
         // encode sorted list
-        list.each(function(i, param) {
+        list.sort().forEach(function(param) {
             arr.push(encode(param.name) + '="' + encode(param.value) + '"');
         });
 
@@ -439,13 +437,11 @@
     function toSignatureBaseString(method, url, header_params, query_params) {
         var list = new ParamList(), i, encode = OAuth.urlEncode, noEmpty = new ParamList();
 
-        list.concat(header_params);
-        list.concat(query_params);
+        list = list.concat(header_params).concat(query_params);
 
         list.removeByName('oauth_signature');
-        list.sort();
 
-        list.each(function(i, param) {
+        list.sort().forEach(function(param) {
             if (param.value !== '') {
                 noEmpty.push(param);
             }

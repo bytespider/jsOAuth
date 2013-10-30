@@ -8,7 +8,7 @@
         }
 
         if (arr instanceof ParamList) {
-            arr.each(function(i, param) {
+            arr.forEach(function(param) {
                 paramlist.push(param);
             });
         } else if (arr instanceof Array) {
@@ -28,9 +28,9 @@
     ParamList.prototype.constructor = ParamList;
 
     ParamList.prototype.getByNameInsensitive = function(name) {
-        var list = new ParamList();
+        var list = new this.constructor();
 
-        this.each(function(i, param) {
+        this.forEach(function(param) {
             if (param.name.toLowerCase() === name.toLowerCase()) {
                 list.push(param);
             }
@@ -40,9 +40,9 @@
     };
 
     ParamList.prototype.getByName = function(name) {
-        var list = new ParamList();
+        var list = new this.constructor();
 
-        this.each(function(i, param) {
+        this.forEach(function(param) {
             if (param.name === name) {
                 list.push(param);
             }
@@ -51,32 +51,35 @@
         return list;
     };
 
-    ParamList.prototype.sort = function() {
-        // byte-order sorting of names and then values
-        this.values.sort(function(a, b) {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            if (a.value < b.value) {
-                return -1;
-            }
-            if (a.value > b.value) {
-                return 1;
-            }
-            return 0;
-        });
+    ParamList.prototype.sort = function(fn) {
 
-        return this;
+        // default to byte-order sorting of names and then values
+        if (typeof fn === 'undefined') {
+            fn = function(a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                }
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.value < b.value) {
+                    return -1;
+                }
+                if (a.value > b.value) {
+                    return 1;
+                }
+                return 0;
+            };
+        }
+
+        return ParamList.superclass.sort.call(this, fn);
     };
 
     ParamList.prototype.removeByName = function(name) {
-        var i, length = this.values.length;
+        var i, length = this.length;
         for (i = 0; i < length; i++) {
-            if (this.values[i].name === name) {
-                this.values.splice(i, 1);
+            if (this[i].name === name) {
+                this.splice(i, 1);
                 i--;
                 length--;
             }
@@ -87,9 +90,7 @@
     ParamList.prototype.toString = function () {
         var q_arr = [], ret = '';
 
-        this.sort();
-
-        this.each(function(i, param) {
+        this.sort().forEach(function(param) {
             q_arr.push(param + '');
         });
 
@@ -100,10 +101,10 @@
         return ret;
     };
 
-    ParamList.prototype.toArray = function() {
+    ParamList.prototype.toJSON = function() {
         var q_arr = [];
 
-        this.each(function(i, param) {
+        this.forEach(function(param) {
             q_arr.push([ param.name, param.value ]);
         });
 
