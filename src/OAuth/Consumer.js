@@ -101,11 +101,15 @@
                 // According to the spec
                 withFile = (function(){
                     var hasFile = false;
-                    for(var name in data) {
+
+                    data.each(function(i, param)) {
                         // Thanks to the FileAPI any file entry
                         // has a fileName property
-                        if(data[name] instanceof  File || typeof data[name].fileName != 'undefined') hasFile = true;
-                    }
+                        if (param.value instanceof File || typeof param.value.fileName !== 'undefined') {
+                            hasFile = true;
+                            return true;
+                        }
+                    });
 
                     return hasFile;
                 })();
