@@ -55,6 +55,9 @@ done, you can make your authenticated 2-legged request.
 Hopefully the syntax will look familier to you, if you've used any kind of javscript
 framework such as jQuery.
 
+## Node.js
+On Node you'll need to install the XHR module with `npm install xhr`
+
 **Please let me know if jsOAuth doesn't work for you or if your application
 requires something jsOAuth doesn't currently support. I'm always happy to hear your
 suggestions. [feedback@bytespider.eu](mailto:feedback@bytespider.eu?subject=jsOAuth%20suggestion/feedback)**
