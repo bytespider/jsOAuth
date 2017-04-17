@@ -13,7 +13,7 @@ mentioned here for running the test suite.** If you need jsOAuth in the browser,
 Released under the MIT. Please see LICENSE in the project root folder for more
 information.
 
-##Documentation
+## Documentation
 Find the API reference and tutorials on the [Documentation site](http://bytespider.github.com/jsOAuth/).
 For recipes on ways to get things working with jsOAuth, try the [recipes page](https://github.com/bytespider/jsOAuth/wiki/Recipes).
 If you need more help or discussion, try the [Google jsOAuth Group](https://groups.google.com/group/jsoauth).
@@ -73,11 +73,11 @@ If you like jsOAuth and want to see new features, [please donate](http://pledgie
 * [Snippet: A simple example of PIN-based oauth flow with Twitter and jsOAuth by @funkatron](https://gist.github.com/979955)
 * [Snippet: How to upload files using jsOAuth and FormData by @lukaszkorecki](https://gist.github.com/1038408)
 
-##Applications##
+## Applications ##
 * [Application: Mikrob.chrome by @lukaszkorecki](https://github.com/lukaszkorecki/Mikrob.chrome/blob/master/lib/oauth_request.js)
 * [Safari Extension: Shortly by Zhusee](https://github.com/ZZHC/Shortly/tree/v2.0beta1/Shortly.safariextension/oauth)
 
-##Libraries##
+## Libraries ##
 * [RequestPack](https://github.com/lukaszkorecki/RequestPack)
 
 If you have a tutorial you think should be included here, please email me with links.
