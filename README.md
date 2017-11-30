@@ -1,3 +1,6 @@
+# [Abandoned]
+This library is old and unmaintained. There are far better and more modern alternatives.
+
 # jsOAuth - JavaScript OAuth library
 
 jsOAuth is a javascript library implementing the OAuth protocol. jsOAuth aims to
