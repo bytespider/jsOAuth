@@ -71,47 +71,14 @@
      *
      * @param {Object} obj
      */
-    function QueryString(obj){
-        var args = arguments, args_callee = args.callee, args_length = args.length,
-            i, querystring = this, decode = OAuth.urlDecode;
-
-        if (!(this instanceof args_callee)) {
-            return new args_callee(obj);
-        }
-
-        if (obj != undefined) {
-            for (i in obj) {
-                if (obj.hasOwnProperty(i)) {
-                    querystring[i] = obj[i];
-                }
-            }
-        }
-
-        return querystring;
+    function QueryString(arr) {
+        QueryString.superclass.constructor.call(this, arr);
     }
-    // QueryString is a type of collection So inherit
-    QueryString.prototype = new Collection();
 
-    QueryString.prototype.toString = function () {
-        var i, self = this, q_arr = [], ret = '',
-        val = '', encode = OAuth.urlEncode;
-        self.ksort(); // lexicographical byte value ordering of the keys
-
-        for (i in self) {
-            if (self.hasOwnProperty(i)) {
-                if (i != undefined && self[i] != undefined) {
-                    val = encode(i) + '=' + encode(self[i]);
-                    q_arr.push(val);
-                }
-            }
-        }
-
-        if (q_arr.length > 0) {
-            ret = q_arr.join('&');
-        }
-
-        return ret;
-    };
+    // QueryString is a type of param list, so inherit
+    QueryString.prototype = new ParamList();
+    QueryString.superclass = ParamList.prototype;
+    QueryString.prototype.constructor = QueryString;
 
     /**
      *
@@ -121,12 +88,33 @@
         var args = arguments, args_length = args.length, i, query_array,
             query_array_length, querystring = this, key_value, decode = OAuth.urlDecode;
 
-        if (args_length == 1) {
+        if (args_length === 1) {
             if (typeof query === 'object') {
-                // iterate
-                for (i in query) {
-                    if (query.hasOwnProperty(i)) {
-                        querystring[i] = decode(query[i]);
+                if (query instanceof Array) {
+                    // iterate array
+                    for (i = 0; i < query.length; i++) {
+                        if (query[i] instanceof Array && query[i].length === 2) {
+                            querystring.push(
+                                new Param(
+                                    query[i][0],
+                                    query[i][1]
+                                )
+                            );
+                        }
+                    }
+                } else if (query instanceof ParamList) {
+                    querystring = query.copy();
+                } else {
+                    // iterate object
+                    for (i in query) {
+                        if (query.hasOwnProperty(i)) {
+                            querystring.push(
+                                new Param(
+                                    i,
+                                    query[i]
+                                )
+                            );
+                        }
                     }
                 }
             } else if (typeof query === 'string') {
@@ -136,15 +124,25 @@
                 for (i = 0, query_array_length = query_array.length; i < query_array_length; i++) {
                     // split on '=' to get key, value
                     key_value = query_array[i].split('=');
-                    if (key_value[0] != "") {
-                        querystring[key_value[0]] = decode(key_value[1]);
+                    if (key_value[0] !== '') {
+                        querystring.push(
+                            new Param(
+                                decode(key_value[0]),
+                                decode(key_value[1])
+                            )
+                        );
                     }
                 }
             }
         } else {
             for (i = 0; i < args_length; i += 2) {
                 // treat each arg as key, then value
-                querystring[args[i]] = decode(args[i+1]);
+                querystring.push(
+                    new Param(
+                        args[i],
+                        args[i + 1]
+                    )
+                );
             }
         }
     };

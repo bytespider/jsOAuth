@@ -80,32 +80,37 @@
              * @param options {object}
              *      method {string} ['GET', 'POST', 'PUT', ...]
              *      url {string} A valid http(s) url
-             *      data {object} A key value paired object of data
-             *                      example: {'q':'foobar'}
-             *                      for GET this will append a query string
-             *      headers {object} A key value paired object of additional headers
+             *      data {ParamList} A list of of data. For GET this will append a query string.
+             *      headers {ParamList} A list of additional headers.
              *      success {function} callback for a sucessful request
              *      failure {function} callback for a failed request
              */
             this.request = function (options) {
                 var method, url, data, headers, success, failure, xhr, i,
                     headerParams, signatureMethod, signatureString, signature,
-                    query = [], appendQueryString, signatureData = {}, params, withFile, urlString;
+                    query = [], appendQueryString, signatureData = new ParamList(), params, withFile, urlString,
+                    contentType;
 
                 method = options.method || 'GET';
                 url = URI(options.url);
-                data = options.data || {};
-                headers = options.headers || {};
+                data = (options.data) ? new ParamList(options.data) : new ParamList();
+                headers = (options.headers) ? new ParamList(options.headers) : new ParamList();
                 success = options.success || function () {};
                 failure = options.failure || function () {};
 
                 // According to the spec
                 withFile = (function(){
                     var hasFile = false;
-                    for(var name in data) {
-                        // Thanks to the FileAPI any file entry
-                        // has a fileName property
-                        if(data[name] instanceof  File || typeof data[name].fileName != 'undefined') hasFile = true;
+
+                    if (data instanceof List) {
+                        data.forEach(function(param) {
+                            // Thanks to the FileAPI any file entry
+                            // has a fileName property
+                            if (param.value instanceof File || typeof param.value.fileName !== 'undefined') {
+                                hasFile = true;
+                                return true;
+                            }
+                        });
                     }
 
                     return hasFile;
@@ -122,32 +127,39 @@
                     if (xhr.readyState === 4) {
                         var regex = /^(.*?):\s*(.*?)\r?$/mg,
                             requestHeaders = headers,
-                            responseHeaders = {},
+                            responseHeaders = new ParamList(),
                             responseHeadersString = '',
                             match;
 
                         if (!!xhr.getAllResponseHeaders) {
                             responseHeadersString = xhr.getAllResponseHeaders();
                             while((match = regex.exec(responseHeadersString))) {
-                                responseHeaders[match[1]] = match[2];
+                                responseHeaders.push(new Param(match[1], match[2]));
                             }
-                        } else if(!!xhr.getResponseHeaders) {
+                        } else if (!!xhr.getResponseHeaders) {
                             responseHeadersString = xhr.getResponseHeaders();
                             for (var i = 0, len = responseHeadersString.length; i < len; ++i) {
-                                responseHeaders[responseHeadersString[i][0]] = responseHeadersString[i][1];
+                                responseHeaders.push(
+                                    new Param(
+                                        responseHeadersString[i][0],
+                                        responseHeadersString[i][1]
+                                    )
+                                );
                             }
                         }
 
                         var includeXML = false;
-                        if ('Content-Type' in responseHeaders)
-                        {
-                            if (responseHeaders['Content-Type'] == 'text/xml')
-                            {
-                                includeXML = true;
-                            }
-
+                        var contentType = responseHeaders.getByNameInsensitive('Content-Type').getFirst();
+                        if (contentType && contentType.value === 'text/xml') {
+                            includeXML = true;
                         }
-                        var responseObject = {text: xhr.responseText, xml: (includeXML ? xhr.responseXML : ''), requestHeaders: requestHeaders, responseHeaders: responseHeaders};
+
+                        var responseObject = {
+                            text: xhr.responseText,
+                            xml: (includeXML ? xhr.responseXML : ''),
+                            requestHeaders: requestHeaders,
+                            responseHeaders: responseHeaders
+                        };
 
                         // we are powerless against 3xx redirects
                         if((xhr.status >= 200 && xhr.status <= 226) || xhr.status == 304 || xhr.status === 0) {
@@ -159,34 +171,30 @@
                     }
                 };
 
-                headerParams = {
-                    'oauth_callback': oauth.callbackUrl,
-                    'oauth_consumer_key': oauth.consumerKey,
-                    'oauth_token': oauth.accessTokenKey,
-                    'oauth_signature_method': oauth.signatureMethod,
-                    'oauth_timestamp': getTimestamp(),
-                    'oauth_nonce': getNonce(),
-                    'oauth_verifier': oauth.verifier,
-                    'oauth_version': OAUTH_VERSION_1_0
-                };
+                headerParams = new ParamList([
+                    [ 'oauth_callback', oauth.callbackUrl ],
+                    [ 'oauth_consumer_key', oauth.consumerKey ],
+                    [ 'oauth_token', oauth.accessTokenKey ],
+                    [ 'oauth_signature_method', oauth.signatureMethod ],
+                    [ 'oauth_timestamp', getTimestamp() ],
+                    [ 'oauth_nonce', getNonce() ],
+                    [ 'oauth_verifier', oauth.verifier ],
+                    [ 'oauth_version', OAUTH_VERSION_1_0 ]
+                ]);
 
                 signatureMethod = oauth.signatureMethod;
 
                 // Handle GET params first
-                params = url.query.toObject();
-                for (i in params) {
-                    signatureData[i] = params[i];
-                }
+                signatureData = signatureData.concat(url.query);
 
                 // According to the OAuth spec
                 // if data is transfered using
                 // multipart the POST data doesn't
                 // have to be signed:
                 // http://www.mail-archive.com/oauth@googlegroups.com/msg01556.html
-                if((!('Content-Type' in headers) || headers['Content-Type'] == 'application/x-www-form-urlencoded') && !withFile) {
-                    for (i in data) {
-                        signatureData[i] = data[i];
-                    }
+                contentType = headers.getByNameInsensitive('Content-Type').getFirst();
+                if ((!contentType || contentType.value.toLowerCase() === 'application/x-www-form-urlencoded') && !withFile) {
+                    signatureData = signatureData.concat(data);
                 }
 
                 urlString = url.scheme + '://' + url.host + url.path;
@@ -194,11 +202,10 @@
 
                 signature = OAuth.signatureMethod[signatureMethod](oauth.consumerSecret, oauth.accessTokenSecret, signatureString);
 
-                headerParams.oauth_signature = signature;
+                headerParams.push(new Param('oauth_signature', signature));
 
-                if (this.realm)
-                {
-                    headerParams['realm'] = this.realm;
+                if (this.realm) {
+                    headerParams.push(new Param('realm', this.realm));
                 }
 
                 if (oauth.proxy) {
@@ -213,42 +220,39 @@
                     url = URI(oauth.proxyUrl + url.path);
                 }
 
-                if(appendQueryString || method == 'GET') {
+                if (appendQueryString || method === 'GET') {
                     url.query.setQueryParams(data);
                     query = null;
-                } else if(!withFile){
-                    if (typeof data == 'string') {
+                } else if (!withFile){
+                    if (typeof data === 'string') {
                         query = data;
-                        if (!('Content-Type' in headers)) {
-                            headers['Content-Type'] = 'text/plain';
+                        if (!contentType) {
+                            headers.push(new Param('Content-Type', 'text/plain'));
                         }
                     } else {
-                        for(i in data) {
-                            query.push(OAuth.urlEncode(i) + '=' + OAuth.urlEncode(data[i] + ''));
-                        }
-                        query = query.sort().join('&');
-                        if (!('Content-Type' in headers)) {
-                            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                        query = data.copy().sort().join('&');
+                        if (!contentType) {
+                            headers.push(new Param('Content-Type', 'application/x-www-form-urlencoded'));
                         }
                     }
-
-                } else if(withFile) {
+                } else if (withFile) {
                     // When using FormData multipart content type
                     // is used by default and required header
                     // is set to multipart/form-data etc
                     query = new FormData();
-                    for(i in data) {
-                        query.append(i, data[i]);
-                    }
+                    data.forEach(function(param) {
+                        query.append(param.name, param.value);
+                    });
                 }
 
                 xhr.open(method, url+'', true);
 
                 xhr.setRequestHeader('Authorization', 'OAuth ' + toHeaderString(headerParams));
                 xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-                for (i in headers) {
-                    xhr.setRequestHeader(i, headers[i]);
-                }
+
+                headers.forEach(function(param) {
+                    xhr.setRequestHeader(param.name, param.value);
+                });
 
                 xhr.send(query);
             };
@@ -310,13 +314,14 @@
                     success(JSON.parse(data.text));
                 },
                 'failure': failure,
-                'headers': {
-                    'Content-Type': 'application/json'
-                }
+                'headers': [
+                    [ 'Content-Type', 'application/json' ]
+                ]
             });
         },
 
         parseTokenRequest: function (tokenRequest, content_type) {
+            var obj;
 
             switch(content_type)
             {
@@ -324,15 +329,23 @@
                     var token = tokenRequest.xml.getElementsByTagName('token');
                     var secret = tokenRequest.xml.getElementsByTagName('secret');
 
-                    obj[OAuth.urlDecode(token[0])] = OAuth.urlDecode(secret[0]);
+                    obj = {
+                        'oauth_token' : OAuth.urlDecode(token[0]),
+                        'oauth_token_secret' : OAuth.urlDecode(secret[0])
+                    };
+
                     break;
 
                 default:
-                    var i = 0, arr = tokenRequest.text.split('&'), len = arr.length, obj = {};
+                    var i = 0, arr = tokenRequest.text.split('&'), len = arr.length;
+
+                    obj = {};
                     for (; i < len; ++i) {
                         var pair = arr[i].split('=');
                         obj[OAuth.urlDecode(pair[0])] = OAuth.urlDecode(pair[1]);
                     }
+
+                    break;
             }
 
 
@@ -389,24 +402,32 @@
     /**
      * Get a string of the parameters for the OAuth Authorization header
      *
-     * @param params {object} A key value paired object of data
-     *                           example: {'q':'foobar'}
-     *                           for GET this will append a query string
+     * @param params {ParamList} A list of data.
      */
     function toHeaderString(params) {
-        var arr = [], i, realm;
+        var list = new ParamList(), i, realm, encode = OAuth.urlEncode, arr = [];
 
-        for (i in params) {
-            if (params[i] && params[i] !== undefined && params[i] !== '') {
-                if (i === 'realm') {
-                    realm = i + '="' + params[i] + '"';
+        params.forEach(function(param) {
+            if (param.value !== '') {
+                if (param.name.toLowerCase() === 'realm') {
+                    realm = encode(param.name) + '="' + encode(param.value) + '"'
                 } else {
-                    arr.push(i + '="' + OAuth.urlEncode(params[i]+'') + '"');
+                    list.push(
+                        new Param(
+                            param.name,
+                            param.value
+                        )
+                    );
                 }
             }
-        }
+        });
 
-        arr.sort();
+        // encode sorted list
+        list.sort().forEach(function(param) {
+            arr.push(encode(param.name) + '="' + encode(param.value) + '"');
+        });
+
+        // add realm to start
         if (realm) {
             arr.unshift(realm);
         }
@@ -419,50 +440,26 @@
      *
      * @param method {string} ['GET', 'POST', 'PUT', ...]
      * @param url {string} A valid http(s) url
-     * @param header_params A key value paired object of additional headers
-     * @param query_params {object} A key value paired object of data
-     *                               example: {'q':'foobar'}
-     *                               for GET this will append a query string
+     * @param header_params {ParamList} List of additional headers
+     * @param query_params {ParamList} List of POST data or query parameters.
      */
     function toSignatureBaseString(method, url, header_params, query_params) {
-        var arr = [], i, encode = OAuth.urlEncode;
+        var list = new ParamList(), i, encode = OAuth.urlEncode, noEmpty = new ParamList();
 
-        for (i in header_params) {
-            if (header_params[i] !== undefined && header_params[i] !== '') {
-                arr.push([OAuth.urlEncode(i), OAuth.urlEncode(header_params[i]+'')]);
-            }
-        }
+        list = list.concat(header_params).concat(query_params);
 
-        for (i in query_params) {
-            if (query_params[i] !== undefined && query_params[i] !== '') {
-                if (!header_params[i]) {
-                    arr.push([encode(i), encode(query_params[i] + '')]);
-                }
-            }
-        }
+        list.removeByName('oauth_signature');
 
-        arr = arr.sort(function(a, b) {
-          if (a[0] < b[0]) {
-            return -1;
-          } else if (a[0] > b[0]) {
-            return 1;
-          } else {
-            if (a[1] < b[1]) {
-              return -1;
-            } else if (a[1] > b[1]) {
-              return 1;
-            } else {
-              return 0;
+        list.sort().forEach(function(param) {
+            if (param.value !== '') {
+                noEmpty.push(param);
             }
-          }
-        }).map(function(el) {
-          return el.join("=");
         });
 
         return [
             method,
             encode(url),
-            encode(arr.join('&'))
+            encode(noEmpty.join('&'))
         ].join('&');
     }
 
